@@ -552,8 +552,14 @@
     display: grid;
     grid-template-columns: 200px 1fr;
     gap: 4rem;
-    padding: 2rem 0;
+    padding: 2.5rem 0;
     align-items: start;
+    border-top: 1px solid var(--line);
+  }
+
+  .exp-item:first-of-type {
+    border-top: none;
+    padding-top: 1rem;
   }
 
   .exp-period {
@@ -1066,7 +1072,7 @@
   <div class="container">
     <div class="hero-grid">
       <div class="hero-content">
-        <div class="hero-meta">Berlin, Germany — Available 15–20 hrs/week</div>
+        <div class="hero-meta">Cottbus, Germany — Available 15–20 hrs/week</div>
         <h1>Building <em>intelligent</em><br>systems that<br>see &amp; understand.</h1>
         <p class="hero-tagline">M.Sc. Artificial Intelligence at BTU Cottbus-Senftenberg. I work at the intersection of deep learning, computer vision, and real-world deployment — turning research into things that work.</p>
         <div class="hero-cta">
@@ -1081,7 +1087,7 @@
 
       <div class="hero-visual" aria-hidden="true">
         <div class="hero-portrait">
-          <img src="profile.jpg" alt="Shazil Katchhi" loading="eager" />
+          <img src="assets/profile.jpg" alt="Shazil Katchhi" loading="eager" />
         </div>
         <div class="hero-card hero-card-1">
           <div class="label">// research</div>
@@ -1178,6 +1184,32 @@
   <div class="container">
     <div class="section-label">02 — Experience</div>
     <h2 class="section-title reveal">Where I've <em>worked.</em></h2>
+
+    <div class="exp-item reveal">
+      <div class="exp-period">
+        <div class="exp-dates">Jun – Dec 2025</div>
+        <div class="exp-duration">7 months</div>
+      </div>
+      <div class="exp-content">
+        <div class="exp-role">Data Analyst <span>— Advanced Technology</span></div>
+        <div class="exp-company">Accenture Private Limited · Pune, India</div>
+        <p class="exp-desc">Joined the Advanced Technology Centre as a Data Analyst, working across the analytics lifecycle — from raw data preprocessing through to stakeholder-ready insight delivery. Partnered with business and engineering teams to translate ambiguous problems into structured analytics work.</p>
+        <ul class="exp-bullets">
+          <li>Prepared analytical and trend reports with graphics and stakeholder-ready material for executive review.</li>
+          <li>Performed preprocessing of structured and unstructured datasets to enable downstream analytics.</li>
+          <li>Analysed large-scale data to surface trends, patterns and actionable insights for business teams.</li>
+          <li>Partnered with stakeholders to identify business challenges and apply statistical methods to inform decisions.</li>
+          <li>Built data visualisations and dashboards; proposed solutions and strategies; collaborated with engineering and product development teams.</li>
+        </ul>
+        <div class="exp-tags">
+          <span class="tag">data analysis</span>
+          <span class="tag">statistical methods</span>
+          <span class="tag">data visualisation</span>
+          <span class="tag">stakeholder communication</span>
+          <span class="tag">cross-functional</span>
+        </div>
+      </div>
+    </div>
 
     <div class="exp-item reveal">
       <div class="exp-period">
@@ -1358,7 +1390,7 @@
         </div>
         <div class="contact-item">
           <div class="contact-label">Location</div>
-          <span class="contact-value">Berlin, Germany</span>
+          <span class="contact-value">Cottbus, Germany</span>
         </div>
         <div class="contact-item">
           <div class="contact-label">Elsewhere</div>
