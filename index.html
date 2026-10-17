@@ -5,1439 +5,1863 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Shazil Katchhi — AI & Machine Learning</title>
 <meta name="description" content="Shazil Katchhi — M.Sc. Artificial Intelligence student at BTU Cottbus-Senftenberg. Machine learning, computer vision, and applied AI." />
+<meta name="color-scheme" content="light dark" />
+<script>
+  (function () {
+    var t = null;
+    try { t = localStorage.getItem('sk01-theme'); } catch (e) {}
+    if (t !== 'dark' && t !== 'light') {
+      t = (window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+    }
+    document.documentElement.setAttribute('data-theme', t);
+    document.documentElement.className += ' js';
+  })();
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter+Tight:ital,wght@0,300;0,400;0,500;0,600;1,400&family=VT323&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #f4efe6;
-    --bg-deep: #ebe4d6;
-    --ink: #1a1a1a;
-    --ink-soft: #3a3a3a;
-    --muted: #7a7468;
-    --line: #d4cbb8;
-    --accent: #c0532b;
-    --accent-soft: #e07a4f;
-    --paper: #faf6ee;
-  }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  html { scroll-behavior: smooth; }
-
-  body {
-    font-family: 'Inter', sans-serif;
-    background: var(--bg);
-    color: var(--ink);
-    line-height: 1.6;
-    font-weight: 400;
-    overflow-x: hidden;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-
-  /* Subtle grain texture overlay */
-  body::before {
-    content: "";
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    pointer-events: none;
-    z-index: 1;
-    opacity: 0.4;
-    mix-blend-mode: multiply;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.1 0 0 0 0 0.1 0 0 0 0 0.1 0 0 0 0.08 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  }
-
-  .container {
-    max-width: 1180px;
-    margin: 0 auto;
-    padding: 0 2.5rem;
-    position: relative;
-    z-index: 2;
-  }
-
-  /* --- NAVIGATION --- */
-  nav {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    z-index: 100;
-    padding: 1.5rem 0;
-    background: rgba(244, 239, 230, 0.85);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-bottom: 1px solid transparent;
-    transition: border-color 0.3s ease;
-  }
-
-  nav.scrolled {
-    border-bottom-color: var(--line);
-  }
-
-  nav .container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .logo {
-    font-family: 'Fraunces', serif;
-    font-size: 1.35rem;
-    font-weight: 500;
-    letter-spacing: -0.02em;
-    color: var(--ink);
-    text-decoration: none;
-  }
-
-  .logo span {
-    color: var(--accent);
-    font-style: italic;
-  }
-
-  .nav-links {
-    display: flex;
-    gap: 2.5rem;
-    list-style: none;
-  }
-
-  .nav-links a {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.78rem;
-    color: var(--ink-soft);
-    text-decoration: none;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    transition: color 0.2s ease;
-    position: relative;
-  }
-
-  .nav-links a:hover { color: var(--accent); }
-
-  .nav-socials {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-    margin-left: 2rem;
-    padding-left: 2rem;
-    border-left: 1px solid var(--line);
-  }
-
-  .nav-socials a {
-    color: var(--ink-soft);
-    transition: color 0.2s ease, transform 0.2s ease;
-    display: inline-flex;
-    align-items: center;
-  }
-
-  .nav-socials a:hover {
-    color: var(--accent);
-    transform: translateY(-2px);
-  }
-
-  nav .container > .nav-links + .nav-socials { }
-
-  .nav-links a::before {
-    content: counter(nav-counter, decimal-leading-zero) ' / ';
-    color: var(--muted);
-    margin-right: 0.3rem;
-  }
-
-  .nav-links { counter-reset: nav-counter; }
-  .nav-links li { counter-increment: nav-counter; }
-
-  /* --- HERO --- */
-  .hero {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    padding: 8rem 0 5rem;
-    position: relative;
-  }
-
-  .hero-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4rem;
-    align-items: center;
-    width: 100%;
-  }
-
-  .hero-meta {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.75rem;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.15em;
-    margin-bottom: 2rem;
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-    opacity: 0;
-    animation: fadeUp 0.8s ease 0.2s forwards;
-  }
-
-  .hero-meta::before {
-    content: "";
-    width: 2rem;
-    height: 1px;
-    background: var(--accent);
-  }
-
-  .hero h1 {
-    font-family: 'Fraunces', serif;
-    font-size: clamp(3rem, 7vw, 5.8rem);
-    font-weight: 400;
-    line-height: 0.95;
-    letter-spacing: -0.035em;
-    color: var(--ink);
-    margin-bottom: 2rem;
-    opacity: 0;
-    animation: fadeUp 0.9s ease 0.35s forwards;
-  }
-
-  .hero h1 em {
-    font-style: italic;
-    font-weight: 300;
-    color: var(--accent);
-  }
-
-  .hero-tagline {
-    font-family: 'Fraunces', serif;
-    font-size: 1.35rem;
-    font-weight: 300;
-    line-height: 1.5;
-    color: var(--ink-soft);
-    max-width: 38rem;
-    margin-bottom: 2.5rem;
-    opacity: 0;
-    animation: fadeUp 1s ease 0.5s forwards;
-  }
-
-  .hero-cta {
-    display: flex;
-    gap: 1.5rem;
-    align-items: center;
-    opacity: 0;
-    animation: fadeUp 1s ease 0.65s forwards;
-  }
-
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.6rem;
-    padding: 0.9rem 1.6rem;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.78rem;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    text-decoration: none;
-    border-radius: 0;
-    transition: all 0.3s ease;
-    cursor: pointer;
-    border: none;
-  }
-
-  .btn-primary {
-    background: var(--ink);
-    color: var(--paper);
-  }
-
-  .btn-primary:hover {
-    background: var(--accent);
-    transform: translateY(-2px);
-  }
-
-  .btn-secondary {
-    background: transparent;
-    color: var(--ink);
-    border-bottom: 1px solid var(--ink);
-    padding: 0.3rem 0;
-  }
-
-  .btn-secondary:hover {
-    color: var(--accent);
-    border-bottom-color: var(--accent);
-  }
-
-  .btn .arrow {
-    display: inline-block;
-    transition: transform 0.3s ease;
-  }
-
-  .btn:hover .arrow { transform: translateX(4px); }
-
-  /* Hero side visual */
-  .hero-visual {
-    position: relative;
-    height: 520px;
-    opacity: 0;
-    animation: fadeIn 1.2s ease 0.4s forwards;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .hero-portrait {
-    position: relative;
-    width: 360px;
-    height: 440px;
-    overflow: hidden;
-    background: var(--paper);
-    box-shadow:
-      0 30px 60px -20px rgba(26, 26, 26, 0.25),
-      0 0 0 1px var(--line);
-    transform: rotate(-1.5deg);
-    transition: transform 0.5s ease;
-  }
-
-  .hero-portrait:hover {
-    transform: rotate(0deg);
-  }
-
-  .hero-portrait img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center 20%;
-    display: block;
-    filter: contrast(1.02) saturate(0.92);
-  }
-
-  /* Decorative frame corner */
-  .hero-portrait::before,
-  .hero-portrait::after {
-    content: "";
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    border: 1.5px solid var(--accent);
-    z-index: 2;
-  }
-
-  .hero-portrait::before {
-    top: 12px;
-    left: 12px;
-    border-right: none;
-    border-bottom: none;
-  }
-
-  .hero-portrait::after {
-    bottom: 12px;
-    right: 12px;
-    border-left: none;
-    border-top: none;
-  }
-
-  .hero-card {
-    position: absolute;
-    background: var(--paper);
-    border: 1px solid var(--line);
-    padding: 1rem 1.2rem;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.7rem;
-    line-height: 1.5;
-    color: var(--ink-soft);
-    box-shadow: 0 20px 40px -15px rgba(0,0,0,0.18);
-    z-index: 3;
-    transition: transform 0.4s ease;
-  }
-
-  .hero-card-1 {
-    top: 30px;
-    left: -10px;
-    width: 180px;
-    transform: rotate(-4deg);
-  }
-
-  .hero-card-2 {
-    bottom: 40px;
-    right: -20px;
-    width: 200px;
-    transform: rotate(3deg);
-    background: var(--ink);
-    color: var(--paper);
-  }
-
-  .hero-card:hover {
-    transform: rotate(0) translateY(-4px);
-  }
-
-  .hero-card .label {
-    color: var(--accent);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    font-size: 0.62rem;
-    margin-bottom: 0.4rem;
-  }
-
-  .hero-card-2 .label { color: var(--accent-soft); }
-
-  .hero-card .value {
-    font-family: 'Fraunces', serif;
-    font-size: 1.4rem;
-    font-weight: 400;
-    color: var(--ink);
-    margin-bottom: 0.3rem;
-    letter-spacing: -0.02em;
-  }
-
-  .hero-card-2 .value { color: var(--paper); }
-
-  /* --- SECTION HEADERS --- */
-  section {
-    padding: 7rem 0;
-    position: relative;
-  }
-
-  .section-label {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.72rem;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.2em;
-    margin-bottom: 1.5rem;
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-  }
-
-  .section-label::before {
-    content: "";
-    width: 1.5rem;
-    height: 1px;
-    background: var(--accent);
-  }
-
-  .section-title {
-    font-family: 'Fraunces', serif;
-    font-size: clamp(2.2rem, 4.5vw, 3.5rem);
-    font-weight: 400;
-    line-height: 1;
-    letter-spacing: -0.025em;
-    margin-bottom: 4rem;
-    max-width: 30rem;
-  }
-
-  .section-title em {
-    font-style: italic;
-    color: var(--accent);
-  }
-
-  /* --- ABOUT --- */
-  .about {
-    border-top: 1px solid var(--line);
-  }
-
-  .about-grid {
-    display: grid;
-    grid-template-columns: 1fr 1.3fr;
-    gap: 5rem;
-    align-items: start;
-  }
-
-  .about-text p {
-    font-family: 'Fraunces', serif;
-    font-size: 1.25rem;
-    font-weight: 300;
-    line-height: 1.65;
-    color: var(--ink-soft);
-    margin-bottom: 1.5rem;
-  }
-
-  .about-text p:first-child::first-letter {
-    font-family: 'Fraunces', serif;
-    font-size: 3.5rem;
-    font-weight: 500;
-    color: var(--accent);
-    float: left;
-    line-height: 0.85;
-    margin: 0.1rem 0.6rem 0 0;
-    font-style: italic;
-  }
-
-  .about-stats {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0;
-    margin-top: 2rem;
-    border-top: 1px solid var(--line);
-  }
-
-  .stat {
-    padding: 1.5rem 1.5rem 1.5rem 0;
-    border-bottom: 1px solid var(--line);
-  }
-
-  .stat:nth-child(odd) {
-    border-right: 1px solid var(--line);
-    padding-right: 1.5rem;
-  }
-
-  .stat:nth-child(even) { padding-left: 1.5rem; }
-
-  .stat-label {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.7rem;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    margin-bottom: 0.6rem;
-  }
-
-  .stat-value {
-    font-family: 'Fraunces', serif;
-    font-size: 2.2rem;
-    font-weight: 400;
-    color: var(--ink);
-    line-height: 1;
-    letter-spacing: -0.02em;
-  }
-
-  .stat-value em {
-    font-style: italic;
-    color: var(--accent);
-    font-weight: 300;
-  }
-
-  .stat-detail {
-    font-size: 0.85rem;
-    color: var(--muted);
-    margin-top: 0.5rem;
-  }
-
-  /* Skills tags */
-  .skills-section {
-    margin-top: 4rem;
-    padding-top: 3rem;
-    border-top: 1px solid var(--line);
-  }
-
-  .skills-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 3rem;
-    margin-top: 2rem;
-  }
-
-  .skill-group h4 {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.7rem;
-    color: var(--accent);
-    text-transform: uppercase;
-    letter-spacing: 0.15em;
-    margin-bottom: 1rem;
-    font-weight: 500;
-  }
-
-  .skill-group ul {
-    list-style: none;
-  }
-
-  .skill-group li {
-    font-family: 'Fraunces', serif;
-    font-size: 1rem;
-    color: var(--ink-soft);
-    padding: 0.4rem 0;
-    border-bottom: 1px solid var(--line);
-    font-weight: 400;
-  }
-
-  .skill-group li:last-child { border-bottom: none; }
-
-  /* --- EXPERIENCE --- */
-  .experience {
-    border-top: 1px solid var(--line);
-  }
-
-  .exp-item {
-    display: grid;
-    grid-template-columns: 200px 1fr;
-    gap: 4rem;
-    padding: 2.5rem 0;
-    align-items: start;
-    border-top: 1px solid var(--line);
-  }
-
-  .exp-item:first-of-type {
-    border-top: none;
-    padding-top: 1rem;
-  }
-
-  .exp-period {
-    position: sticky;
-    top: 6rem;
-  }
-
-  .exp-dates {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.78rem;
-    color: var(--ink-soft);
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    margin-bottom: 0.3rem;
-  }
-
-  .exp-duration {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.7rem;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-  }
-
-  .exp-role {
-    font-family: 'Fraunces', serif;
-    font-size: 1.8rem;
-    font-weight: 500;
-    line-height: 1.1;
-    letter-spacing: -0.02em;
-    color: var(--ink);
-    margin-bottom: 0.4rem;
-  }
-
-  .exp-role span {
-    font-weight: 300;
-    font-style: italic;
-    color: var(--accent);
-  }
-
-  .exp-company {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.8rem;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin-bottom: 1.2rem;
-  }
-
-  .exp-desc {
-    font-family: 'Fraunces', serif;
-    font-size: 1.1rem;
-    font-weight: 300;
-    line-height: 1.6;
-    color: var(--ink-soft);
-    margin-bottom: 1.2rem;
-    max-width: 38rem;
-  }
-
-  .exp-bullets {
-    list-style: none;
-    margin-bottom: 1.5rem;
-    max-width: 40rem;
-  }
-
-  .exp-bullets li {
-    font-size: 0.98rem;
-    color: var(--ink-soft);
-    line-height: 1.6;
-    padding: 0.5rem 0 0.5rem 1.5rem;
-    position: relative;
-    border-bottom: 1px solid var(--line);
-  }
-
-  .exp-bullets li:last-child { border-bottom: none; }
-
-  .exp-bullets li::before {
-    content: "→";
-    position: absolute;
-    left: 0;
-    color: var(--accent);
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.9rem;
-  }
-
-  .exp-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-
-  /* --- PROJECTS --- */
-  .projects {
-    background: var(--bg-deep);
-    border-top: 1px solid var(--line);
-    border-bottom: 1px solid var(--line);
-  }
-
-  .project {
-    display: grid;
-    grid-template-columns: 80px 1fr 1.2fr;
-    gap: 3rem;
-    padding: 3.5rem 0;
-    border-top: 1px solid var(--line);
-    align-items: start;
-    transition: all 0.3s ease;
-    position: relative;
-  }
-
-  .project:last-child { border-bottom: 1px solid var(--line); }
-
-  .project:hover {
-    padding-left: 1rem;
-  }
-
-  .project:hover .project-title {
-    color: var(--accent);
-  }
-
-  .project-num {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.85rem;
-    color: var(--muted);
-    letter-spacing: 0.1em;
-  }
-
-  .project-meta {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.7rem;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    margin-bottom: 1rem;
-  }
-
-  .project-title {
-    font-family: 'Fraunces', serif;
-    font-size: 2rem;
-    font-weight: 400;
-    line-height: 1.1;
-    letter-spacing: -0.02em;
-    color: var(--ink);
-    margin-bottom: 1rem;
-    transition: color 0.3s ease;
-  }
-
-  .project-title em {
-    font-style: italic;
-    font-weight: 300;
-  }
-
-  .project-desc {
-    font-size: 1rem;
-    color: var(--ink-soft);
-    line-height: 1.7;
-    margin-bottom: 1.5rem;
-  }
-
-  .project-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-
-  .tag {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.7rem;
-    color: var(--ink-soft);
-    background: var(--paper);
-    padding: 0.35rem 0.7rem;
-    border: 1px solid var(--line);
-    text-transform: lowercase;
-  }
-
-  .project-highlight {
-    background: var(--paper);
-    border-left: 2px solid var(--accent);
-    padding: 1.2rem 1.4rem;
-    margin-top: 1.5rem;
-  }
-
-  .project-highlight-label {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.65rem;
-    color: var(--accent);
-    text-transform: uppercase;
-    letter-spacing: 0.15em;
-    margin-bottom: 0.5rem;
-  }
-
-  .project-highlight-text {
-    font-family: 'Fraunces', serif;
-    font-size: 1.15rem;
-    font-style: italic;
-    color: var(--ink);
-    line-height: 1.4;
-  }
-
-  .project-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-top: 1.5rem;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.72rem;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: var(--ink);
-    text-decoration: none;
-    border-bottom: 1px solid var(--ink);
-    padding-bottom: 2px;
-    transition: color 0.2s ease, border-color 0.2s ease;
-  }
-
-  .project-link:hover {
-    color: var(--accent);
-    border-bottom-color: var(--accent);
-  }
-
-  .project-link .arrow {
-    transition: transform 0.3s ease;
-  }
-
-  .project-link:hover .arrow {
-    transform: translate(2px, -2px);
-  }
-
-  /* --- TESTIMONIALS --- */
-  .testimonials {
-    border-bottom: 1px solid var(--line);
-  }
-
-  .testimonial-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 2rem;
-  }
-
-  .testimonial {
-    background: var(--paper);
-    border: 1px solid var(--line);
-    padding: 2.5rem 2rem;
-    position: relative;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
-
-  .testimonial:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 20px 40px -20px rgba(0,0,0,0.15);
-  }
-
-  .testimonial::before {
-    content: "“";
-    position: absolute;
-    top: -0.3rem;
-    left: 1.5rem;
-    font-family: 'Fraunces', serif;
-    font-size: 5rem;
-    color: var(--accent);
-    line-height: 1;
-    font-weight: 500;
-  }
-
-  .testimonial-text {
-    font-family: 'Fraunces', serif;
-    font-size: 1.05rem;
-    line-height: 1.6;
-    color: var(--ink-soft);
-    margin: 1.5rem 0 2rem;
-    font-weight: 300;
-    font-style: italic;
-  }
-
-  .testimonial-author {
-    border-top: 1px solid var(--line);
-    padding-top: 1.2rem;
-  }
-
-  .testimonial-name {
-    font-family: 'Fraunces', serif;
-    font-size: 1.05rem;
-    font-weight: 500;
-    color: var(--ink);
-    margin-bottom: 0.2rem;
-  }
-
-  .testimonial-role {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.7rem;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-  }
-
-  /* --- CONTACT --- */
-  .contact {
-    padding: 8rem 0;
-  }
-
-  .contact-grid {
-    display: grid;
-    grid-template-columns: 1.2fr 1fr;
-    gap: 5rem;
-    align-items: center;
-  }
-
-  .contact-headline {
-    font-family: 'Fraunces', serif;
-    font-size: clamp(2.5rem, 5vw, 4rem);
-    font-weight: 400;
-    line-height: 1;
-    letter-spacing: -0.03em;
-  }
-
-  .contact-headline em {
-    font-style: italic;
-    color: var(--accent);
-  }
-
-  .contact-info {
-    display: flex;
-    flex-direction: column;
-    gap: 1.8rem;
-  }
-
-  .contact-item {
-    border-bottom: 1px solid var(--line);
-    padding-bottom: 1.5rem;
-  }
-
-  .contact-label {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.7rem;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.15em;
-    margin-bottom: 0.6rem;
-  }
-
-  .contact-value {
-    font-family: 'Fraunces', serif;
-    font-size: 1.25rem;
-    color: var(--ink);
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    transition: color 0.2s ease;
-  }
-
-  .contact-value:hover { color: var(--accent); }
-
-  .contact-value .arrow {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.9rem;
-    transition: transform 0.3s ease;
-  }
-
-  .contact-value:hover .arrow { transform: translate(2px, -2px); }
-
-  /* --- FOOTER --- */
-  footer {
-    border-top: 1px solid var(--line);
-    padding: 2.5rem 0;
-    background: var(--bg-deep);
-  }
-
-  footer .container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 1rem;
-  }
-
-  .footer-text {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.72rem;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-  }
-
-  /* --- ANIMATIONS --- */
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-
-  .reveal {
-    opacity: 0;
-    transform: translateY(30px);
-    transition: opacity 0.8s ease, transform 0.8s ease;
-  }
-
-  .reveal.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  /* --- RESPONSIVE --- */
-  @media (max-width: 900px) {
-    .container { padding: 0 1.5rem; }
-
-    .hero-grid,
-    .about-grid,
-    .contact-grid {
-      grid-template-columns: 1fr;
-      gap: 3rem;
-    }
-
-    .exp-item {
-      grid-template-columns: 1fr;
-      gap: 1.5rem;
-    }
-
-    .exp-period {
-      position: static;
-      display: flex;
-      gap: 1rem;
-      align-items: baseline;
-    }
-
-    .hero-visual { height: 460px; }
-
-    .hero-portrait {
-      width: 280px;
-      height: 360px;
-    }
-
-    .skills-grid {
-      grid-template-columns: 1fr;
-      gap: 2rem;
-    }
-
-    .testimonial-grid {
-      grid-template-columns: 1fr;
-    }
-
-    .project {
-      grid-template-columns: 1fr;
-      gap: 1rem;
-    }
-
-    .nav-links { display: none; }
-
-    .nav-socials {
-      margin-left: 0;
-      padding-left: 0;
-      border-left: none;
-    }
-
-    section { padding: 5rem 0; }
-
-    .hero { padding: 7rem 0 3rem; }
-  }
-
-  @media (max-width: 600px) {
-    .hero-cta {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 1.5rem;
-    }
-
-    .hero-card-1 { width: 160px; left: -5px; }
-    .hero-card-2 { width: 170px; right: -5px; }
-
-    .about-stats {
-      grid-template-columns: 1fr;
-    }
-
-    .stat:nth-child(odd) {
-      border-right: none;
-      padding-right: 0;
-    }
-    .stat:nth-child(even) { padding-left: 0; }
-  }
+/* =========================================================
+   SK-01 — tokens
+   ========================================================= */
+:root {
+  --orange: #ff5a1f;
+  --orange-deep: #e24a12;
+  --orange-text: #c13c0a;
+  --blue: #4d6a86;
+  --blue-led: #7fb0e0;
+
+  --backdrop: #d9d8d2;
+  --backdrop-mark: rgba(20, 20, 18, .10);
+  --body-1: #efeee9;
+  --body-2: #e2e1db;
+  --body-edge: rgba(0, 0, 0, .10);
+  --body-hi: rgba(255, 255, 255, .85);
+  --groove: rgba(0, 0, 0, .085);
+
+  --ink: #161616;
+  --ink-2: #48473f;
+  --silk: #67655e;
+
+  --sheet: #f8f7f3;
+  --sheet-2: #f1f0ea;
+  --sheet-ink: #141414;
+  --sheet-ink-2: #55534d;
+  --sheet-ink-3: #77756e;
+  --sheet-line: #dedcd4;
+  --chip: #ecebe5;
+
+  --well: #d3d2cb;
+  --k1: #f5f4f0; --k2: #e3e2dc; --kside: #bebdb5; --kink: #1b1b1b; --klab: #57554e;
+  --g1: #4a4b4e; --g2: #393a3d; --gside: #1f2022; --gink: #f0efea; --glab: #b8b6af;
+  --o1: #ff6c35; --o2: #f4551c; --oside: #b93c0f; --oink: #1d0c04; --olab: #3e1806;
+  --led-off: #c9c8c1;
+
+  --lcd-bg: #c4cbb6;
+  --lcd-bg-2: #b5bda6;
+  --lcd-ink: #1c2117;
+  --lcd-ghost: rgba(28, 33, 23, .085);
+  --lcd-glow: none;
+  --lcd-scan: rgba(28, 33, 23, .045);
+  --bezel: #2b2b29;
+
+  --metal-1: #f3f3f0; --metal-2: #c4c4bf; --metal-3: #9d9d98;
+  --hole: rgba(0, 0, 0, .55);
+
+  --shadow-device:
+    0 1px 0 rgba(255,255,255,.6) inset,
+    0 -1px 0 rgba(0,0,0,.06) inset,
+    0 0 0 1px var(--body-edge),
+    0 2px 3px rgba(0,0,0,.06),
+    0 18px 40px -18px rgba(0,0,0,.28),
+    0 60px 90px -40px rgba(0,0,0,.30);
+}
+:root[data-theme="dark"] {
+  --orange-text: #ff8152;
+  --backdrop: #151516;
+  --backdrop-mark: rgba(255, 255, 255, .06);
+  --body-1: #343538;
+  --body-2: #2a2b2e;
+  --body-edge: rgba(0, 0, 0, .6);
+  --body-hi: rgba(255, 255, 255, .10);
+  --groove: rgba(0, 0, 0, .35);
+
+  --ink: #efeee9;
+  --ink-2: #c3c1ba;
+  --silk: #9c9a93;
+
+  --sheet: #1d1e20;
+  --sheet-2: #232427;
+  --sheet-ink: #edebe6;
+  --sheet-ink-2: #b1afa8;
+  --sheet-ink-3: #8f8d86;
+  --sheet-line: #35363a;
+  --chip: #2a2b2f;
+
+  --well: #1e1f21;
+  --k1: #4b4c50; --k2: #3e3f42; --kside: #18191a; --kink: #f1f0eb; --klab: #b7b5ae;
+  --g1: #26272a; --g2: #1d1e20; --gside: #0b0b0c; --gink: #efeee9; --glab: #9a988f;
+  --o1: #ff6c35; --o2: #ee5219; --oside: #8e2c08; --oink: #1d0c04; --olab: #3e1806;
+  --led-off: #232426;
+
+  --lcd-bg: #0f0d0a;
+  --lcd-bg-2: #15120e;
+  --lcd-ink: #ffa24a;
+  --lcd-ghost: rgba(255, 162, 74, .07);
+  --lcd-glow: 0 0 6px rgba(255, 140, 40, .45);
+  --lcd-scan: rgba(255, 162, 74, .05);
+  --bezel: #0c0c0d;
+
+  --metal-1: #d9d9d5; --metal-2: #8f8f8b; --metal-3: #5f5f5c;
+  --hole: rgba(0, 0, 0, .8);
+
+  --shadow-device:
+    0 1px 0 rgba(255,255,255,.08) inset,
+    0 -1px 0 rgba(0,0,0,.4) inset,
+    0 0 0 1px var(--body-edge),
+    0 2px 3px rgba(0,0,0,.3),
+    0 18px 40px -18px rgba(0,0,0,.7),
+    0 60px 90px -40px rgba(0,0,0,.8);
+}
+
+/* =========================================================
+   base
+   ========================================================= */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: 'Inter Tight', system-ui, -apple-system, sans-serif;
+  color: var(--ink);
+  background-color: var(--backdrop);
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56'%3E%3Cpath d='M28 24.5v7M24.5 28h7' stroke='%23000' stroke-width='1' opacity='.5'/%3E%3C/svg%3E"),
+    radial-gradient(120% 90% at 50% 0%, rgba(255,255,255,.35), transparent 60%);
+  -webkit-font-smoothing: antialiased;
+  display: grid;
+  place-items: center;
+  padding: 58px 28px 28px; /* top clearance for the fixed theme switch */
+  transition: background-color .4s ease;
+}
+body.leaving { opacity: 0; transition: opacity .2s ease-in; }
+
+/* theme switch — fixed, top-right of the viewport (desktop); absolute on stacked layouts so it scrolls away */
+.theme-switch {
+  position: fixed; top: 14px; right: 14px; z-index: 50;
+  display: inline-flex; align-items: center; gap: 2px;
+  padding: 3px; border-radius: 999px;
+  text-decoration: none;
+  font: 500 10px/1 'IBM Plex Mono', ui-monospace, monospace; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--silk);
+  background: linear-gradient(180deg, var(--body-1), var(--body-2));
+  box-shadow: inset 0 1px 0 var(--body-hi), 0 0 0 1px var(--body-edge), 0 2px 3px rgba(0,0,0,.08), 0 8px 18px -10px rgba(0,0,0,.35);
+  -webkit-tap-highlight-color: transparent;
+}
+.theme-switch:focus-visible { outline: 2px solid var(--orange); outline-offset: 3px; border-radius: 999px; }
+.ts-seg { display: inline-flex; align-items: center; gap: 7px; height: 24px; padding: 0 11px; border-radius: 999px; white-space: nowrap; transition: color .15s, background .15s; }
+.ts-seg.on {
+  color: var(--ink);
+  background: linear-gradient(180deg, var(--k1), var(--k2));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.5), 0 1px 0 var(--kside), 0 2px 3px rgba(0,0,0,.12);
+}
+:root[data-theme="dark"] .ts-seg.on { box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 1px 0 var(--kside), 0 2px 3px rgba(0,0,0,.4); }
+.ts-led { width: 6px; height: 6px; border-radius: 50%; background: var(--orange); box-shadow: 0 0 6px 1px rgba(255,90,31,.6); }
+.ts-seg.off .ts-led { background: var(--led-off); box-shadow: inset 0 1px 1px rgba(0,0,0,.3); }
+.theme-switch:hover .ts-seg.off { color: var(--ink); }
+.theme-switch:hover .ts-seg.off .ts-led { background: var(--blue-led); box-shadow: 0 0 6px 1px rgba(127,176,224,.55); }
+.theme-switch:active .ts-seg.off { background: var(--groove); }
+:root[data-theme="dark"] body {
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56'%3E%3Cpath d='M28 24.5v7M24.5 28h7' stroke='%23fff' stroke-width='1' opacity='.12'/%3E%3C/svg%3E"),
+    radial-gradient(120% 90% at 50% 0%, rgba(255,255,255,.04), transparent 60%);
+}
+button { font: inherit; color: inherit; }
+a { color: inherit; }
+img { display: block; max-width: 100%; }
+:focus { outline: none; }
+:focus-visible { outline: 2px solid var(--orange); outline-offset: 3px; border-radius: 6px; }
+.sr-only { position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.silk {
+  font: 500 9.5px/1.1 'IBM Plex Mono', ui-monospace, monospace;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--silk);
+}
+.silk b { color: var(--ink); font-weight: 500; }
+
+/* =========================================================
+   device shell
+   ========================================================= */
+.device {
+  position: relative;
+  width: min(1480px, 100%);
+  height: clamp(680px, calc(100vh - 86px), 960px);
+  display: grid;
+  grid-template-columns: 420px minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  column-gap: 30px;
+  padding: 0 30px;
+  border-radius: 30px;
+  background:
+    repeating-linear-gradient(0deg, rgba(255,255,255,.035) 0 1px, transparent 1px 3px),
+    linear-gradient(180deg, var(--body-1), var(--body-2));
+  box-shadow: var(--shadow-device);
+  transition: background .4s ease, box-shadow .4s ease;
+}
+.screw {
+  position: absolute; width: 11px; height: 11px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, var(--metal-1), var(--metal-2) 65%, var(--metal-3));
+  box-shadow: 0 0 0 1px rgba(0,0,0,.18), 0 1px 0 var(--body-hi), inset 0 -1px 1px rgba(0,0,0,.2);
+}
+.screw::after {
+  content: ""; position: absolute; inset: 3px;
+  background: rgba(0,0,0,.55);
+  clip-path: polygon(50% 0, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
+  transform: rotate(var(--r, 0deg));
+}
+.screw.tl { top: 13px; left: 13px; --r: 12deg; }
+.screw.tr { top: 13px; right: 13px; --r: 40deg; }
+.screw.bl { bottom: 13px; left: 13px; --r: 25deg; }
+.screw.br { bottom: 13px; right: 13px; --r: 3deg; }
+
+/* header strip */
+.dev-head {
+  grid-column: 1 / -1;
+  display: flex; align-items: center; gap: 22px;
+  padding: 20px 14px 16px;
+  border-bottom: 1px solid var(--groove);
+  box-shadow: 0 1px 0 var(--body-hi);
+}
+.brand { display: flex; align-items: baseline; gap: 14px; min-width: 0; }
+.pwr {
+  align-self: center; width: 7px; height: 7px; border-radius: 50%; flex: none;
+  background: var(--orange);
+  box-shadow: 0 0 0 2px rgba(0,0,0,.06), 0 0 8px 1px rgba(255,90,31,.55);
+}
+.wordmark {
+  margin: 0; font-weight: 600; font-size: 19px; letter-spacing: -.02em; line-height: 1;
+  white-space: nowrap;
+}
+.head-mid { margin-left: auto; }
+.head-right { display: flex; align-items: center; gap: 18px; margin-left: auto; }
+.head-mid + .head-right { margin-left: 0; }
+.mini-grille {
+  width: 58px; height: 14px;
+  background: radial-gradient(circle, var(--hole) 1.05px, transparent 1.45px) 0 0 / 5px 5px;
+  opacity: .55;
+}
+.dev-foot {
+  grid-column: 1 / -1;
+  display: flex; align-items: center; justify-content: space-between; gap: 18px; flex-wrap: wrap;
+  padding: 13px 14px 18px;
+  border-top: 1px solid var(--groove);
+  box-shadow: inset 0 1px 0 var(--body-hi);
+}
+.keymap { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.keymap kbd {
+  font: inherit; display: inline-grid; place-items: center; min-width: 17px; height: 15px; padding: 0 4px;
+  border-radius: 3px; border: 1px solid var(--groove); color: var(--ink-2);
+  box-shadow: 0 1px 0 var(--body-hi);
+}
+.keymap .sep { width: 10px; }
+
+/* =========================================================
+   left column — display + controls + keys
+   ========================================================= */
+.left {
+  display: flex; flex-direction: column; gap: 18px;
+  padding: 22px 0 20px;
+  min-height: 0;
+}
+
+/* LCD */
+.lcd-wrap { flex: none; }
+.lcd-bezel {
+  position: relative;
+  padding: 9px;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #1d1d1c, var(--bezel));
+  box-shadow:
+    inset 0 2px 5px rgba(0,0,0,.6),
+    0 1px 0 var(--body-hi),
+    0 -1px 0 rgba(0,0,0,.08);
+}
+.lcd {
+  position: relative; overflow: hidden;
+  height: 158px;
+  border-radius: 7px;
+  color: var(--lcd-ink);
+  background:
+    radial-gradient(var(--lcd-ghost) 0.9px, transparent 1.1px) 0 0 / 3px 3px,
+    linear-gradient(180deg, var(--lcd-bg), var(--lcd-bg-2));
+  box-shadow: inset 0 3px 8px rgba(0,0,0,.35), inset 0 0 0 1px rgba(0,0,0,.4);
+  cursor: pointer;
+  transition: background .4s ease, color .4s ease;
+}
+.lcd::before { /* glass reflection */
+  content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 3;
+  background: linear-gradient(125deg, rgba(255,255,255,.16) 0%, rgba(255,255,255,0) 38%);
+}
+.lcd::after { /* scan band */
+  content: ""; position: absolute; left: 0; right: 0; top: 0; height: 45%; pointer-events: none; z-index: 2;
+  background: linear-gradient(180deg, transparent, var(--lcd-scan), transparent);
+  transform: translateY(-100%);
+  animation: scan 6s linear infinite;
+}
+@keyframes scan { to { transform: translateY(330%); } }
+.lcd-screen {
+  position: absolute; inset: 0; padding: 10px 14px 9px;
+  display: grid; grid-template-rows: auto 1fr auto auto; row-gap: 0;
+  font-family: 'VT323', ui-monospace, monospace;
+  text-shadow: var(--lcd-glow);
+  z-index: 1;
+}
+.lcd-screen::after { /* pixel grid — makes glyphs read as dot matrix */
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background-image:
+    linear-gradient(var(--lcd-bg) 1px, transparent 1px),
+    linear-gradient(90deg, var(--lcd-bg) 1px, transparent 1px);
+  background-size: 3px 3px;
+  opacity: .28;
+}
+.lcd-row { display: flex; align-items: center; gap: 10px; font-size: 19px; line-height: 1; letter-spacing: .04em; white-space: nowrap; }
+.lcd-row .grow { flex: 1; overflow: hidden; text-overflow: clip; }
+.lcd-inv { background: var(--lcd-ink); color: var(--lcd-bg); padding: 1px 4px 0; text-shadow: none; }
+.lcd-title {
+  align-self: end;
+  font-size: 46px; line-height: .9; letter-spacing: .02em;
+  white-space: nowrap; overflow: hidden;
+  padding-top: 6px;
+}
+.lcd-title[data-len="m"] { font-size: 39px; }
+.lcd-title[data-len="l"] { font-size: 33px; }
+.cursor {
+  display: inline-block; width: .42em; height: .1em; margin-left: .08em;
+  background: currentColor; vertical-align: .05em;
+  animation: blink 1s steps(1) infinite;
+}
+@keyframes blink { 50% { opacity: 0; } }
+.lcd-sub { font-size: 21px; line-height: 1.05; letter-spacing: .04em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 3px 0 7px; opacity: .92; }
+.segs { display: flex; gap: 3px; }
+.segs i { width: 14px; height: 7px; border: 1px solid currentColor; opacity: .55; }
+.segs i.on { background: currentColor; opacity: 1; }
+.meter { display: flex; align-items: flex-end; gap: 2px; height: 11px; margin-left: auto; }
+.meter i { width: 3px; height: 100%; background: currentColor; transform-origin: bottom; transform: scaleY(.25); animation: lvl 1.4s ease-in-out infinite; }
+.meter i:nth-child(2) { animation-delay: -.3s; } .meter i:nth-child(3) { animation-delay: -.9s; }
+.meter i:nth-child(4) { animation-delay: -.5s; } .meter i:nth-child(5) { animation-delay: -1.1s; }
+.meter i:nth-child(6) { animation-delay: -.2s; } .meter i:nth-child(7) { animation-delay: -.7s; }
+@keyframes lvl { 0%, 100% { transform: scaleY(.2); } 50% { transform: scaleY(.85); } }
+.lcd-labels { display: flex; justify-content: space-between; padding: 9px 4px 0; }
+
+/* controls row */
+.controls {
+  flex: none;
+  display: grid; grid-template-columns: auto auto minmax(0, 1fr) auto; align-items: center; gap: 18px;
+  padding: 0 4px;
+}
+.ctrl { display: flex; flex-direction: column; align-items: center; gap: 9px; min-width: 0; }
+.enc {
+  position: relative; width: 82px; height: 82px; border-radius: 50%;
+  display: grid; place-items: center; cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none;
+}
+.enc:active { cursor: grabbing; }
+.enc:focus-visible { outline-offset: 2px; border-radius: 50%; }
+.enc-ring {
+  position: absolute; inset: 0; border-radius: 50%;
+  background: repeating-conic-gradient(from -1deg, var(--silk) 0 1.6deg, transparent 1.6deg 22.5deg);
+  -webkit-mask: radial-gradient(circle, transparent 0 36px, #000 36.5px 40px, transparent 40.5px);
+          mask: radial-gradient(circle, transparent 0 36px, #000 36.5px 40px, transparent 40.5px);
+  opacity: .7;
+}
+.enc-led {
+  position: absolute; top: -3px; right: -3px; width: 5px; height: 5px; border-radius: 50%;
+  background: var(--led-off); box-shadow: inset 0 1px 1px rgba(0,0,0,.3);
+  transition: background .25s, box-shadow .25s;
+}
+.enc.tick .enc-led { background: var(--orange); box-shadow: 0 0 6px 1px rgba(255,90,31,.6); transition: none; }
+.enc.b.tick .enc-led { background: var(--blue-led); box-shadow: 0 0 6px 1px rgba(127,176,224,.6); }
+.enc-knob {
+  position: relative; width: 62px; height: 62px; border-radius: 50%;
+  box-shadow:
+    0 1px 1px rgba(0,0,0,.25),
+    0 5px 8px -1px rgba(0,0,0,.28),
+    0 12px 18px -6px rgba(0,0,0,.25);
+}
+.enc-skirt, .enc-rot { position: absolute; inset: 0; border-radius: 50%; transform: rotate(var(--rot, 0deg)); transition: transform .09s cubic-bezier(.3,.7,.3,1); }
+.enc-skirt {
+  background:
+    radial-gradient(circle, transparent 60%, rgba(0,0,0,.18) 100%),
+    repeating-conic-gradient(var(--metal-1) 0 2.5deg, var(--metal-3) 2.5deg 5deg);
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.25);
+}
+.enc-cap {
+  position: absolute; inset: 7px; border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 30%, rgba(255,255,255,.55), rgba(255,255,255,0) 55%),
+    conic-gradient(from 15deg, var(--metal-1), var(--metal-2) 12%, var(--metal-1) 25%, var(--metal-2) 38%, var(--metal-1) 50%, var(--metal-2) 63%, var(--metal-1) 75%, var(--metal-2) 88%, var(--metal-1));
+  box-shadow: inset 0 1px 1px rgba(255,255,255,.7), inset 0 -2px 3px rgba(0,0,0,.18), 0 0 0 1px rgba(0,0,0,.2);
+}
+.enc-rot::after {
+  content: ""; position: absolute; left: 50%; top: 10px; width: 3px; height: 13px; margin-left: -1.5px; border-radius: 2px;
+  background: var(--orange);
+  box-shadow: inset 0 0 0 .5px rgba(0,0,0,.25);
+}
+.enc.b .enc-rot::after { background: var(--blue); }
+.enc-rail { display: none; }
+
+/* fader */
+.fader-ctrl { align-items: stretch; }
+.fader {
+  position: relative; height: 40px; cursor: pointer; touch-action: none; user-select: none; -webkit-user-select: none;
+  --p: .333;
+}
+.fader:focus-visible { outline-offset: 2px; }
+.fader-slot {
+  position: absolute; left: 10px; right: 10px; top: 50%; height: 5px; margin-top: -2.5px; border-radius: 3px;
+  background: #1b1b1a;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,.8), 0 1px 0 var(--body-hi);
+}
+.fader-cap {
+  position: absolute; top: 50%; left: calc(10px + var(--p) * (100% - 20px)); width: 18px; height: 34px; margin: -17px 0 0 -9px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--g2), var(--g1) 45%, var(--g2));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.18), 0 2px 0 var(--gside), 0 6px 8px -2px rgba(0,0,0,.35);
+  transition: left .12s cubic-bezier(.3,.7,.3,1);
+}
+.fader-cap::after { content: ""; position: absolute; left: 3px; right: 3px; top: 50%; height: 2px; margin-top: -1px; background: var(--orange); }
+.fader-scale { display: flex; justify-content: space-between; padding: 0 3px; }
+.fader-scale span { width: 18px; text-align: center; font: 500 9px/1 'IBM Plex Mono', monospace; color: var(--silk); letter-spacing: .06em; }
+.fader-scale span.on { color: var(--ink); }
+.fader-ticks { display: flex; justify-content: space-between; padding: 0 10px; height: 4px; }
+.fader-ticks i { width: 1px; height: 4px; background: var(--silk); opacity: .7; }
+.ctrl-row-label { display: flex; justify-content: space-between; }
+
+.grille {
+  width: 62px; height: 62px; border-radius: 50%;
+  background: radial-gradient(circle, var(--hole) 1.25px, transparent 1.7px) 1px 1px / 6px 6px;
+  -webkit-mask: radial-gradient(circle, #000 0 29px, transparent 29.5px);
+          mask: radial-gradient(circle, #000 0 29px, transparent 29.5px);
+  opacity: .6;
+}
+
+/* key grid */
+.keys {
+  flex: 1; min-height: 0;
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-template-rows: repeat(4, minmax(0, 1fr));
+  gap: 10px; padding: 11px;
+  border-radius: 18px;
+  background: var(--well);
+  box-shadow: inset 0 2px 5px rgba(0,0,0,.16), inset 0 -1px 0 rgba(255,255,255,.35), 0 1px 0 var(--body-hi);
+}
+:root[data-theme="dark"] .keys { box-shadow: inset 0 2px 6px rgba(0,0,0,.6), 0 1px 0 var(--body-hi); }
+.key {
+  --c1: var(--k1); --c2: var(--k2); --side: var(--kside); --ink-k: var(--kink); --lab: var(--klab);
+  position: relative;
+  display: flex; flex-direction: column; justify-content: space-between; align-items: flex-start;
+  min-height: 0; padding: 10px 10px 11px 11px;
+  container-type: inline-size;
+  border: 0; border-radius: 11px;
+  text-align: left; text-decoration: none; color: var(--ink-k);
+  background:
+    radial-gradient(120% 70% at 50% 0%, rgba(255,255,255,.22), transparent 70%),
+    linear-gradient(180deg, var(--c1), var(--c2));
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.55),
+    inset 0 -1px 1px rgba(0,0,0,.06),
+    0 3px 0 var(--side),
+    0 4px 5px rgba(0,0,0,.14),
+    0 10px 14px -8px rgba(0,0,0,.25);
+  transform: translateY(-2px);
+  transition: transform .07s ease-out, box-shadow .07s ease-out, background .4s;
+  cursor: pointer; user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent;
+}
+.key.g { --c1: var(--g1); --c2: var(--g2); --side: var(--gside); --ink-k: var(--gink); --lab: var(--glab); }
+.key.o { --c1: var(--o1); --c2: var(--o2); --side: var(--oside); --ink-k: var(--oink); --lab: var(--olab); }
+.key.g, .key.o { box-shadow: inset 0 1px 0 rgba(255,255,255,.18), inset 0 -1px 1px rgba(0,0,0,.1), 0 3px 0 var(--side), 0 4px 5px rgba(0,0,0,.18), 0 10px 14px -8px rgba(0,0,0,.3); }
+:root[data-theme="dark"] .key:not(.o) { box-shadow: inset 0 1px 0 rgba(255,255,255,.09), inset 0 -1px 1px rgba(0,0,0,.2), 0 3px 0 var(--side), 0 4px 6px rgba(0,0,0,.4), 0 10px 14px -8px rgba(0,0,0,.6); }
+.key:hover { --c1: color-mix(in srgb, var(--k1) 92%, #fff); }
+.key.g:hover { --c1: color-mix(in srgb, var(--g1) 90%, #fff); }
+.key.o:hover { --c1: #ff7845; }
+.key:active, .key.is-down {
+  transform: translateY(1px);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.3),
+    inset 0 1px 3px rgba(0,0,0,.12),
+    0 0 0 var(--side),
+    0 1px 1px rgba(0,0,0,.22);
+  transition-duration: .03s;
+}
+.key:focus-visible { outline-offset: 2px; border-radius: 12px; }
+/* silkscreen index (small, corner) + legend (primary) */
+.key .glyph { font: 500 10.5px/1 'IBM Plex Mono', monospace; letter-spacing: .04em; color: var(--lab); }
+.key.ico .glyph { font: 500 20px/.8 'Inter Tight', system-ui, sans-serif; letter-spacing: 0; color: var(--ink-k); }
+.key .lab {
+  max-width: 100%;
+  /* one size for every key, sized so the longest legend ("Experience") always fits */
+  font: 500 15px/1.05 'Inter Tight', system-ui, sans-serif; letter-spacing: -.012em;
+  font-size: clamp(11.5px, 20.4cqi, 15px);
+  color: var(--ink-k); white-space: nowrap;
+}
+.key .lab .sh { display: none; }
+.key .led {
+  position: absolute; top: 11px; right: 11px; width: 6px; height: 6px; border-radius: 50%;
+  background: var(--led-off);
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.35);
+  transition: background .2s, box-shadow .2s;
+}
+.key.g .led { background: #1a1a1b; }
+.key.o .led { background: rgba(0,0,0,.25); }
+.key.on .led, .key.flash .led { background: var(--orange); box-shadow: 0 0 7px 1px rgba(255,90,31,.65), inset 0 0 1px rgba(255,255,255,.6); }
+.key.o.on .led, .key.o.flash .led { background: #fff3ea; box-shadow: 0 0 7px 1px rgba(255,255,255,.7); }
+.key[data-act="theme"][aria-pressed="true"] .led { background: var(--blue-led); box-shadow: 0 0 7px 1px rgba(127,176,224,.6); }
+.key .ext { position: absolute; right: 23px; top: 9px; font: 500 10.5px/1 'IBM Plex Mono', monospace; color: var(--lab); }
+
+/* boot LED sweep */
+.booting .key .led { animation: sweep .5s ease-out both; animation-delay: calc(var(--i) * 28ms); }
+@keyframes sweep { 0% { background: var(--led-off); } 30% { background: var(--orange); box-shadow: 0 0 7px 1px rgba(255,90,31,.6); } 100% { background: var(--led-off); } }
+
+/* =========================================================
+   sheet — e-paper panel
+   ========================================================= */
+.sheet-wrap { padding: 22px 0 20px; min-height: 0; display: flex; }
+.sheet {
+  position: relative; flex: 1; min-width: 0; min-height: 0;
+  display: flex; flex-direction: column;
+  border-radius: 14px;
+  background: var(--sheet);
+  box-shadow:
+    0 0 0 1px rgba(0,0,0,.14),
+    0 0 0 6px color-mix(in srgb, var(--body-2) 70%, #000 6%),
+    0 0 0 7px var(--groove),
+    inset 0 2px 6px rgba(0,0,0,.08);
+  color: var(--sheet-ink);
+  overflow: hidden;
+  transition: background .4s, color .4s;
+}
+.sheet-bar {
+  flex: none; display: flex; align-items: center; gap: 14px;
+  padding: 12px 22px; border-bottom: 1px solid var(--sheet-line);
+  font: 500 10px/1 'IBM Plex Mono', monospace; letter-spacing: .14em; text-transform: uppercase; color: var(--sheet-ink-3);
+}
+.sheet-bar b { font-weight: 500; color: var(--sheet-ink); }
+.sheet-bar .count { margin-left: auto; font-variant-numeric: tabular-nums; }
+.to-keys { display: none; }
+.sheet-body {
+  position: relative; flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain;
+  font-size: calc(16px * var(--fs, 1));
+  container-type: inline-size;
+  scrollbar-width: thin; scrollbar-color: var(--sheet-line) transparent;
+}
+.sheet-body:focus-visible { outline-offset: -3px; border-radius: 0; }
+.sheet-body::-webkit-scrollbar { width: 8px; }
+.sheet-body::-webkit-scrollbar-thumb { background: var(--sheet-line); border-radius: 8px; }
+.progress { flex: none; height: 2px; background: var(--sheet-line); }
+.progress i { display: block; height: 100%; width: 100%; background: var(--orange); transform-origin: left; transform: scaleX(0); }
+
+/* views */
+.js .view { display: none; }
+.js .view.on { display: block; animation: viewIn .32s cubic-bezier(.2,.7,.2,1); }
+@keyframes viewIn { from { opacity: 0; transform: translateY(6px); } }
+.view { padding: 2.1em 2.4em 2.6em; max-width: 60em; }
+.view + .view { border-top: 1px solid var(--sheet-line); }
+.js .view + .view { border-top: 0; }
+
+.vhead { display: flex; align-items: center; gap: .9em; margin-bottom: 1.6em; }
+.vnum {
+  display: inline-grid; place-items: center; min-width: 2.3em; height: 1.55em; padding: 0 .4em;
+  font: 500 .66em/1 'IBM Plex Mono', monospace; letter-spacing: .08em;
+  background: var(--sheet-ink); color: var(--sheet); border-radius: 3px;
+}
+.vlabel { font: 500 .68em/1 'IBM Plex Mono', monospace; letter-spacing: .16em; text-transform: uppercase; color: var(--sheet-ink-2); }
+.vhead .rule { flex: 1; height: 1px; background: var(--sheet-line); }
+.vhead .meta { font: 400 .66em/1 'IBM Plex Mono', monospace; letter-spacing: .12em; text-transform: uppercase; color: var(--sheet-ink-3); }
+
+h2, h3 { margin: 0; font-weight: 500; letter-spacing: -.025em; }
+.h2 { font-size: 2.05em; line-height: 1.08; margin-bottom: .75em; max-width: 22em; }
+.h2 em, .display em { font-style: normal; color: var(--orange-text); }
+.display { font-size: clamp(2.2em, 6.4cqi, 3.7em); line-height: 1.0; letter-spacing: -.035em; font-weight: 500; margin: .35em 0 .45em; max-width: 13em; }
+.lede { font-size: 1.12em; line-height: 1.6; color: var(--sheet-ink-2); max-width: 36em; margin: 0 0 1.6em; }
+.prose p { font-size: 1.02em; line-height: 1.68; color: var(--sheet-ink-2); margin: 0 0 1.05em; max-width: 38em; }
+.prose p:first-child { color: var(--sheet-ink); }
+.kicker { font: 500 .7em/1.3 'IBM Plex Mono', monospace; letter-spacing: .14em; text-transform: uppercase; color: var(--sheet-ink-3); }
+.kicker .on-orange { color: var(--orange-text); }
+.live-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--orange); margin-right: .8em; vertical-align: .05em; box-shadow: 0 0 0 0 rgba(255,90,31,.45); animation: pulse 2.4s ease-out infinite; }
+@keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(255,90,31,.45); } 70%, 100% { box-shadow: 0 0 0 7px rgba(255,90,31,0); } }
+
+/* selectable item marker (encoder A) */
+[data-item] { position: relative; scroll-margin: 1.5em; }
+.view:not([data-mode="tabs"]) [data-item].sel::before {
+  content: ""; position: absolute; left: -1.25em; top: .25em; bottom: .25em; width: 2px; background: var(--orange); border-radius: 1px;
+}
+
+/* buttons inside sheet — miniature keys */
+.actions { display: flex; flex-wrap: wrap; gap: .7em; }
+.btn {
+  display: inline-flex; align-items: center; gap: .7em;
+  padding: .95em 1.25em .9em;
+  border: 0; border-radius: 8px; cursor: pointer; text-decoration: none;
+  font: 500 .72em/1 'IBM Plex Mono', monospace; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--sheet-ink);
+  background: linear-gradient(180deg, var(--sheet), var(--sheet-2));
+  box-shadow: 0 0 0 1px var(--sheet-line), 0 2px 0 var(--sheet-line), 0 3px 6px -2px rgba(0,0,0,.12);
+  transform: translateY(-1px);
+  transition: transform .07s, box-shadow .07s, background .2s;
+}
+.btn:hover { background: var(--sheet-2); }
+.btn:active { transform: translateY(1px); box-shadow: 0 0 0 1px var(--sheet-line), 0 0 0 var(--sheet-line); }
+.btn.primary { color: #1d0c04; background: linear-gradient(180deg, var(--o1), var(--o2)); box-shadow: 0 0 0 1px rgba(0,0,0,.12), 0 2px 0 var(--oside), 0 3px 8px -2px rgba(255,90,31,.4); }
+.btn.primary:active { box-shadow: 0 0 0 1px rgba(0,0,0,.12), 0 0 0 var(--oside); }
+.btn.sm { padding: .7em .9em .65em; font-size: .64em; }
+.btn .ar { font-family: 'Inter Tight', sans-serif; font-size: 1.25em; letter-spacing: 0; line-height: .6; }
+
+/* chips — engraved */
+.chips { display: flex; flex-wrap: wrap; gap: .45em; margin: 1.3em 0 0; padding: 0; list-style: none; }
+.chips li {
+  font: 500 .64em/1 'IBM Plex Mono', monospace; letter-spacing: .1em; text-transform: uppercase;
+  padding: .62em .8em .58em; border-radius: 4px;
+  color: var(--sheet-ink-2);
+  background: var(--chip);
+  box-shadow: inset 0 1px 1.5px rgba(0,0,0,.12), 0 1px 0 rgba(255,255,255,.6);
+}
+:root[data-theme="dark"] .chips li { box-shadow: inset 0 1px 2px rgba(0,0,0,.5), 0 1px 0 rgba(255,255,255,.04); }
+
+/* home */
+.home-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2.2em; }
+@container (min-width: 760px) {
+  .home-grid { grid-template-columns: minmax(0, 1fr) 13.5em; align-items: start; }
+}
+.portrait { margin: 0; }
+.portrait .frame {
+  aspect-ratio: 4 / 5; border-radius: 6px; overflow: hidden;
+  background: var(--sheet-2);
+  box-shadow: 0 0 0 1px var(--sheet-line), 0 0 0 6px var(--sheet), 0 0 0 7px var(--sheet-line);
+  margin: 7px;
+}
+.portrait img { width: 100%; height: 100%; object-fit: cover; object-position: center 22%; filter: grayscale(.15) contrast(1.02); }
+.ph { width: 100%; height: 100%; min-height: 100%; display: grid; place-items: center; text-align: center;
+  background: repeating-linear-gradient(135deg, transparent 0 9px, color-mix(in srgb, var(--sheet-line) 55%, transparent) 9px 10px), var(--sheet-2);
+  color: var(--muted, #7a7a72); font: 500 12px/1.5 'IBM Plex Mono', monospace; letter-spacing: .14em; text-transform: uppercase; }
+.photo-fig .frame, .portrait .frame { position: relative; }
+.portrait figcaption { display: flex; justify-content: space-between; margin-top: 1.1em; padding: 0 .4em; }
+.quick {
+  margin-top: 2.6em; display: grid; grid-template-columns: repeat(auto-fit, minmax(13em, 1fr));
+  border-top: 1px solid var(--sheet-line);
+}
+.quick div { padding: 1em 1em 1em 0; border-bottom: 1px solid var(--sheet-line); display: flex; gap: .9em; align-items: baseline; }
+.quick kbd {
+  flex: none; min-width: 3.4em; font: 500 .66em/1 'IBM Plex Mono', monospace; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--sheet-ink); padding: .45em .5em; border-radius: 3px; text-align: center;
+  box-shadow: inset 0 0 0 1px var(--sheet-line);
+}
+.quick span { font-size: .88em; color: var(--sheet-ink-2); }
+
+/* spec tiles (about) */
+.spec { margin-top: 2em; border-top: 1px solid var(--sheet-ink); }
+.spec-h { display: flex; justify-content: space-between; padding: .8em 0; border-bottom: 1px solid var(--sheet-line); }
+.spec-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@container (min-width: 680px) { .spec-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.spec-cell { padding: 1.1em 1.1em 1.2em 0; border-bottom: 1px solid var(--sheet-line); }
+.spec-cell + .spec-cell { padding-left: 1.1em; border-left: 1px solid var(--sheet-line); }
+@container (max-width: 679px) { .spec-cell:nth-child(3) { padding-left: 0; border-left: 0; } }
+.spec-cell .k { font: 500 .62em/1 'IBM Plex Mono', monospace; letter-spacing: .14em; text-transform: uppercase; color: var(--sheet-ink-3); }
+.spec-cell .v { font-size: 2.1em; font-weight: 500; letter-spacing: -.035em; line-height: 1; margin: .55em 0 .35em; }
+.spec-cell .v small { font-size: .55em; color: var(--orange-text); letter-spacing: 0; margin-left: .05em; }
+.spec-cell .d { font-size: .82em; color: var(--sheet-ink-2); line-height: 1.4; }
+.spec-cell .d a { color: var(--sheet-ink); text-decoration: underline; text-underline-offset: .2em; text-decoration-thickness: 1px; text-decoration-color: var(--orange); }
+
+/* tabs (experience/projects) */
+.tabs { display: grid; border-top: 1px solid var(--sheet-ink); margin-bottom: 2em; }
+.tab {
+  display: grid; grid-template-columns: 2.6em minmax(0, 1fr) auto; align-items: baseline; gap: .8em;
+  width: 100%; padding: .95em .2em; text-align: left; cursor: pointer;
+  background: none; border: 0; border-bottom: 1px solid var(--sheet-line);
+  position: relative; transition: background .15s;
+}
+.tab:hover { background: var(--sheet-2); }
+.tab .n { font: 500 .68em/1 'IBM Plex Mono', monospace; letter-spacing: .08em; color: var(--sheet-ink-3); }
+.tab .t { font-size: 1.02em; font-weight: 500; letter-spacing: -.01em; color: var(--sheet-ink-2); }
+.tab .m { font: 400 .64em/1.2 'IBM Plex Mono', monospace; letter-spacing: .1em; text-transform: uppercase; color: var(--sheet-ink-3); text-align: right; }
+.tab[aria-selected="true"] .t { color: var(--sheet-ink); }
+.tab[aria-selected="true"] .n { color: var(--orange-text); }
+.tab[aria-selected="true"]::before { content: ""; position: absolute; left: -1.25em; top: .8em; bottom: .8em; width: 2px; background: var(--orange); }
+.tab:focus-visible { outline-offset: -2px; border-radius: 2px; }
+.tabs.two { grid-template-columns: 1fr 1fr; column-gap: 1.6em; }
+.tabs.two .tab::before { left: 0 !important; top: auto !important; bottom: -1px !important; width: auto !important; right: 0; height: 2px; }
+
+@container (max-width: 560px) {
+  .tab { grid-template-columns: 2.4em minmax(0, 1fr); row-gap: .35em; }
+  .tab .m { grid-column: 2; text-align: left; }
+}
+.split { display: grid; grid-template-columns: minmax(0, 1fr); }
+@container (min-width: 820px) {
+  .split { grid-template-columns: 15.5em minmax(0, 1fr); gap: 2.6em; align-items: start; }
+  .split .tabs { margin-bottom: 0; position: sticky; top: 0; }
+  .split .tab { grid-template-columns: 2.4em minmax(0, 1fr); }
+  .split .tab .m { grid-column: 2; text-align: left; margin-top: .3em; }
+}
+.pane h3 { font-size: 1.85em; line-height: 1.1; margin: .45em 0 .2em; }
+.pane h3 .mut { color: var(--sheet-ink-3); }
+.pane h3 .sub { display: block; margin-top: .3em; font-size: .6em; line-height: 1.25; letter-spacing: -.01em; }
+.pane .hook { font-size: 1.22em; line-height: 1.38; letter-spacing: -.015em; color: var(--sheet-ink); margin: .85em 0 0; max-width: 30em; }
+.contact-sub { margin: -.6em 0 1.4em; }
+.contact-actions { margin: 0 0 2em; }
+.pane .desc { font-size: 1.02em; line-height: 1.68; color: var(--sheet-ink-2); margin: 1.1em 0 0; max-width: 40em; }
+.pane .desc code { font: 400 .86em/1 'IBM Plex Mono', monospace; color: var(--sheet-ink); background: var(--sheet-2); padding: .12em .35em; border-radius: 3px; box-shadow: inset 0 0 0 1px var(--sheet-line); }
+.rows { margin: 1.4em 0 0; border-top: 1px solid var(--sheet-line); }
+.rows div { display: grid; grid-template-columns: 8.5em minmax(0, 1fr); gap: 1em; padding: .7em 0; border-bottom: 1px solid var(--sheet-line); }
+.rows dt { font: 500 .64em/1.9 'IBM Plex Mono', monospace; letter-spacing: .14em; text-transform: uppercase; color: var(--sheet-ink-3); }
+.rows dd { margin: 0; font-size: .95em; }
+.bullets { list-style: none; margin: 1.6em 0 0; padding: 0; counter-reset: b; max-width: 42em; }
+.bullets li { counter-increment: b; position: relative; padding: .75em 0 .75em 3em; border-top: 1px solid var(--sheet-line); font-size: .95em; line-height: 1.6; color: var(--sheet-ink-2); }
+.bullets li:last-child { border-bottom: 1px solid var(--sheet-line); }
+.bullets li::before { content: counter(b, decimal-leading-zero); position: absolute; left: 0; top: 1.15em; font: 500 .66em/1 'IBM Plex Mono', monospace; letter-spacing: .08em; color: var(--sheet-ink-3); }
+.callout { display: grid; grid-template-columns: 7.5em minmax(0, 1fr); gap: 1em; margin: 1.5em 0 0; padding: 1em 1.2em; border-radius: 6px; background: var(--sheet-2); box-shadow: inset 0 0 0 1px var(--sheet-line); max-width: 40em; }
+.callout .k { font: 500 .64em/1.9 'IBM Plex Mono', monospace; letter-spacing: .14em; text-transform: uppercase; color: var(--orange-text); }
+.callout .t { font-size: 1.04em; line-height: 1.5; }
+.callout + .callout { margin-top: .6em; }
+.callout.credit { background: transparent; }
+.callout.credit .k { color: var(--sheet-ink-3); }
+.callout.credit .t { font-size: .92em; color: var(--sheet-ink-2); }
+.callout a { color: var(--sheet-ink); text-decoration: underline; text-underline-offset: .2em; text-decoration-thickness: 1px; text-decoration-color: var(--orange); }
+.pane .note { margin-top: 1.1em; max-width: 52em; }
+.pane .actions { margin-top: 1.6em; }
+
+/* toolkit — 3 column spec table */
+.tk { display: grid; grid-template-columns: minmax(0, 1fr); border-top: 1px solid var(--sheet-ink); }
+@container (min-width: 640px) { .tk { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.tk-col { padding: 0 1.2em 0 0; }
+@container (min-width: 640px) { .tk-col + .tk-col { padding-left: 1.2em; border-left: 1px solid var(--sheet-line); } }
+.tk-col h3 { display: flex; justify-content: space-between; align-items: baseline; font-size: .68em; font-family: 'IBM Plex Mono', monospace; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--sheet-ink-2); padding: 1.15em 0 1.1em; border-bottom: 1px solid var(--sheet-line); }
+.tk-col h3 span { color: var(--sheet-ink-3); }
+.tk-col ul { list-style: none; margin: 0; padding: 0; }
+.tk-col li { display: flex; gap: 1em; align-items: baseline; padding: .85em 0; border-bottom: 1px solid var(--sheet-line); font-size: 1.02em; }
+.tk-col li i { font: normal 500 .62em/1 'IBM Plex Mono', monospace; color: var(--sheet-ink-3); letter-spacing: .06em; }
+.view[data-view="toolkit"] .tk-col.sel::before { left: 0; top: -1px; bottom: auto; width: auto; right: 0; height: 2px; }
+.view[data-view="toolkit"] .tk-col + .tk-col.sel::before { left: 1.2em; }
+.note { margin-top: 1.6em; font: 400 .66em/1.6 'IBM Plex Mono', monospace; letter-spacing: .1em; text-transform: uppercase; color: var(--sheet-ink-3); }
+
+/* words */
+.quote { margin: 0; padding: 1.7em 0 1.8em; border-top: 1px solid var(--sheet-line); display: grid; grid-template-columns: 2.6em minmax(0, 1fr); }
+.quote:first-of-type { border-top-color: var(--sheet-ink); }
+.quote .qm { font-size: 3em; line-height: .8; font-weight: 300; color: var(--orange); }
+.quote blockquote { margin: 0; font-size: 1.28em; line-height: 1.5; font-weight: 300; letter-spacing: -.012em; max-width: 30em; }
+.quote figcaption { grid-column: 2; margin-top: 1.1em; display: flex; flex-wrap: wrap; gap: .4em 1.2em; align-items: baseline; }
+.quote figcaption b { font-weight: 500; font-size: .95em; }
+.quote figcaption span { font: 400 .64em/1 'IBM Plex Mono', monospace; letter-spacing: .12em; text-transform: uppercase; color: var(--sheet-ink-3); }
+
+/* contact */
+.crow { display: grid; grid-template-columns: 7.5em minmax(0, 1fr) auto; gap: 1em; align-items: center; padding: .95em 0; border-bottom: 1px solid var(--sheet-line); }
+.crow:first-of-type { border-top: 1px solid var(--sheet-ink); }
+.crow .l { font: 500 .64em/1 'IBM Plex Mono', monospace; letter-spacing: .14em; text-transform: uppercase; color: var(--sheet-ink-3); }
+.crow .v { font-size: 1.06em; overflow-wrap: anywhere; text-decoration: none; }
+.crow a.v:hover { text-decoration: underline; text-underline-offset: .2em; text-decoration-thickness: 1px; }
+.crow .a { display: flex; gap: .45em; }
+.view[data-view="contact"] .crow.sel::before { top: .9em; bottom: .9em; }
+
+/* photo + cv + keys */
+.photo-fig { margin: 0; max-width: 30em; }
+.photo-fig .frame { aspect-ratio: 572 / 600; border-radius: 6px; overflow: hidden; box-shadow: 0 0 0 1px var(--sheet-line), 0 0 0 10px var(--sheet), 0 0 0 11px var(--sheet-line); margin: 11px; }
+.photo-fig img { width: 100%; height: 100%; object-fit: cover; }
+.photo-fig figcaption { display: flex; justify-content: space-between; gap: 1em; margin-top: 1.4em; }
+.kt { width: 100%; max-width: 40em; border-collapse: collapse; border-top: 1px solid var(--sheet-ink); }
+.kt th, .kt td { text-align: left; padding: .75em 0; border-bottom: 1px solid var(--sheet-line); vertical-align: baseline; }
+.kt th { width: 9em; font: 500 .7em/1 'IBM Plex Mono', monospace; letter-spacing: .08em; }
+.kt th kbd { font: inherit; display: inline-block; min-width: 1.9em; padding: .4em .5em; margin-right: .3em; border-radius: 3px; text-align: center; box-shadow: inset 0 0 0 1px var(--sheet-line); }
+.kt td { font-size: .95em; color: var(--sheet-ink-2); }
+
+.sheet-foot { padding: 0 2.4em 2.2em; display: flex; justify-content: space-between; gap: 1em; flex-wrap: wrap; font: 400 .62em/1 'IBM Plex Mono', monospace; letter-spacing: .14em; text-transform: uppercase; color: var(--sheet-ink-3); }
+
+/* =========================================================
+   responsive
+   ========================================================= */
+@media (max-width: 1180px) {
+  .device { grid-template-columns: 372px minmax(0, 1fr); column-gap: 24px; padding: 0 24px; }
+  .lcd { height: 146px; }
+  .lcd-title { font-size: 40px; } .lcd-title[data-len="m"] { font-size: 33px; } .lcd-title[data-len="l"] { font-size: 28px; }
+  .lcd-sub { font-size: 19px; }
+  .controls { gap: 12px; }
+  .grille { display: none; }
+  .controls { grid-template-columns: auto auto minmax(0, 1fr); }
+  .head-mid { display: none; }
+  .head-mid + .head-right { margin-left: auto; }
+  .foot-loc { display: none; }
+  .keys { gap: 9px; padding: 10px; }
+  .key { padding: 9px 9px 10px 10px; }
+  .key.ico .glyph { font-size: 19px; }
+  .view { padding: 1.8em 2em 2.2em; }
+}
+@media (max-height: 760px) and (min-width: 860px) {
+  .lcd { height: 138px; }
+  .lcd-title { font-size: 38px; }
+}
+
+/* stacked device: tablets & phones */
+@media (max-width: 859px) {
+  body { display: block; padding: 54px 16px 16px; }
+  .device { display: flex; flex-direction: column; height: auto; padding: 0 16px; border-radius: 24px; }
+  .screw.tl, .screw.tr { top: 10px; } .screw.tl { left: 10px; } .screw.tr { right: 10px; }
+  .screw.bl, .screw.br { bottom: 10px; } .screw.bl { left: 10px; } .screw.br { right: 10px; }
+  .dev-head { padding: 18px 10px 14px; gap: 12px; }
+  .brand .silk { display: none; }
+  .head-right { margin-left: auto; gap: 12px; }
+  .left { padding: 16px 0 6px; gap: 16px; }
+  .lcd-wrap { order: 1; } .keys { order: 2; } .controls { order: 3; }
+  .lcd { height: 138px; }
+  .keys { flex: none; grid-template-rows: none; grid-auto-rows: 68px; gap: 8px; padding: 9px; border-radius: 16px; }
+  .key { padding: 9px 9px 9px 10px; border-radius: 10px; }
+  .key .led { top: 9px; right: 9px; width: 5px; height: 5px; }
+  .controls { grid-template-columns: 1fr; gap: 14px; padding: 4px 2px 6px; }
+  .ctrl { flex-direction: column-reverse; align-items: stretch; gap: 8px; }
+  .ctrl .silk { display: flex; justify-content: space-between; }
+  .enc { width: 100%; height: 34px; border-radius: 6px; cursor: pointer; touch-action: pan-y; }
+  .enc:focus-visible { border-radius: 6px; }
+  .enc-ring, .enc-knob, .enc-led { display: none; }
+  .enc-rail { display: block; position: absolute; inset: 0; }
+  .enc-rail::before { content: ""; position: absolute; left: 14px; right: 14px; top: 50%; height: 5px; margin-top: -2.5px; border-radius: 3px; background: #1b1b1a; box-shadow: inset 0 1px 2px rgba(0,0,0,.8), 0 1px 0 var(--body-hi); }
+  .enc-thumb {
+    position: absolute; top: 50%; left: calc(14px + var(--p, 0) * (100% - 28px)); width: 30px; height: 26px; margin: -13px 0 0 -15px; border-radius: 5px;
+    background: repeating-linear-gradient(90deg, var(--metal-1) 0 2px, var(--metal-3) 2px 4px);
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,.25), 0 2px 0 rgba(0,0,0,.25), 0 5px 8px -2px rgba(0,0,0,.3);
+    transition: left .12s cubic-bezier(.3,.7,.3,1);
+  }
+  .enc-thumb::after { content: ""; position: absolute; left: 50%; top: 4px; bottom: 4px; width: 3px; margin-left: -1.5px; border-radius: 1px; background: var(--orange); }
+  .enc.b .enc-thumb::after { background: var(--blue); }
+  .fader { touch-action: pan-y; }
+  .fader-slot { left: 14px; right: 14px; }
+  .fader-cap { left: calc(14px + var(--p) * (100% - 28px)); width: 22px; margin-left: -11px; }
+  .fader-ticks { padding: 0 14px; }
+  .fader-scale { padding: 0 3px 0 5px; }
+  .sheet-wrap { padding: 14px 0 22px; display: block; scroll-margin-top: 12px; }
+  .sheet { min-height: 70vh; }
+  .sheet-bar { padding: 11px 16px; }
+  .to-keys {
+    display: inline-flex; align-items: center; gap: .5em; padding: 6px 9px; border-radius: 5px; border: 0; cursor: pointer;
+    font: inherit; letter-spacing: inherit; color: var(--sheet-ink);
+    background: var(--sheet-2); box-shadow: inset 0 0 0 1px var(--sheet-line);
+  }
+  .sheet-body { overflow: visible; flex: none; }
+  .view { padding: 1.6em 1.25em 2em; }
+  .sheet-foot { padding: 0 1.25em 1.8em; }
+  [data-item].sel::before { left: -.75em !important; }
+  .tab[aria-selected="true"]::before { left: -.75em; }
+  .dev-foot { padding: 12px 10px 20px; }
+  .keymap { display: none; }
+  /* stacked layout scrolls the whole page: pin the pill to the top of the document (inside body's reserved top padding) so it never covers content */
+  .theme-switch { position: absolute; }
+}
+@media (max-width: 520px) {
+  body { padding: 48px 10px 10px; }
+  .theme-switch { top: 10px; right: 10px; font-size: 9.5px; letter-spacing: .1em; }
+  .ts-seg { height: 22px; padding: 0 9px; gap: 6px; }
+  .ts-led { width: 5px; height: 5px; }
+  .device { padding: 0 12px; }
+  .head-right .hr-rev, .head-right .hr-hours, .mini-grille { display: none; }
+  .wordmark { font-size: 17px; }
+  .lcd { height: 128px; }
+  .lcd-screen { padding: 9px 11px 8px; }
+  .lcd-row { font-size: 17px; }
+  .lcd-title { font-size: 34px; } .lcd-title[data-len="m"] { font-size: 29px; } .lcd-title[data-len="l"] { font-size: 25px; }
+  .lcd-sub { font-size: 17px; }
+  .keys { grid-auto-rows: 62px; gap: 7px; padding: 8px; }
+  .key { padding: 8px 7px 9px 8px; }
+  .key .glyph { font-size: 10px; }
+  .key.ico .glyph { font-size: 17px; }
+  .key .led { top: 8px; right: 8px; }
+  .key .ext { top: 7px; right: 19px; font-size: 10px; }
+  .crow { grid-template-columns: minmax(0, 1fr) auto; }
+  .crow .l { grid-column: 1 / -1; }
+  .callout { grid-template-columns: 1fr; gap: .4em; }
+  .rows div { grid-template-columns: 6.5em minmax(0, 1fr); }
+  .tabs.two { grid-template-columns: 1fr; }
+  .tabs.two .tab::before { left: -.75em !important; top: .8em !important; bottom: .8em !important; width: 2px !important; height: auto; right: auto; }
+  .quote { grid-template-columns: 1.8em minmax(0, 1fr); }
+  .quote blockquote { font-size: 1.14em; }
+}
+@media (max-width: 400px) {
+  .keys { gap: 6px; padding: 7px; }
+  .key { padding: 8px 6px 9px 7px; }
+}
+/* short-legend fallback only for very narrow screens where "Experience" cannot fit at 11.5px */
+@media (max-width: 339px) {
+  .key .lab .lg { display: none; } .key .lab .sh { display: inline; }
+}
+@media (min-width: 1700px) {
+  .device { grid-template-columns: 460px minmax(0, 1fr); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition-duration: .01ms !important; }
+  .cursor { opacity: 1; }
+}
 </style>
 </head>
 <body>
 
-<nav id="nav">
-  <div class="container">
-    <a href="#top" class="logo">Shazil <span>Katchhi</span></a>
-    <ul class="nav-links">
-      <li><a href="#about">About</a></li>
-      <li><a href="#experience">Experience</a></li>
-      <li><a href="#projects">Work</a></li>
-      <li><a href="#testimonials">Words</a></li>
-      <li><a href="#contact">Contact</a></li>
-    </ul>
-    <div class="nav-socials">
-      <a href="https://github.com/mrchikoo" target="_blank" rel="noopener" aria-label="GitHub">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.1.79-.25.79-.56v-1.95c-3.2.7-3.87-1.54-3.87-1.54-.52-1.33-1.28-1.68-1.28-1.68-1.04-.72.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.76 2.7 1.25 3.36.96.1-.74.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.29 1.19-3.09-.12-.29-.51-1.46.11-3.04 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.78 0c2.21-1.49 3.18-1.18 3.18-1.18.62 1.58.23 2.75.11 3.04.74.8 1.19 1.83 1.19 3.09 0 4.41-2.69 5.38-5.25 5.67.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56C20.21 21.39 23.5 17.08 23.5 12 23.5 5.65 18.35.5 12 .5z"/></svg>
-      </a>
-      <a href="https://www.linkedin.com/in/shazil-katchhi-7336a6252/" target="_blank" rel="noopener" aria-label="LinkedIn">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.36V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z"/></svg>
-      </a>
+<a class="theme-switch" id="themeSwitch" href="vision.html" aria-label="Switch theme to visionOS" aria-keyshortcuts="V" title="Switch to visionOS theme (V)">
+  <span class="ts-seg on" aria-hidden="true"><span class="ts-led"></span>TE</span><span class="ts-seg off" aria-hidden="true"><span class="ts-led"></span>Vision</span>
+</a>
+
+<div class="device" id="device">
+  <span class="screw tl" aria-hidden="true"></span><span class="screw tr" aria-hidden="true"></span>
+  <span class="screw bl" aria-hidden="true"></span><span class="screw br" aria-hidden="true"></span>
+
+  <header class="dev-head">
+    <div class="brand">
+      <span class="pwr" aria-hidden="true"></span>
+      <h1 class="wordmark">shazil katchhi</h1>
+      <span class="silk">AI / ML / Edge</span>
     </div>
-  </div>
-</nav>
-
-<!-- HERO -->
-<header class="hero" id="top">
-  <div class="container">
-    <div class="hero-grid">
-      <div class="hero-content">
-        <div class="hero-meta">Berlin, Germany — Available 15–20 hrs/week</div>
-        <h1>Building <em>intelligent</em><br>systems that<br>see &amp; understand.</h1>
-        <p class="hero-tagline">M.Sc. Artificial Intelligence at BTU Cottbus-Senftenberg. I work at the intersection of deep learning, computer vision, and real-world deployment — turning research into things that work.</p>
-        <div class="hero-cta">
-          <a href="#projects" class="btn btn-primary">
-            View Work <span class="arrow">→</span>
-          </a>
-          <a href="Shazil_Katchhi_CV.pdf" class="btn btn-secondary" download>
-            Download CV ↓
-          </a>
-        </div>
-      </div>
-
-      <div class="hero-visual" aria-hidden="true">
-        <div class="hero-portrait">
-          <img src="assets/profile.jpg" alt="Shazil Katchhi" loading="eager" />
-        </div>
-        <div class="hero-card hero-card-1">
-          <div class="label">// research</div>
-          <div class="value">91%</div>
-          <div>IEEE Xplore<br>gesture accuracy</div>
-        </div>
-        <div class="hero-card hero-card-2">
-          <div class="label">// recognition</div>
-          <div class="value">Top 5</div>
-          <div>Smart India Hackathon<br>National Finalist</div>
-        </div>
-      </div>
+    <span class="silk head-mid" aria-hidden="true">Designed in Berlin</span>
+    <div class="head-right" aria-hidden="true">
+      <span class="silk hr-hours"><b>15–20</b> h/wk</span>
+      <span class="silk">Model <b>SK-01</b></span>
+      <span class="silk hr-rev">Rev 2026</span>
+      <span class="mini-grille"></span>
     </div>
-  </div>
-</header>
+  </header>
 
-<!-- ABOUT -->
-<section class="about" id="about">
-  <div class="container">
-    <div class="section-label">01 — About</div>
-    <h2 class="section-title reveal">A practitioner with a <em>research</em> instinct.</h2>
-
-    <div class="about-grid reveal">
-      <div class="about-text">
-        <p>I'm a Master's student in Artificial Intelligence at Brandenburg University of Technology, having completed my Bachelor's in Computer Science & Engineering with a specialisation in AI & ML at the University of Mumbai.</p>
-        <p>My work spans deep learning for computer vision and NLP, embedded ML on edge devices, and the unglamorous-but-essential work of building data pipelines that hold up under real conditions. I'm drawn to problems where ML meets physical systems — manufacturing, sensors, hardware-in-the-loop.</p>
-        <p>I'm currently looking for working-student opportunities in Germany where I can contribute to applied AI research and industrial machine learning.</p>
-      </div>
-
-      <div>
-        <div class="about-stats">
-          <div class="stat">
-            <div class="stat-label">Publication</div>
-            <div class="stat-value"><em>IEEE</em></div>
-            <div class="stat-detail">Co-author, Xplore ESCI 2025</div>
-          </div>
-          <div class="stat">
-            <div class="stat-label">Accuracy</div>
-            <div class="stat-value">91<em>%</em></div>
-            <div class="stat-detail">Gesture recognition pipeline</div>
-          </div>
-          <div class="stat">
-            <div class="stat-label">Languages</div>
-            <div class="stat-value">4</div>
-            <div class="stat-detail">EN · DE · HI · UR</div>
-          </div>
-          <div class="stat">
-            <div class="stat-label">Leadership</div>
-            <div class="stat-value"><em>Chair</em></div>
-            <div class="stat-detail">IEEE MHSSCE Chapter</div>
+  <!-- ============ LEFT: display, controls, keys ============ -->
+  <div class="left">
+    <div class="lcd-wrap">
+      <div class="lcd-bezel">
+        <div class="lcd" id="lcd" title="Display">
+          <div class="lcd-screen" aria-hidden="true">
+            <div class="lcd-row"><span id="lcdSec">00 HOME</span><span class="grow"></span><span class="lcd-inv" id="lcdMode">RDY</span><span id="lcdCount">--/--</span></div>
+            <div class="lcd-title" id="lcdTitleBox"><span id="lcdTitle">SK-01</span><span class="cursor"></span></div>
+            <div class="lcd-sub" id="lcdSub">&nbsp;</div>
+            <div class="lcd-row"><span class="segs" id="lcdSegs"></span><span class="meter"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span><span id="lcdStat">SZ M</span></div>
           </div>
         </div>
       </div>
+      <div class="lcd-labels" aria-hidden="true"><span class="silk">Display</span><span class="silk">128 × 48 dot</span></div>
+    </div>
+    <div class="sr-only" aria-live="polite" aria-atomic="true" id="live"></div>
+
+    <div class="controls">
+      <div class="ctrl">
+        <div class="enc a" id="encA" role="slider" tabindex="0" aria-label="Encoder A — select item" aria-valuemin="1" aria-valuemax="1" aria-valuenow="1">
+          <span class="enc-ring" aria-hidden="true"></span>
+          <span class="enc-led" aria-hidden="true"></span>
+          <span class="enc-knob" aria-hidden="true"><span class="enc-skirt"></span><span class="enc-cap"></span><span class="enc-rot"></span></span>
+          <span class="enc-rail" aria-hidden="true"><span class="enc-thumb"></span></span>
+        </div>
+        <span class="silk" aria-hidden="true"><span>A · Select</span></span>
+      </div>
+      <div class="ctrl">
+        <div class="enc b" id="encB" role="slider" tabindex="0" aria-label="Encoder B — scroll content" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="Top">
+          <span class="enc-ring" aria-hidden="true"></span>
+          <span class="enc-led" aria-hidden="true"></span>
+          <span class="enc-knob" aria-hidden="true"><span class="enc-skirt"></span><span class="enc-cap"></span><span class="enc-rot"></span></span>
+          <span class="enc-rail" aria-hidden="true"><span class="enc-thumb"></span></span>
+        </div>
+        <span class="silk" aria-hidden="true"><span>B · Scroll</span></span>
+      </div>
+      <div class="ctrl fader-ctrl">
+        <div class="fader-scale" aria-hidden="true" id="faderScale"><span>S</span><span class="on">M</span><span>L</span><span>XL</span></div>
+        <div class="fader" id="fader" role="slider" tabindex="0" aria-label="Text size" aria-valuemin="1" aria-valuemax="4" aria-valuenow="2" aria-valuetext="Medium">
+          <span class="fader-slot" aria-hidden="true"></span>
+          <span class="fader-cap" aria-hidden="true"></span>
+        </div>
+        <div class="fader-ticks" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+        <span class="silk" aria-hidden="true" style="text-align:center"><span>Size</span></span>
+      </div>
+      <span class="grille" aria-hidden="true"></span>
     </div>
 
-    <!-- SKILLS -->
-    <div class="skills-section reveal">
-      <div class="section-label">Toolkit</div>
-      <div class="skills-grid">
-        <div class="skill-group">
-          <h4>// Languages</h4>
-          <ul>
-            <li>Python</li>
-            <li>C / C++</li>
-            <li>JavaScript</li>
-            <li>SQL · R</li>
-          </ul>
-        </div>
-        <div class="skill-group">
-          <h4>// ML & Data</h4>
-          <ul>
-            <li>TensorFlow · PyTorch</li>
-            <li>Scikit-learn · Keras</li>
-            <li>OpenCV · MediaPipe</li>
-            <li>Pandas · NumPy</li>
-          </ul>
-        </div>
-        <div class="skill-group">
-          <h4>// Methods & Tools</h4>
-          <ul>
-            <li>Computer Vision · NLP</li>
-            <li>Deep Learning · Transformers</li>
-            <li>Embedded ML · Raspberry Pi</li>
-            <li>Git · Jupyter · Node-RED</li>
-          </ul>
-        </div>
-      </div>
-    </div>
+    <nav class="keys" id="keys" aria-label="Device keys">
+      <button class="key" style="--i:0"  data-act="view" data-view="about"      data-k="1" aria-keyshortcuts="1"><span class="led"></span><span class="glyph">1</span><span class="lab">About</span></button>
+      <button class="key" style="--i:1"  data-act="view" data-view="experience" data-k="2" aria-keyshortcuts="2"><span class="led"></span><span class="glyph">2</span><span class="lab"><span class="lg">Experience</span><span class="sh">Exp.</span></span></button>
+      <button class="key" style="--i:2"  data-act="view" data-view="projects"   data-k="3" aria-keyshortcuts="3"><span class="led"></span><span class="glyph">3</span><span class="lab">Projects</span></button>
+      <button class="key" style="--i:3"  data-act="view" data-view="toolkit"    data-k="4" aria-keyshortcuts="4"><span class="led"></span><span class="glyph">4</span><span class="lab">Toolkit</span></button>
+      <button class="key" style="--i:4"  data-act="view" data-view="words"      data-k="5" aria-keyshortcuts="5"><span class="led"></span><span class="glyph">5</span><span class="lab">Words</span></button>
+      <button class="key" style="--i:5"  data-act="view" data-view="contact"    data-k="6" aria-keyshortcuts="6"><span class="led"></span><span class="glyph">6</span><span class="lab">Contact</span></button>
+      <button class="key" style="--i:6"  data-act="view" data-view="photo"      data-k="7" aria-keyshortcuts="7"><span class="led"></span><span class="glyph">7</span><span class="lab">Photo</span></button>
+      <button class="key o" style="--i:7" data-act="view" data-view="cv"        data-k="8" aria-keyshortcuts="8"><span class="led"></span><span class="glyph">8</span><span class="lab">CV</span></button>
+
+      <button class="key g ico" style="--i:8"  data-act="prev" data-k="arrowleft" aria-keyshortcuts="ArrowLeft" aria-label="Previous item"><span class="led"></span><span class="glyph" aria-hidden="true">&larr;</span><span class="lab" aria-hidden="true">Prev</span></button>
+      <button class="key g ico" style="--i:9"  data-act="next" data-k="arrowright" aria-keyshortcuts="ArrowRight" aria-label="Next item"><span class="led"></span><span class="glyph" aria-hidden="true">&rarr;</span><span class="lab" aria-hidden="true">Next</span></button>
+      <button class="key g" style="--i:10" data-act="view" data-view="home" data-k="h" aria-keyshortcuts="H Escape"><span class="led"></span><span class="glyph">H</span><span class="lab">Home</span></button>
+      <button class="key g" style="--i:11" data-act="theme" data-k="n" aria-keyshortcuts="N" aria-pressed="false"><span class="led"></span><span class="glyph">N</span><span class="lab">Night</span></button>
+
+      <a class="key o" style="--i:12" href="mailto:skkatchhi61@gmail.com" data-act="link" data-say="MAIL" data-k="m" aria-keyshortcuts="M" aria-label="Email Shazil (M)"><span class="led"></span><span class="glyph" aria-hidden="true">M</span><span class="lab" aria-hidden="true">Mail</span></a>
+      <a class="key" style="--i:13" href="https://github.com/mrchikoo" target="_blank" rel="noopener" data-act="link" data-say="GITHUB" data-k="g" aria-keyshortcuts="G" aria-label="GitHub, opens in new tab (G)"><span class="led"></span><span class="glyph" aria-hidden="true">G</span><span class="lab" aria-hidden="true">GitHub</span><span class="ext" aria-hidden="true">&#8599;</span></a>
+      <a class="key" style="--i:14" href="https://www.linkedin.com/in/shazil-katchhi-7336a6252/" target="_blank" rel="noopener" data-act="link" data-say="LINKEDIN" data-k="l" aria-keyshortcuts="L" aria-label="LinkedIn, opens in new tab (L)"><span class="led"></span><span class="glyph" aria-hidden="true">L</span><span class="lab" aria-hidden="true">LinkedIn</span><span class="ext" aria-hidden="true">&#8599;</span></a>
+      <button class="key" style="--i:15" data-act="view" data-view="keys" data-k="?" aria-keyshortcuts="?"><span class="led"></span><span class="glyph">?</span><span class="lab">Keys</span></button>
+    </nav>
   </div>
-</section>
 
-<!-- EXPERIENCE -->
-<section class="experience" id="experience">
-  <div class="container">
-    <div class="section-label">02 — Experience</div>
-    <h2 class="section-title reveal">Where I've <em>worked.</em></h2>
-
-    <div class="exp-item reveal">
-      <div class="exp-period">
-        <div class="exp-dates">May – Aug 2026</div>
-        <div class="exp-duration">3 months</div>
-      </div>
-      <div class="exp-content">
-        <div class="exp-role">AI Engineering <span>— Intern</span></div>
-        <div class="exp-company">Echocene · Berlin, Germany</div>
-        <p class="exp-desc">Contributed to development of the Echocene platform with hands-on work across data management, databases, backend processing, APIs, and AI-assisted engineering — building and shipping features across the full stack.</p>
-        <ul class="exp-bullets">
-          <li>Worked with SQLite/SQL databases for data storage, retrieval, structuring, and integration with application functionality.</li>
-          <li>Developed Python backend functionality to process and transform data and connect database, API, and application layers.</li>
-          <li>Supported data-processing workflows and API integrations across different components of the platform.</li>
-          <li>Developed and modified TypeScript frontend functionality for interacting with and presenting backend data.</li>
-          <li>Implemented, tested, and debugged features across the database, backend, API, and frontend layers.</li>
-          <li>Worked with application data flows from extraction and processing through storage and presentation — practical experience relevant to ETL and data integration workflows.</li>
-          <li>Used Claude, OpenAI Codex, and other AI-assisted development tools for technical research, debugging, implementation, and exploring data-processing solutions.</li>
-          <li>Contributed to technical documentation and participated in product discussions around platform architecture, workflows, and data management.</li>
-        </ul>
-        <div class="exp-tags">
-          <span class="tag">python</span>
-          <span class="tag">typescript</span>
-          <span class="tag">sql · sqlite</span>
-          <span class="tag">apis</span>
-          <span class="tag">data processing</span>
-          <span class="tag">ai/llm development</span>
-          <span class="tag">claude · codex</span>
-        </div>
-      </div>
+  <!-- ============ RIGHT: e-paper sheet ============ -->
+  <div class="sheet-wrap" id="sheetWrap">
+  <main class="sheet" id="sheet" aria-label="Content">
+    <div class="sheet-bar">
+      <span>SK-01 / <b id="crumb">Home</b></span>
+      <span class="count" id="sheetCount" aria-hidden="true"></span>
+      <button class="to-keys" id="toKeys" type="button">Keys <span aria-hidden="true">&uarr;</span></button>
     </div>
+    <div class="sheet-body" id="sheetBody" tabindex="0" aria-label="Content panel">
 
-    <div class="exp-item reveal">
-      <div class="exp-period">
-        <div class="exp-dates">Feb – May 2024</div>
-        <div class="exp-duration">4 months</div>
-      </div>
-      <div class="exp-content">
-        <div class="exp-role">IoT &amp; Database <span>— Intern</span></div>
-        <div class="exp-company">Skmotiv · Mumbai, India</div>
-        <p class="exp-desc">Prototyped a Raspberry Pi-based IoT module for fuel tanker fleet management — capturing real-time telemetry from live vehicles and building the data layer to store and report on it. First hands-on experience owning a full hardware-to-database pipeline end-to-end.</p>
-        <ul class="exp-bullets">
-          <li>Designed and prototyped a Raspberry Pi-based IoT module capturing real-time GPS, fuel capacity, fuel type, and truck weight before and after fuelling.</li>
-          <li>Implemented a structured SQLite database schema to store, query and report fleet telemetry data.</li>
-          <li>Wrote Python scripts running on embedded Linux for data acquisition and logging.</li>
-          <li>Integrated hardware sensors via the Raspberry Pi GPIO interface; tested under real operating conditions and documented the full pipeline for handover.</li>
-        </ul>
-        <div class="exp-tags">
-          <span class="tag">raspberry pi</span>
-          <span class="tag">python</span>
-          <span class="tag">sqlite</span>
-          <span class="tag">embedded linux</span>
-          <span class="tag">gpio · sensors</span>
-          <span class="tag">iot</span>
+      <!-- HOME -->
+      <section class="view on" data-view="home" data-code="00" data-name="Home" data-lcd-t="SHAZIL KATCHHI" data-lcd-s="AI · ML · BERLIN" aria-labelledby="h-home">
+        <div class="home-grid">
+          <div data-item data-lcd-t="AI / ML / EDGE" data-lcd-s="M.SC. AI · BTU">
+            <div class="kicker"><span class="live-dot" aria-hidden="true"></span>Berlin · Working student · 15–20&nbsp;hrs/week</div>
+            <!-- HEADLINE — defined once, here. To swap, replace the h2 content with another option from the copy deck:
+                 1. Machine learning that runs on <em>real</em> hardware.
+                 2. I build ML systems that <em>see</em>, and the pipelines underneath.   (current)
+                 3. Computer vision, <em>edge</em> ML, and the data that feeds them. -->
+            <h2 class="display" id="h-home">I build ML systems that <em>see</em>, and the pipelines underneath.</h2>
+            <p class="lede">M.Sc. AI student at BTU Cottbus-Senftenberg, based in Berlin. I build computer vision and embedded ML systems, and the data pipelines they depend on.</p>
+            <div class="actions">
+              <button class="btn primary" type="button" data-go="projects">See the work <span class="ar" aria-hidden="true">&rarr;</span></button>
+              <a class="btn" href="Shazil_Katchhi_CV.pdf" download>Download CV <span class="ar" aria-hidden="true">&darr;</span></a>
+            </div>
+          </div>
+          <figure class="portrait" data-item data-lcd-t="PHOTO" data-lcd-s="FIG.01 · BERLIN">
+            <div class="frame"><div class="ph" role="img" aria-label="Photo coming soon"><span>Photo<br>coming soon</span></div></div>
+            <figcaption><span class="kicker">Fig. 01</span><span class="kicker">Berlin</span></figcaption>
+          </figure>
         </div>
-      </div>
-    </div>
-  </div>
-</section>
+        <div class="quick" data-item data-lcd-t="KEY MAP" data-lcd-s="1-8 · A · B">
+          <div><kbd>1–8</kbd><span>Open a section</span></div>
+          <div><kbd>A / ← →</kbd><span>Select an item</span></div>
+          <div><kbd>B / ↑ ↓</kbd><span>Scroll this sheet</span></div>
+          <div><kbd>Fader</kbd><span>Text size</span></div>
+          <div><kbd>N</kbd><span>Night mode</span></div>
+          <div><kbd>Esc</kbd><span>Return home</span></div>
+        </div>
+      </section>
 
-<!-- PROJECTS -->
-<section class="projects" id="projects">
-  <div class="container">
-    <div class="section-label">03 — Selected Work</div>
-    <h2 class="section-title reveal">Research, prototypes, &amp; <em>things that ship.</em></h2>
-
-    <div class="project reveal">
-      <div class="project-num">01</div>
-      <div>
-        <div class="project-meta">Mar 2025 · IEEE Publication</div>
-        <h3 class="project-title">Deep Learning for <em>Gesture-to-Speech</em> Translation</h3>
-        <div class="project-tags">
-          <span class="tag">transformer</span>
-          <span class="tag">cnn</span>
-          <span class="tag">lstm</span>
-          <span class="tag">tensorflow</span>
-          <span class="tag">mediapipe</span>
+      <!-- ABOUT -->
+      <section class="view" data-view="about" data-code="01" data-name="About" data-lcd-t="ABOUT" data-lcd-s="M.SC. AI · BTU" aria-labelledby="h-about">
+        <div class="vhead"><span class="vnum">01</span><span class="vlabel">About</span><span class="rule"></span></div>
+        <h2 class="h2" id="h-about">A practitioner with a <em>research</em> instinct.</h2>
+        <div class="prose">
+          <p data-item data-lcd-t="M.SC. AI · BTU" data-lcd-s="B.ENG. · MUMBAI">I'm studying for an M.Sc. in Artificial Intelligence at BTU Cottbus-Senftenberg. Before that I did a B.Eng. in Computer Science &amp; Engineering (AI &amp; ML) at the University of Mumbai.</p>
+          <p data-item data-lcd-t="CV · NLP · EDGE" data-lcd-s="DATA PIPELINES">I work on deep learning for vision and language, ML on edge devices, and the unglamorous data pipelines that keep it all running. I like problems where ML meets the physical world: sensors, manufacturing, hardware-in-the-loop.</p>
+          <p data-item data-lcd-t="OPEN TO WORK" data-lcd-s="15-20 HRS/WEEK">Now looking for a working-student role in Germany, in applied AI research or industrial ML.</p>
         </div>
-      </div>
-      <div>
-        <p class="project-desc">Designed and trained an end-to-end deep-learning pipeline for real-time Indian Sign Language recognition. Combined Transformer, CNN (ResNet) and LSTM architectures, built the full data-processing pipeline with MediaPipe feature extraction, and integrated NLP with text-to-speech for multilingual output.</p>
-        <div class="project-highlight">
-          <div class="project-highlight-label">Outcome</div>
-          <div class="project-highlight-text">91% gesture-detection accuracy. Published on IEEE Xplore (ESCI 2025).</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="project reveal">
-      <div class="project-num">02</div>
-      <div>
-        <div class="project-meta">Dec 2024 – Mar 2025 · National Hackathon</div>
-        <h3 class="project-title">Wearable <em>Translation Device</em></h3>
-        <div class="project-tags">
-          <span class="tag">vision transformer</span>
-          <span class="tag">embedded ml</span>
-          <span class="tag">raspberry pi</span>
-          <span class="tag">edge inference</span>
-        </div>
-      </div>
-      <div>
-        <p class="project-desc">An embedded ML system combining ViT, CNN and LSTM models with MediaPipe pose estimation, deployed on Raspberry Pi with low-latency inference. Coordinated a small interdisciplinary team across hardware integration, model deployment and user-facing output.</p>
-        <div class="project-highlight">
-          <div class="project-highlight-label">Recognition</div>
-          <div class="project-highlight-text">Top 5 nationally — Smart India Hackathon, Government of India.</div>
-        </div>
-        <a href="https://github.com/mrchikoo/Sign-Language-to-speech-TPP-FPP-" target="_blank" rel="noopener" class="project-link">
-          View on GitHub <span class="arrow">↗</span>
-        </a>
-      </div>
-    </div>
-
-    <div class="project reveal">
-      <div class="project-num">03</div>
-      <div>
-        <div class="project-meta">2025 · Generative AI</div>
-        <h3 class="project-title"><em>TEXTURA</em> — Prompt-Based Image Generation</h3>
-        <div class="project-tags">
-          <span class="tag">diffusion</span>
-          <span class="tag">generative ai</span>
-          <span class="tag">fine-tuning</span>
-          <span class="tag">vision-language</span>
-        </div>
-      </div>
-      <div>
-        <p class="project-desc">A text-to-image pipeline using diffusion models fine-tuned on a custom dataset, integrating advanced language–vision models for context-aware generation with enhanced realism and creativity. Built with a user-facing interface for real-time prompt-to-image workflows.</p>
-        <a href="https://github.com/mrchikoo/Gen_Ai" target="_blank" rel="noopener" class="project-link">
-          View on GitHub <span class="arrow">↗</span>
-        </a>
-      </div>
-    </div>
-
-    <div class="project reveal">
-      <div class="project-num">04</div>
-      <div>
-        <div class="project-meta">Mar 2024 · Computer Vision</div>
-        <h3 class="project-title">Real-time <em>Object Detection</em></h3>
-        <div class="project-tags">
-          <span class="tag">opencv</span>
-          <span class="tag">tensorflow</span>
-          <span class="tag">computer vision</span>
-          <span class="tag">inference</span>
-        </div>
-      </div>
-      <div>
-        <p class="project-desc">A high-accuracy real-time object detection model built in Python using OpenCV and TensorFlow, with deep-learning-based recognition. Optimised for inference performance and deployable on standard hardware.</p>
-        <a href="https://github.com/mrchikoo/Object_detection" target="_blank" rel="noopener" class="project-link">
-          View on GitHub <span class="arrow">↗</span>
-        </a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- TESTIMONIALS -->
-<section class="testimonials" id="testimonials">
-  <div class="container">
-    <div class="section-label">04 — Words</div>
-    <h2 class="section-title reveal">What others have <em>said.</em></h2>
-
-    <div class="testimonial-grid">
-      <div class="testimonial reveal">
-        <p class="testimonial-text">Shazil's thirst for knowledge is evident in his proactive approach to learning. He has consistently demonstrated profound leadership and proved himself to be a true team player. His curious mind and good interpretation abilities will significantly facilitate research work.</p>
-        <div class="testimonial-author">
-          <div class="testimonial-name">Prof. Amar Pawade</div>
-          <div class="testimonial-role">Asst. Professor, CSE · MHSSCE</div>
-        </div>
-      </div>
-
-      <div class="testimonial reveal">
-        <p class="testimonial-text">He is not only gifted with excellent grasping powers and technical skills but is also adept at putting in the required hard work to transform his talent into tangible results. I give him my highest recommendation.</p>
-        <div class="testimonial-author">
-          <div class="testimonial-name">Prof. Tarannum Shaikh</div>
-          <div class="testimonial-role">Asst. Professor, CSE · MHSSCE</div>
-        </div>
-      </div>
-
-      <div class="testimonial reveal">
-        <p class="testimonial-text">Your selfless commitment, leadership, and passion have been truly invaluable in driving the success of our initiatives and fostering an environment of innovation, collaboration, and growth.</p>
-        <div class="testimonial-author">
-          <div class="testimonial-name">IEEE Committee</div>
-          <div class="testimonial-role">MHSSCE Student Chapter</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- CONTACT -->
-<section class="contact" id="contact">
-  <div class="container">
-    <div class="section-label">05 — Get in touch</div>
-    <div class="contact-grid">
-      <div>
-        <h2 class="contact-headline reveal">Let's build<br>something <em>worth</em><br>building.</h2>
-      </div>
-      <div class="contact-info reveal">
-        <div class="contact-item">
-          <div class="contact-label">Email</div>
-          <a href="mailto:skkatchhi61@gmail.com" class="contact-value">
-            skkatchhi61@gmail.com <span class="arrow">↗</span>
-          </a>
-        </div>
-        <div class="contact-item">
-          <div class="contact-label">Phone</div>
-          <a href="tel:+491631351465" class="contact-value">
-            +49 163 135 1465 <span class="arrow">↗</span>
-          </a>
-        </div>
-        <div class="contact-item">
-          <div class="contact-label">Location</div>
-          <span class="contact-value">Berlin, Germany</span>
-        </div>
-        <div class="contact-item">
-          <div class="contact-label">Elsewhere</div>
-          <div style="display: flex; gap: 1.5rem; margin-top: 0.5rem;">
-            <a href="https://www.linkedin.com/in/shazil-katchhi-7336a6252/" target="_blank" rel="noopener" class="contact-value" style="font-size: 1rem;">LinkedIn <span class="arrow">↗</span></a>
-            <a href="https://github.com/mrchikoo" target="_blank" rel="noopener" class="contact-value" style="font-size: 1rem;">GitHub <span class="arrow">↗</span></a>
+        <div class="spec" data-item data-lcd-t="SPEC SHEET" data-lcd-s="IEEE · 91% · 4LG">
+          <div class="spec-h"><span class="kicker">Specifications</span><span class="kicker">SK-01</span></div>
+          <div class="spec-grid">
+            <div class="spec-cell"><div class="k">Published</div><div class="v">IEEE</div><div class="d">Co-author · <a href="https://ieeexplore.ieee.org/document/10988379" target="_blank" rel="noopener">IEEE Xplore<span class="sr-only"> (opens in new tab)</span></a> (ESCI 2025)</div></div>
+            <div class="spec-cell"><div class="k">Gesture accuracy</div><div class="v">91<small>%</small></div><div class="d">Sign-language recognition pipeline</div></div>
+            <div class="spec-cell"><div class="k">Languages</div><div class="v">4</div><div class="d">EN · DE · HI · UR</div></div>
+            <div class="spec-cell"><div class="k">IEEE Student Chapter</div><div class="v">Chair</div><div class="d">MHSSCE</div></div>
           </div>
         </div>
-      </div>
-    </div>
-  </div>
-</section>
+      </section>
 
-<footer>
-  <div class="container">
-    <div class="footer-text">© 2026 Shazil Katchhi · Designed &amp; built with care</div>
-    <div class="footer-text">Berlin → Worldwide</div>
+      <!-- EXPERIENCE -->
+      <section class="view" data-view="experience" data-mode="tabs" data-code="02" data-name="Experience" data-lcd-t="EXPERIENCE" data-lcd-s="2 UNITS 2024-26" aria-labelledby="h-exp">
+        <div class="vhead"><span class="vnum">02</span><span class="vlabel" id="h-exp">Experience</span><span class="rule"></span><span class="meta">2 units</span></div>
+        <div class="tabs two" role="tablist" aria-label="Roles">
+          <button class="tab" role="tab" id="t-e1" aria-controls="e1" aria-selected="true" data-tab="0"><span class="n">U1</span><span class="t">Echocene</span><span class="m">May–Aug 2026</span></button>
+          <button class="tab" role="tab" id="t-e2" aria-controls="e2" aria-selected="false" data-tab="1" tabindex="-1"><span class="n">U2</span><span class="t">Skmotiv</span><span class="m">Feb–May 2024</span></button>
+        </div>
+        <article class="pane" id="e1" role="tabpanel" aria-labelledby="t-e1" data-item data-lcd-t="ECHOCENE" data-lcd-s="AI ENG · 2026">
+          <div class="kicker">May–Aug 2026 · 3 months</div>
+          <h3>AI Engineering Intern <span class="mut sub">Echocene · Berlin</span></h3>
+          <dl class="rows">
+            <div><dt>Company</dt><dd>Echocene</dd></div>
+            <div><dt>Location</dt><dd>Berlin, Germany</dd></div>
+            <div><dt>Period</dt><dd>May–Aug 2026 (3 months)</dd></div>
+          </dl>
+          <p class="desc">Shipped fixes and features across the Echocene platform's Python backend, SQL data layer, APIs and TypeScript frontend, plus code review and data-quality work.</p>
+          <ol class="bullets">
+            <li>Swept bugs across five platform modules: fixed a cold-navigation crash, added empty states and a &ldquo;not assessed&rdquo; EPC fallback, and removed placeholder values leaking into the UI.</li>
+            <li>Unified the visual theme across 8 screens and wrote its style guide; moved Settings, User Management and Help from the sidebar into the account dropdown.</li>
+            <li>Replaced internal priority codes with plain-language labels (Immediate, Examine now, Plan next, Monitor, Clarify data) across the ranking list, portfolio map, heatmap and dossier header.</li>
+            <li>Built an implausible-date warning with unit tests (e.g. a 1950 certificate on a 1986 building), fixed benchmark-chart rounding and backfilled a missing energy-index field from EPC data.</li>
+            <li>Validated an energy-data field mapping: 201/201 fields passed and unknown energy-carrier values fell from 55 to 7. Reviewed and approved 4 teammate pull requests.</li>
+            <li>Worked across a Python backend, SQLite/SQL data layer, APIs and TypeScript frontend with Claude and Codex; wrote handoff reports with before/after screenshots.</li>
+          </ol>
+          <ul class="chips" aria-label="Tags"><li>python</li><li>typescript</li><li>sql · sqlite</li><li>apis</li><li>ui · theming</li><li>data quality</li><li>unit tests</li><li>code review</li><li>claude · codex</li></ul>
+        </article>
+        <article class="pane" id="e2" role="tabpanel" aria-labelledby="t-e2" data-item data-lcd-t="SKMOTIV" data-lcd-s="IOT + DB · 2024" hidden>
+          <div class="kicker">Feb–May 2024 · 4 months</div>
+          <h3>IoT &amp; Database Intern <span class="mut sub">Skmotiv · Mumbai</span></h3>
+          <dl class="rows">
+            <div><dt>Company</dt><dd>Skmotiv</dd></div>
+            <div><dt>Location</dt><dd>Mumbai, India</dd></div>
+            <div><dt>Period</dt><dd>Feb–May 2024 (4 months)</dd></div>
+          </dl>
+          <p class="desc">Prototyped a Raspberry Pi IoT module for fuel-tanker fleet management, from live-vehicle sensors to a reporting database. My first hardware-to-database pipeline, owned end to end.</p>
+          <ol class="bullets">
+            <li>Designed and prototyped a Raspberry Pi module that captures real-time GPS, fuel capacity, fuel type, and truck weight before and after fuelling.</li>
+            <li>Integrated hardware sensors over GPIO and wrote Python acquisition and logging scripts on embedded Linux.</li>
+            <li>Built a structured SQLite schema to store, query and report fleet telemetry.</li>
+            <li>Tested under real operating conditions and documented the full pipeline for handover.</li>
+          </ol>
+          <ul class="chips" aria-label="Tags"><li>raspberry pi</li><li>python</li><li>sqlite</li><li>embedded linux</li><li>gpio · sensors</li><li>iot</li></ul>
+        </article>
+      </section>
+
+      <!-- PROJECTS -->
+      <section class="view" data-view="projects" data-mode="tabs" data-code="03" data-name="Projects" data-lcd-t="PROJECTS" data-lcd-s="6 SELECTED" aria-labelledby="h-proj">
+        <div class="vhead"><span class="vnum">03</span><span class="vlabel" id="h-proj">Projects</span><span class="rule"></span><span class="meta">6 selected · newest first</span></div>
+        <div class="split">
+          <div class="tabs" role="tablist" aria-label="Projects">
+            <button class="tab" role="tab" id="t-p1" aria-controls="p1" aria-selected="true" data-tab="0"><span class="n">01</span><span class="t">Ghenghis Khan</span><span class="m">Desktop software · 2026</span></button>
+            <button class="tab" role="tab" id="t-p2" aria-controls="p2" aria-selected="false" data-tab="1" tabindex="-1"><span class="n">02</span><span class="t">iPhone OS 1.0, back online</span><span class="m">Reverse engineering · 2026</span></button>
+            <button class="tab" role="tab" id="t-p3" aria-controls="p3" aria-selected="false" data-tab="2" tabindex="-1"><span class="n">03</span><span class="t">Gesture-to-Speech</span><span class="m">IEEE publication · 2025</span></button>
+            <button class="tab" role="tab" id="t-p4" aria-controls="p4" aria-selected="false" data-tab="3" tabindex="-1"><span class="n">04</span><span class="t">Wearable Translation Device</span><span class="m">National hackathon · 2025</span></button>
+            <button class="tab" role="tab" id="t-p5" aria-controls="p5" aria-selected="false" data-tab="4" tabindex="-1"><span class="n">05</span><span class="t">TEXTURA</span><span class="m">Generative AI · 2025</span></button>
+            <button class="tab" role="tab" id="t-p6" aria-controls="p6" aria-selected="false" data-tab="5" tabindex="-1"><span class="n">06</span><span class="t">Real-time Object Detection</span><span class="m">Computer vision · 2024</span></button>
+          </div>
+          <div>
+            <article class="pane" id="p1" role="tabpanel" aria-labelledby="t-p1" data-item data-lcd-t="GHENGHIS KHAN" data-lcd-s="LOCAL PDF KIT">
+              <div class="kicker">Oct 2026 · Desktop software</div>
+              <h3>Ghenghis Khan <span class="mut sub">Local PDF &amp; document toolkit</span></h3>
+              <p class="hook">A full PDF toolkit for macOS. Your files never leave.</p>
+              <ul class="chips" aria-label="Tags"><li>python</li><li>pyqt6</li><li>pypdf</li><li>pdf2docx</li><li>ghostscript</li><li>libreoffice</li><li>macos</li></ul>
+              <p class="desc">Converts Word, Excel, PowerPoint, ODF, text, HTML and images to PDF, and turns PDFs back into Word, text or one image per page. Merges with drag-to-reorder, removes page ranges, splices PDFs, and compresses with four Ghostscript tiers that keep text sharp.</p>
+              <div class="callout"><span class="k">Highlight</span><span class="t">Nothing leaves your Mac. No accounts, no uploads, no telemetry.</span></div>
+              <div class="callout credit"><span class="k">Detail</span><span class="t">Drag files onto any panel. One install script sets up Python, LibreOffice and Ghostscript via Homebrew.</span></div>
+              <div class="actions"><a class="btn" href="https://github.com/mrchikoo/Ghenghis-Khan" target="_blank" rel="noopener">View on GitHub <span class="ar" aria-hidden="true">&#8599;</span></a></div>
+            </article>
+            <article class="pane" id="p2" role="tabpanel" aria-labelledby="t-p2" data-item data-lcd-t="IPHONE OS 1.0" data-lcd-s="WI-FI · 22 TESTS" hidden>
+              <div class="kicker">Oct 2026 · Systems / Reverse engineering</div>
+              <h3>iPhone OS 1.0, back online <span class="mut sub">iPhone 2G emulation with Wi-Fi</span></h3>
+              <p class="hook">Getting a 2007 iPhone emulator onto today's internet.</p>
+              <ul class="chips" aria-label="Tags"><li>emulation</li><li>reverse engineering</li><li>python</li><li>webassembly</li><li>wat</li><li>javascript</li><li>networking</li><li>sdio</li><li>tcp/ip</li></ul>
+              <p class="desc">I patched the WebAssembly emulator core: a Python patcher plus hand-written WAT modules add an SDIO window, a Marvell 88W8686 Wi-Fi card model and packet rings to <code>emu.wasm</code>. A separate patch delivers IRQ 42 (VIC1 bit 10), and a device-tree patcher sets the MAC address and reset GPIO. The build uses wabt.</p>
+              <p class="desc">Around that I wrote a Python relay for DHCP, DNS, ARP and TCP/UDP NAT. A host proxy reduces modern HTTPS pages to plain HTML and small JPEGs. A JavaScript keyboard bridge turns Mac keystrokes into on-screen taps. Reverse-engineering helpers (a device-tree dumper, kernel disassembly scripts, a headless trace harness) and docs, including an SDIO register map derived from the guest kernel, round it out.</p>
+              <div class="callout"><span class="k">Outcome</span><span class="t">Driver attaches, firmware loads, Wi-Fi joins, HTTP browsing works. 22 relay tests pass.</span></div>
+              <div class="callout credit"><span class="k">Credit</span><span class="t">Builds on <a href="https://kelindi.ca" target="_blank" rel="noopener">Kelindi</a>'s <a href="https://2007.mobile/" target="_blank" rel="noopener">2007.mobile</a> WebAssembly emulator. The emulator core, phone UI and firmware loader are theirs, and this repo redistributes none of it: the build downloads it and patches the WebAssembly. The Wi-Fi patches, browser proxy and keyboard bridge are mine.</span></div>
+              <p class="note">Limits · The proxy has no JavaScript, CSS or logins. Keyboard typing is verified only in Safari's URL and search fields.</p>
+              <div class="actions"><a class="btn" href="https://github.com/mrchikoo/iPhoneOS-1-Emulation-iPhone-2G-" target="_blank" rel="noopener">View on GitHub <span class="ar" aria-hidden="true">&#8599;</span></a></div>
+            </article>
+            <article class="pane" id="p3" role="tabpanel" aria-labelledby="t-p3" data-item data-lcd-t="GESTURE>SPEECH" data-lcd-s="91% · IEEE" hidden>
+              <div class="kicker">Mar 2025 · IEEE publication</div>
+              <h3>Gesture-to-Speech <span class="mut sub">Deep learning for sign-language translation</span></h3>
+              <p class="hook">Indian Sign Language in, spoken words out.</p>
+              <ul class="chips" aria-label="Tags"><li>transformer</li><li>cnn</li><li>lstm</li><li>tensorflow</li><li>mediapipe</li></ul>
+              <p class="desc">I designed and trained an end-to-end pipeline for real-time Indian Sign Language recognition. It combines Transformer, CNN (ResNet) and LSTM models over MediaPipe features. NLP and text-to-speech produce multilingual output. I also built the full data-processing pipeline.</p>
+              <div class="callout"><span class="k">Outcome</span><span class="t">91% gesture-detection accuracy. Published on IEEE Xplore (ESCI 2025).</span></div>
+              <div class="actions"><a class="btn" href="https://ieeexplore.ieee.org/document/10988379" target="_blank" rel="noopener">Read on IEEE Xplore <span class="ar" aria-hidden="true">&#8599;</span></a></div>
+            </article>
+            <article class="pane" id="p4" role="tabpanel" aria-labelledby="t-p4" data-item data-lcd-t="WEARABLE XLATE" data-lcd-s="TOP 5 · SIH" hidden>
+              <div class="kicker">Dec 2024 – Mar 2025 · National hackathon</div>
+              <h3>Wearable Translation Device <span class="mut sub">Embedded ML on Raspberry Pi</span></h3>
+              <p class="hook">ViT, CNN and LSTM models, running on a wearable Raspberry Pi.</p>
+              <ul class="chips" aria-label="Tags"><li>vision transformer</li><li>embedded ml</li><li>raspberry pi</li><li>edge inference</li></ul>
+              <p class="desc">An embedded ML system that combines ViT, CNN and LSTM models with MediaPipe pose estimation, deployed on a Raspberry Pi for low-latency inference. The hardware is a pair of 3D-printed, modified glasses that hold a Raspberry Pi Zero 2 W, a Pi HAT for microphone and speakers, and a camera.</p>
+              <dl class="rows">
+                <div><dt>Team</dt><dd>6 people</dd></div>
+                <div><dt>My role</dt><dd>Created and labelled the dataset images, and built the hardware.</dd></div>
+              </dl>
+              <div class="callout"><span class="k">Recognition</span><span class="t">Top 5 nationally · Smart India Hackathon, Government of India.</span></div>
+              <div class="actions"><a class="btn" href="https://github.com/mrchikoo/Sign-Language-to-speech-TPP-FPP-" target="_blank" rel="noopener">View on GitHub <span class="ar" aria-hidden="true">&#8599;</span></a></div>
+            </article>
+            <article class="pane" id="p5" role="tabpanel" aria-labelledby="t-p5" data-item data-lcd-t="TEXTURA" data-lcd-s="TEXT > IMAGE" hidden>
+              <div class="kicker">2025 · Generative AI</div>
+              <h3>TEXTURA <span class="mut sub">Prompt-based image generation</span></h3>
+              <p class="hook">Text-to-image with diffusion models fine-tuned on custom data.</p>
+              <ul class="chips" aria-label="Tags"><li>diffusion</li><li>generative ai</li><li>fine-tuning</li><li>vision-language</li></ul>
+              <p class="desc">A text-to-image pipeline built on diffusion models fine-tuned on a custom dataset. Language-vision models make generation context-aware. A user-facing interface turns prompts into images in real time.</p>
+              <div class="callout"><span class="k">Outcome</span><span class="t">A working prompt-to-image interface on a custom fine-tuned model.</span></div>
+              <div class="actions"><a class="btn" href="https://github.com/mrchikoo/Gen_Ai" target="_blank" rel="noopener">View on GitHub <span class="ar" aria-hidden="true">&#8599;</span></a></div>
+            </article>
+            <article class="pane" id="p6" role="tabpanel" aria-labelledby="t-p6" data-item data-lcd-t="OBJECT DETECT" data-lcd-s="SSD MOBILENET" hidden>
+              <div class="kicker">Mar 2024 · Computer vision</div>
+              <h3>Real-time Object Detection <span class="mut sub">Hand-gesture detection from a webcam</span></h3>
+              <p class="hook">Fine-tuned SSD MobileNet to spot hand gestures live from a webcam.</p>
+              <ul class="chips" aria-label="Tags"><li>tensorflow</li><li>tf object detection api</li><li>ssd mobilenet</li><li>opencv</li><li>labelimg</li><li>flask</li></ul>
+              <p class="desc">I fine-tuned a COCO-pretrained SSD MobileNet V2 FPNLite 320x320 with the TensorFlow Object Detection API on a custom dataset of four hand-gesture classes: ThumbsUp, ThumbsDown, ThankYou and LiveLong. I collected the images from a webcam with OpenCV, labelled them with labelImg and converted them to TFRecords, then trained for 3,500 steps at batch size 4.</p>
+              <div class="callout"><span class="k">Outcome</span><span class="t">Live webcam inference with OpenCV, exported as a TensorFlow saved model. A small Flask app streams the webcam feed.</span></div>
+              <div class="actions"><a class="btn" href="https://github.com/mrchikoo/Object_detection" target="_blank" rel="noopener">View on GitHub <span class="ar" aria-hidden="true">&#8599;</span></a></div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- TOOLKIT -->
+      <section class="view" data-view="toolkit" data-code="04" data-name="Toolkit" data-lcd-t="TOOLKIT" data-lcd-s="3 GROUPS" aria-labelledby="h-tk">
+        <div class="vhead"><span class="vnum">04</span><span class="vlabel">Toolkit</span><span class="rule"></span></div>
+        <h2 class="h2" id="h-tk">Tools of the trade.</h2>
+        <div class="tk">
+          <div class="tk-col" data-item data-lcd-t="LANGUAGES" data-lcd-s="PYTHON · C/C++">
+            <h3>Languages <span>T1</span></h3>
+            <ul><li><i>01</i>Python</li><li><i>02</i>C / C++</li><li><i>03</i>JavaScript · TypeScript</li><li><i>04</i>SQL · R</li><li><i>05</i>WebAssembly (WAT)</li></ul>
+          </div>
+          <div class="tk-col" data-item data-lcd-t="ML & DATA" data-lcd-s="TF · PYTORCH">
+            <h3>ML &amp; Data <span>T2</span></h3>
+            <ul><li><i>01</i>TensorFlow · PyTorch</li><li><i>02</i>Keras · scikit-learn</li><li><i>03</i>OpenCV · MediaPipe</li><li><i>04</i>Pandas · NumPy</li><li><i>05</i>SQLite</li></ul>
+          </div>
+          <div class="tk-col" data-item data-lcd-t="METHODS & HW" data-lcd-s="CV · NLP · EDGE">
+            <h3>Methods &amp; Hardware <span>T3</span></h3>
+            <ul><li><i>01</i>Computer vision · NLP</li><li><i>02</i>Deep learning · Transformers</li><li><i>03</i>Embedded ML · Raspberry Pi</li><li><i>04</i>Git · Jupyter · Node-RED</li><li><i>05</i>Flask · PyQt6</li></ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- WORDS — testimonials are verbatim; do not edit -->
+      <section class="view" data-view="words" data-code="05" data-name="Words" data-lcd-t="WORDS" data-lcd-s="3 REFERENCES" aria-labelledby="h-words">
+        <div class="vhead"><span class="vnum">05</span><span class="vlabel">Words</span><span class="rule"></span><span class="meta">3 references</span></div>
+        <h2 class="h2" id="h-words">What others have said.</h2>
+        <figure class="quote" data-item data-lcd-t="PROF. PAWADE" data-lcd-s="ASST. PROF · CSE">
+          <span class="qm" aria-hidden="true">&ldquo;</span>
+          <blockquote>Shazil's thirst for knowledge is evident in his proactive approach to learning. He has consistently demonstrated profound leadership and proved himself to be a true team player. His curious mind and good interpretation abilities will significantly facilitate research work.</blockquote>
+          <figcaption><b>Prof. Amar Pawade</b><span>Asst. Professor, CSE · MHSSCE</span></figcaption>
+        </figure>
+        <figure class="quote" data-item data-lcd-t="PROF. SHAIKH" data-lcd-s="ASST. PROF · CSE">
+          <span class="qm" aria-hidden="true">&ldquo;</span>
+          <blockquote>He is not only gifted with excellent grasping powers and technical skills but is also adept at putting in the required hard work to transform his talent into tangible results. I give him my highest recommendation.</blockquote>
+          <figcaption><b>Prof. Tarannum Shaikh</b><span>Asst. Professor, CSE · MHSSCE</span></figcaption>
+        </figure>
+        <figure class="quote" data-item data-lcd-t="IEEE COMMITTEE" data-lcd-s="MHSSCE CHAPTER">
+          <span class="qm" aria-hidden="true">&ldquo;</span>
+          <blockquote>Your selfless commitment, leadership, and passion have been truly invaluable in driving the success of our initiatives and fostering an environment of innovation, collaboration, and growth.</blockquote>
+          <figcaption><b>IEEE Committee</b><span>MHSSCE Student Chapter</span></figcaption>
+        </figure>
+      </section>
+
+      <!-- CONTACT -->
+      <section class="view" data-view="contact" data-code="06" data-name="Contact" data-lcd-t="CONTACT" data-lcd-s="15-20 HRS/WEEK" aria-labelledby="h-contact">
+        <div class="vhead"><span class="vnum">06</span><span class="vlabel">Get in touch</span><span class="rule"></span></div>
+        <h2 class="h2" id="h-contact">Let's build something <em>worth</em> building.</h2>
+        <p class="kicker contact-sub">Berlin · 15–20&nbsp;hrs/week</p>
+        <div class="actions contact-actions">
+          <a class="btn primary" href="mailto:skkatchhi61@gmail.com">Email me <span class="ar" aria-hidden="true">&#8599;</span></a>
+          <a class="btn" href="Shazil_Katchhi_CV.pdf" download>Download CV <span class="ar" aria-hidden="true">&darr;</span></a>
+        </div>
+        <div class="crow" data-item data-lcd-t="EMAIL" data-lcd-s="COPY · WRITE">
+          <span class="l">Email</span><a class="v" href="mailto:skkatchhi61@gmail.com">skkatchhi61@gmail.com</a>
+          <span class="a"><button class="btn sm" type="button" data-copy="skkatchhi61@gmail.com" data-say="EMAIL ADDRESS" aria-label="Copy email address">Copy</button><a class="btn sm" href="mailto:skkatchhi61@gmail.com">Write <span class="ar" aria-hidden="true">&#8599;</span></a></span>
+        </div>
+        <div class="crow" data-item data-lcd-t="PHONE" data-lcd-s="+49 163 135 1465">
+          <span class="l">Phone</span><a class="v" href="tel:+491631351465">+49 163 135 1465</a>
+          <span class="a"><button class="btn sm" type="button" data-copy="+49 163 135 1465" aria-label="Copy phone number">Copy</button><a class="btn sm" href="tel:+491631351465">Call</a></span>
+        </div>
+        <div class="crow" data-item data-lcd-t="BASED IN" data-lcd-s="BERLIN, GERMANY">
+          <span class="l">Based in</span><span class="v">Berlin, Germany</span><span class="a"></span>
+        </div>
+        <div class="crow" data-item data-lcd-t="LINKEDIN" data-lcd-s="SHAZIL KATCHHI">
+          <span class="l">LinkedIn</span><a class="v" href="https://www.linkedin.com/in/shazil-katchhi-7336a6252/" target="_blank" rel="noopener">Shazil Katchhi</a>
+          <span class="a"><a class="btn sm" href="https://www.linkedin.com/in/shazil-katchhi-7336a6252/" target="_blank" rel="noopener" aria-label="Open LinkedIn profile in new tab">Open <span class="ar" aria-hidden="true">&#8599;</span></a></span>
+        </div>
+        <div class="crow" data-item data-lcd-t="GITHUB" data-lcd-s="MRCHIKOO">
+          <span class="l">GitHub</span><a class="v" href="https://github.com/mrchikoo" target="_blank" rel="noopener">github.com/mrchikoo</a>
+          <span class="a"><a class="btn sm" href="https://github.com/mrchikoo" target="_blank" rel="noopener" aria-label="Open GitHub profile in new tab">Open <span class="ar" aria-hidden="true">&#8599;</span></a></span>
+        </div>
+        <div class="crow" data-item data-lcd-t="CV.PDF" data-lcd-s="READY TO PRINT">
+          <span class="l">CV</span><a class="v" href="Shazil_Katchhi_CV.pdf" download>Shazil_Katchhi_CV.pdf</a>
+          <span class="a"><a class="btn sm primary" href="Shazil_Katchhi_CV.pdf" download>Download <span class="ar" aria-hidden="true">&darr;</span></a></span>
+        </div>
+      </section>
+
+      <!-- PHOTO -->
+      <section class="view" data-view="photo" data-code="07" data-name="Photo" data-lcd-t="PHOTO" data-lcd-s="FIG.01 · BERLIN" aria-labelledby="h-photo">
+        <div class="vhead"><span class="vnum">07</span><span class="vlabel" id="h-photo">Photo</span><span class="rule"></span><span class="meta">coming soon</span></div>
+        <figure class="photo-fig" data-item data-lcd-t="PHOTO" data-lcd-s="FIG.01 · BERLIN">
+          <div class="frame"><div class="ph" role="img" aria-label="Photo coming soon"><span>Photo<br>coming soon</span></div></div>
+          <figcaption><span class="kicker">Fig. 01 — Shazil Katchhi</span><span class="kicker">Berlin, Germany</span></figcaption>
+        </figure>
+      </section>
+
+      <!-- CV -->
+      <section class="view" data-view="cv" data-code="08" data-name="CV" data-lcd-t="CV.PDF" data-lcd-s="READY TO PRINT" aria-labelledby="h-cv">
+        <div class="vhead"><span class="vnum">08</span><span class="vlabel">CV</span><span class="rule"></span></div>
+        <h2 class="h2" id="h-cv">Curriculum vitae.</h2>
+        <div data-item data-lcd-t="CV.PDF" data-lcd-s="READY TO PRINT">
+          <dl class="rows" style="max-width:34em">
+            <div><dt>File</dt><dd>Shazil_Katchhi_CV.pdf</dd></div>
+            <div><dt>Format</dt><dd>PDF</dd></div>
+            <div><dt>Size</dt><dd>9 KB</dd></div>
+          </dl>
+          <div class="actions" style="margin-top:1.6em">
+            <a class="btn primary" href="Shazil_Katchhi_CV.pdf" download>Download CV <span class="ar" aria-hidden="true">&darr;</span></a>
+            <a class="btn" href="Shazil_Katchhi_CV.pdf" target="_blank" rel="noopener">Open in new tab <span class="ar" aria-hidden="true">&#8599;</span></a>
+          </div>
+        </div>
+      </section>
+
+      <!-- KEYS -->
+      <section class="view" data-view="keys" data-code="KM" data-name="Key map" data-lcd-t="KEY MAP" data-lcd-s="1-8 · A · B" aria-labelledby="h-keys">
+        <div class="vhead"><span class="vnum">?</span><span class="vlabel">Key map</span><span class="rule"></span></div>
+        <h2 class="h2" id="h-keys">Operating the unit.</h2>
+        <table class="kt" data-item data-lcd-t="KEY MAP" data-lcd-s="1-8 · A · B">
+          <tbody>
+            <tr><th><kbd>1</kbd>–<kbd>8</kbd></th><td>About, Experience, Projects, Toolkit, Words, Contact, Photo, CV</td></tr>
+            <tr><th><kbd>←</kbd><kbd>→</kbd></th><td>Encoder A — previous / next item in the active section</td></tr>
+            <tr><th><kbd>↑</kbd><kbd>↓</kbd></th><td>Encoder B — scroll the sheet</td></tr>
+            <tr><th><kbd>H</kbd><kbd>Esc</kbd></th><td>Home</td></tr>
+            <tr><th><kbd>N</kbd></th><td>Night mode on / off</td></tr>
+            <tr><th><kbd>V</kbd></th><td>Switch theme to visionOS</td></tr>
+            <tr><th><kbd>M</kbd><kbd>G</kbd><kbd>L</kbd></th><td>Mail, GitHub, LinkedIn</td></tr>
+            <tr><th><kbd>?</kbd></th><td>This key map</td></tr>
+            <tr><th>Knobs</th><td>Drag, scroll-wheel or arrow keys when focused</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <div class="sheet-foot" aria-hidden="true"><span>&copy; 2026 Shazil Katchhi</span><span>Berlin &rarr; Worldwide</span></div>
+    </div>
+    <div class="progress" aria-hidden="true"><i id="prog"></i></div>
+  </main>
   </div>
-</footer>
+
+  <footer class="dev-foot">
+    <span class="silk">&copy; 2026 Shazil Katchhi<span class="foot-loc"> · Berlin &rarr; Worldwide</span></span>
+    <span class="silk keymap" aria-hidden="true"><kbd>1</kbd>–<kbd>8</kbd> Sections<span class="sep"></span><kbd>&larr;</kbd><kbd>&rarr;</kbd> Select<span class="sep"></span><kbd>&uarr;</kbd><kbd>&darr;</kbd> Scroll<span class="sep"></span><kbd>N</kbd> Night<span class="sep"></span><kbd>V</kbd> Vision<span class="sep"></span><kbd>Esc</kbd> Home<span class="sep"></span><kbd>?</kbd> Keys</span>
+  </footer>
+</div>
 
 <script>
-  // Nav background on scroll
-  const nav = document.getElementById('nav');
-  window.addEventListener('scroll', () => {
-    if (window.scrollY > 50) {
-      nav.classList.add('scrolled');
-    } else {
-      nav.classList.remove('scrolled');
+(() => {
+  'use strict';
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+  const root = document.documentElement;
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const stackMQ = window.matchMedia('(max-width: 859px)');
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const store = {
+    get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
+    set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+  };
+
+  const sheet = $('#sheet'), sheetBody = $('#sheetBody'), sheetWrap = $('#sheetWrap');
+  const views = {};
+  $$('.view').forEach(v => { views[v.dataset.view] = v; });
+  const keyEls = $$('.key');
+  const live = $('#live');
+
+  let cur = null, idx = 0, marked = false, booting = false, bootTimer = 0;
+
+  /* ---------------- LCD ---------------- */
+  const L = {
+    sec: $('#lcdSec'), mode: $('#lcdMode'), count: $('#lcdCount'),
+    titleBox: $('#lcdTitleBox'), title: $('#lcdTitle'), sub: $('#lcdSub'),
+    segs: $('#lcdSegs'), stat: $('#lcdStat')
+  };
+  let typeTok = 0, typeTimer = 0, pending = null, modeTimer = 0;
+  const pad2 = n => String(n).padStart(2, '0');
+
+  function fitTitle(t) {
+    L.titleBox.dataset.len = t.length > 14 ? 'l' : t.length > 11 ? 'm' : 's';
+  }
+  function typeText(el, text, speed, tok, done) {
+    let k = 0;
+    el.textContent = '';
+    const step = () => {
+      if (tok !== typeTok) return;
+      k += 1;
+      el.textContent = text.slice(0, k) || ' ';
+      if (k < text.length) typeTimer = setTimeout(step, speed);
+      else if (done) done();
+    };
+    step();
+  }
+  function finishTyping() {
+    if (!pending) return;
+    typeTok++; clearTimeout(typeTimer);
+    L.title.textContent = pending.title;
+    L.sub.textContent = pending.sub || ' ';
+    pending = null;
+  }
+  function lcdWrite(title, sub, instant) {
+    typeTok++; clearTimeout(typeTimer);
+    fitTitle(title);
+    if (instant || reduce.matches) {
+      L.title.textContent = title; L.sub.textContent = sub || ' '; pending = null; return;
     }
+    pending = { title, sub };
+    const tok = typeTok;
+    L.sub.textContent = ' ';
+    typeText(L.title, title, 22, tok, () => {
+      typeText(L.sub, sub || ' ', 9, tok, () => { pending = null; });
+    });
+  }
+  function lcdMode(txt, ms) {
+    L.mode.textContent = txt;
+    clearTimeout(modeTimer);
+    if (ms) modeTimer = setTimeout(() => { L.mode.textContent = 'RDY'; }, ms);
+  }
+  function lcdSegs(n, i) {
+    const max = Math.min(n, 8);
+    let h = '';
+    for (let j = 0; j < max; j++) h += '<i class="' + (j === i ? 'on' : '') + '"></i>';
+    L.segs.innerHTML = h;
+  }
+  function lcdStat() {
+    L.stat.textContent = 'SZ ' + SIZES[size].n + ' ' + (root.dataset.theme === 'dark' ? 'NGT' : 'DAY');
+  }
+  function renderLCD(instant) {
+    if (booting || !cur) return;
+    const v = views[cur];
+    const its = items(cur);
+    const it = its[idx];
+    const showItem = marked || v.dataset.mode === 'tabs' && idx > 0;
+    const t = (showItem && it && it.dataset.lcdT) || v.dataset.lcdT;
+    const s = (showItem && it && it.dataset.lcdS) || v.dataset.lcdS;
+    L.sec.textContent = v.dataset.code + ' ' + v.dataset.name.toUpperCase();
+    L.count.textContent = its.length > 1 ? pad2(idx + 1) + '/' + pad2(its.length) : '--/--';
+    lcdSegs(its.length, its.length > 1 ? idx : 0);
+    lcdWrite(t, s, instant);
+  }
+  $('#lcd').addEventListener('click', finishTyping);
+
+  /* ---------------- views & items ---------------- */
+  const items = v => $$('[data-item]', views[v]);
+  function announce(msg) { live.textContent = ''; requestAnimationFrame(() => { live.textContent = msg; }); }
+
+  function setView(name, opts) {
+    opts = opts || {};
+    if (!views[name]) name = 'home';
+    Object.keys(views).forEach(k => { if (k !== name) views[k].classList.remove('on'); });
+    const v = views[name];
+    v.classList.add('on');
+    cur = name; idx = 0; marked = false;
+    keyEls.forEach(k => {
+      if (k.dataset.act !== 'view') return;
+      const on = k.dataset.view === name;
+      k.classList.toggle('on', on);
+      if (on) k.setAttribute('aria-current', 'true'); else k.removeAttribute('aria-current');
+    });
+    $('#crumb').textContent = v.dataset.code === 'KM' ? 'Key map' : v.dataset.code + ' ' + v.dataset.name;
+    sheetBody.scrollTop = 0;
+    applyItem(false);
+    syncScroll();
+    const hash = name === 'home' ? '' : '#' + name;
+    if (location.hash !== hash) {
+      try { history.replaceState(null, '', hash || (location.pathname + location.search)); } catch (e) {}
+    }
+    if (opts.user) {
+      announce(v.dataset.name + ' section');
+      if (stackMQ.matches && name !== 'home') {
+        sheetWrap.scrollIntoView({ behavior: reduce.matches ? 'auto' : 'smooth', block: 'start' });
+      }
+    }
+  }
+
+  function setItem(i, user) {
+    const n = items(cur).length;
+    const ni = clamp(i, 0, n - 1);
+    if (ni === idx && marked) return false;
+    if (ni === idx && n <= 1) return false;
+    idx = ni; marked = true;
+    applyItem(user);
+    return true;
+  }
+
+  function applyItem(user) {
+    const v = views[cur];
+    const its = items(cur);
+    const tabsMode = v.dataset.mode === 'tabs';
+    if (tabsMode) {
+      its.forEach((p, j) => { p.hidden = j !== idx; });
+      $$('[role="tab"]', v).forEach((t, j) => {
+        t.setAttribute('aria-selected', j === idx ? 'true' : 'false');
+        t.tabIndex = j === idx ? 0 : -1;
+      });
+      if (user && !stackMQ.matches) {
+        if (sheetBody.scrollTop > 0) sheetBody.scrollTo({ top: 0, behavior: reduce.matches ? 'auto' : 'smooth' });
+      }
+    } else {
+      its.forEach((p, j) => p.classList.toggle('sel', marked && its.length > 1 && j === idx));
+      if (user && marked && !stackMQ.matches && its[idx]) {
+        const r = its[idx].getBoundingClientRect(), b = sheetBody.getBoundingClientRect();
+        const top = r.top - b.top + sheetBody.scrollTop - 28;
+        const fullyVisible = r.top >= b.top + 8 && r.bottom <= b.bottom - 8;
+        if (!fullyVisible) sheetBody.scrollTo({ top: Math.max(0, top), behavior: reduce.matches ? 'auto' : 'smooth' });
+      }
+    }
+    const n = its.length;
+    encA.el.setAttribute('aria-valuemax', String(Math.max(1, n)));
+    encA.el.setAttribute('aria-valuenow', String(idx + 1));
+    const it = its[idx];
+    const label = it ? (it.dataset.lcdT || '').toLowerCase() : '';
+    encA.el.setAttribute('aria-valuetext', n > 1 ? 'Item ' + (idx + 1) + ' of ' + n + (label ? ': ' + label : '') : 'Single item');
+    encA.setRail(n > 1 ? idx / (n - 1) : 0);
+    $('#sheetCount').textContent = n > 1 ? pad2(idx + 1) + ' / ' + pad2(n) : '';
+    renderLCD(false);
+    if (user && it) announce(it.dataset.lcdT ? (it.dataset.lcdT + ', ' + (it.dataset.lcdS || '')).toLowerCase() : '');
+  }
+
+  // tabs click
+  $$('[role="tab"]').forEach(t => {
+    t.addEventListener('click', () => { if (setItem(+t.dataset.tab, true)) encA.spin(+t.dataset.tab >= idx ? 1 : -1); else { marked = true; renderLCD(false); } });
+  });
+  // in-sheet "go" buttons
+  $$('[data-go]').forEach(b => b.addEventListener('click', () => { setView(b.dataset.go, { user: true }); flashKey(b.dataset.go); }));
+  // clicking an item marks it
+  sheetBody.addEventListener('click', e => {
+    const it = e.target.closest('[data-item]');
+    if (!it || !views[cur].contains(it) || views[cur].dataset.mode === 'tabs') return;
+    const i = items(cur).indexOf(it);
+    if (i >= 0 && items(cur).length > 1 && (i !== idx || !marked)) { const d = i >= idx ? 1 : -1; idx = i; marked = true; applyItem(false); encA.spin(d); }
   });
 
-  // Reveal animations on scroll
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-      }
+  /* ---------------- encoders ---------------- */
+  function makeEncoder(el, cfg) {
+    const skirt = $('.enc-skirt', el), rot = $('.enc-rot', el), knob = $('.enc-knob', el), thumb = $('.enc-thumb', el);
+    let angle = 0, drag = null, wacc = 0, tickT = 0;
+    const api = { el };
+    api.setAngle = a => { angle = a; el.style.setProperty('--rot', a + 'deg'); };
+    api.spin = dir => { api.setAngle(angle + dir * 22.5); tick(); };
+    api.setRail = p => { el.style.setProperty('--p', clamp(p, 0, 1).toFixed(4)); };
+    function tick() {
+      el.classList.add('tick');
+      clearTimeout(tickT);
+      tickT = setTimeout(() => el.classList.remove('tick'), 110);
+    }
+    function bump(dir) {
+      if (reduce.matches || !knob.animate) return;
+      knob.animate([{ transform: 'rotate(0deg)' }, { transform: 'rotate(' + (dir * 4) + 'deg)' }, { transform: 'rotate(0deg)' }], { duration: 160, easing: 'ease-out' });
+    }
+    function turn(dir) {
+      if (booting) finishBoot();
+      const moved = cfg.step(dir);
+      if (moved === false) bump(dir);
+      else if (!cfg.angleFromValue) api.spin(dir);
+      else tick();
+    }
+    api.turn = turn;
+    el.addEventListener('pointerdown', e => {
+      if (e.button !== 0) return;
+      if (booting) finishBoot();
+      el.focus({ preventScroll: true });
+      const rail = stackMQ.matches;
+      drag = { rail, x: e.clientX, y: e.clientY, acc: 0, moved: false, id: e.pointerId };
+      if (rail) { cfg.abs(fraction(e)); }
+      else { try { el.setPointerCapture(e.pointerId); } catch (_) {} e.preventDefault(); }
     });
-  }, { threshold: 0.12, rootMargin: '0px 0px -50px 0px' });
+    el.addEventListener('pointermove', e => {
+      if (!drag || e.pointerId !== drag.id) return;
+      if (drag.rail) {
+        if (!drag.moved && Math.abs(e.clientX - drag.x) > 3) { drag.moved = true; try { el.setPointerCapture(e.pointerId); } catch (_) {} }
+        if (drag.moved) cfg.abs(fraction(e));
+        return;
+      }
+      const dd = (e.clientX - drag.x) - (e.clientY - drag.y);
+      drag.x = e.clientX; drag.y = e.clientY;
+      if (cfg.drag) { if (dd) cfg.drag(dd); return; }
+      drag.acc += dd;
+      const STEP = cfg.dragStep || 16;
+      while (drag.acc >= STEP) { turn(1); drag.acc -= STEP; }
+      while (drag.acc <= -STEP) { turn(-1); drag.acc += STEP; }
+    });
+    const end = e => { if (drag && e.pointerId === drag.id) drag = null; };
+    el.addEventListener('pointerup', end);
+    el.addEventListener('pointercancel', end);
+    el.addEventListener('lostpointercapture', end);
+    function fraction(e) {
+      const r = el.getBoundingClientRect();
+      return clamp((e.clientX - r.left - 14) / Math.max(1, r.width - 28), 0, 1);
+    }
+    el.addEventListener('wheel', e => {
+      if (stackMQ.matches) return;
+      e.preventDefault();
+      const wd = (Math.abs(e.deltaY) > Math.abs(e.deltaX) ? e.deltaY : e.deltaX) * (e.deltaMode === 1 ? 32 : 1);
+      if (cfg.wheel) { cfg.wheel(wd); return; }
+      wacc += wd;
+      const T = cfg.wheelStep || 40;
+      while (wacc >= T) { turn(1); wacc -= T; }
+      while (wacc <= -T) { turn(-1); wacc += T; }
+    }, { passive: false });
+    el.addEventListener('keydown', e => {
+      let d = 0;
+      switch (e.key) {
+        case 'ArrowRight': case 'ArrowUp': d = 1; break;
+        case 'ArrowLeft': case 'ArrowDown': d = -1; break;
+        case 'PageUp': d = 3; break;
+        case 'PageDown': d = -3; break;
+        case 'Home': e.preventDefault(); e.stopPropagation(); cfg.home(); return;
+        case 'End': e.preventDefault(); e.stopPropagation(); cfg.end(); return;
+        default: return;
+      }
+      if (cfg.invertKeys && (e.key === 'ArrowUp' || e.key === 'ArrowDown')) d = -d;
+      e.preventDefault(); e.stopPropagation();
+      const s = Math.sign(d);
+      for (let k = 0; k < Math.abs(d); k++) turn(s);
+    });
+    return api;
+  }
 
-  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  const encA = makeEncoder($('#encA'), {
+    step: dir => setItem(idx + dir, true),
+    abs: f => { const n = items(cur).length; if (n > 1) { const i = Math.round(f * (n - 1)); if (i !== idx || !marked) { const d = i >= idx ? 1 : -1; idx = i; marked = true; applyItem(true); encA.spin(d); } } },
+    home: () => { if (setItem(0, true)) encA.spin(-1); },
+    end: () => { if (setItem(items(cur).length - 1, true)) encA.spin(1); }
+  });
+
+  /* scroll model — sheet on desktop, page within sheet range when stacked */
+  const DETENT = 110;
+  function scrollInfo() {
+    if (!stackMQ.matches) {
+      return { pos: sheetBody.scrollTop, max: Math.max(0, sheetBody.scrollHeight - sheetBody.clientHeight) };
+    }
+    const top = sheetWrap.getBoundingClientRect().top + window.scrollY;
+    const max = Math.max(0, sheetWrap.offsetHeight - window.innerHeight);
+    return { pos: clamp(window.scrollY - top, 0, max), max, top };
+  }
+  function scrollToPos(p, smooth) {
+    const s = scrollInfo();
+    const target = clamp(p, 0, s.max);
+    const behavior = smooth && !reduce.matches ? 'smooth' : 'auto';
+    if (!stackMQ.matches) sheetBody.scrollTo({ top: target, behavior });
+    else window.scrollTo({ top: s.top + target, behavior });
+  }
+  let scrollTarget = null, scrollTargetT = 0;
+  const encB = makeEncoder($('#encB'), {
+    angleFromValue: true,
+    invertKeys: true,
+    step: dir => {
+      const s = scrollInfo();
+      const base = scrollTarget !== null ? scrollTarget : s.pos;
+      const next = clamp(base + dir * DETENT, 0, s.max);
+      if (next === base) return false;
+      scrollTarget = next;
+      clearTimeout(scrollTargetT);
+      scrollTargetT = setTimeout(() => { scrollTarget = null; }, 320);
+      scrollToPos(next, true);
+      lcdMode('SCR', 700);
+      return true;
+    },
+    wheel: d => { scrollRaw(d); },
+    drag: d => { scrollRaw(d * 3); },
+    abs: f => { const s = scrollInfo(); scrollToPos(f * s.max, false); },
+    home: () => scrollToPos(0, true),
+    end: () => scrollToPos(1e9, true)
+  });
+  // wheel / drag on knob B scroll continuously; arrow keys use detents
+  let lastTickPos = 0;
+  function scrollRaw(d) {
+    const s = scrollInfo();
+    const next = clamp(s.pos + d, 0, s.max);
+    if (next === s.pos) return;
+    if (!stackMQ.matches) sheetBody.scrollTop = next; else window.scrollTo(0, s.top + next);
+    if (Math.abs(next - lastTickPos) >= DETENT / 4) { lastTickPos = next; encB.el.classList.add('tick'); setTimeout(() => encB.el.classList.remove('tick'), 110); }
+    lcdMode('SCR', 700);
+  }
+
+  let rafPending = false;
+  function syncScroll() {
+    rafPending = false;
+    const s = scrollInfo();
+    const p = s.max > 0 ? s.pos / s.max : 0;
+    $('#prog').style.transform = 'scaleX(' + p.toFixed(4) + ')';
+    encB.setAngle(Math.round(s.pos / DETENT * 22.5 * 10) / 10);
+    encB.setRail(p);
+    const pct = Math.round(p * 100);
+    encB.el.setAttribute('aria-valuenow', String(pct));
+    encB.el.setAttribute('aria-valuetext', s.max === 0 ? 'Nothing to scroll' : pct === 0 ? 'Top' : pct === 100 ? 'End' : pct + ' percent');
+  }
+  const onScroll = () => { if (!rafPending) { rafPending = true; requestAnimationFrame(syncScroll); } };
+  sheetBody.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('scroll', () => { if (stackMQ.matches) onScroll(); }, { passive: true });
+  window.addEventListener('resize', onScroll);
+
+  /* ---------------- fader: text size ---------------- */
+  const SIZES = [{ n: 'S', v: .92, t: 'Small' }, { n: 'M', v: 1, t: 'Medium' }, { n: 'L', v: 1.1, t: 'Large' }, { n: 'XL', v: 1.2, t: 'Extra large' }];
+  let size = clamp(parseInt(store.get('sk01-size'), 10), 0, 3);
+  if (isNaN(size)) size = 1;
+  const fader = $('#fader');
+  function setSize(i, user) {
+    i = clamp(i, 0, SIZES.length - 1);
+    const changed = i !== size;
+    size = i;
+    fader.style.setProperty('--p', (i / (SIZES.length - 1)).toFixed(4));
+    fader.setAttribute('aria-valuenow', String(i + 1));
+    fader.setAttribute('aria-valuetext', SIZES[i].t);
+    $$('#faderScale span').forEach((s, j) => s.classList.toggle('on', j === i));
+    sheetBody.style.setProperty('--fs', SIZES[i].v);
+    lcdStat();
+    if (user && changed) { store.set('sk01-size', String(i)); lcdMode('SZ' + SIZES[i].n.charAt(0), 700); onScroll(); }
+    return changed;
+  }
+  (function () {
+    let drag = null;
+    const fromX = x => { const r = fader.getBoundingClientRect(); const pad = stackMQ.matches ? 14 : 10; return Math.round(clamp((x - r.left - pad) / (r.width - pad * 2), 0, 1) * (SIZES.length - 1)); };
+    fader.addEventListener('pointerdown', e => {
+      if (e.button !== 0) return;
+      if (booting) finishBoot();
+      fader.focus({ preventScroll: true });
+      drag = { id: e.pointerId, x: e.clientX, moved: !stackMQ.matches };
+      if (!stackMQ.matches) { try { fader.setPointerCapture(e.pointerId); } catch (_) {} e.preventDefault(); }
+      setSize(fromX(e.clientX), true);
+    });
+    fader.addEventListener('pointermove', e => {
+      if (!drag || drag.id !== e.pointerId) return;
+      if (!drag.moved && Math.abs(e.clientX - drag.x) > 3) { drag.moved = true; try { fader.setPointerCapture(e.pointerId); } catch (_) {} }
+      if (drag.moved) setSize(fromX(e.clientX), true);
+    });
+    ['pointerup', 'pointercancel', 'lostpointercapture'].forEach(t => fader.addEventListener(t, () => { drag = null; }));
+    fader.addEventListener('keydown', e => {
+      const m = { ArrowRight: 1, ArrowUp: 1, ArrowLeft: -1, ArrowDown: -1 };
+      if (e.key in m) { e.preventDefault(); e.stopPropagation(); setSize(size + m[e.key], true); }
+      else if (e.key === 'Home') { e.preventDefault(); e.stopPropagation(); setSize(0, true); }
+      else if (e.key === 'End') { e.preventDefault(); e.stopPropagation(); setSize(SIZES.length - 1, true); }
+    });
+    fader.addEventListener('wheel', e => { if (stackMQ.matches) return; e.preventDefault(); setSize(size + (e.deltaY < 0 || e.deltaX > 0 ? 1 : -1), true); }, { passive: false });
+  })();
+
+  /* ---------------- theme ---------------- */
+  const themeKey = $('.key[data-act="theme"]');
+  function applyTheme(t, user) {
+    root.setAttribute('data-theme', t);
+    themeKey.setAttribute('aria-pressed', t === 'dark' ? 'true' : 'false');
+    lcdStat();
+    if (user) { store.set('sk01-theme', t); lcdMode(t === 'dark' ? 'NGT' : 'DAY', 800); announce(t === 'dark' ? 'Night mode on' : 'Night mode off'); }
+  }
+
+  /* ---------------- keys ---------------- */
+  function pressVisual(k) {
+    k.classList.add('is-down');
+    setTimeout(() => k.classList.remove('is-down'), 120);
+  }
+  function flashKey(sel) {
+    const k = typeof sel === 'string' ? $('.key[data-view="' + sel + '"]') : sel;
+    if (!k) return;
+    k.classList.add('flash');
+    setTimeout(() => k.classList.remove('flash'), 220);
+  }
+  keyEls.forEach(k => {
+    k.addEventListener('pointerdown', () => { if (booting) finishBoot(); k.classList.add('is-down'); });
+    ['pointerup', 'pointerleave', 'pointercancel'].forEach(t => k.addEventListener(t, () => k.classList.remove('is-down')));
+    k.addEventListener('click', () => {
+      if (booting) finishBoot();
+      const act = k.dataset.act;
+      if (act === 'view') { setView(k.dataset.view, { user: true }); }
+      else if (act === 'prev' || act === 'next') {
+        const d = act === 'next' ? 1 : -1;
+        flashKey(k);
+        if (setItem(idx + d, true)) encA.spin(d); else lcdMode('END', 600);
+      }
+      else if (act === 'theme') { flashKey(k); applyTheme(root.dataset.theme === 'dark' ? 'light' : 'dark', true); }
+      else if (act === 'link') { flashKey(k); lcdMode('LNK', 900); lcdWrite(k.dataset.say, 'OPENING...', false); setTimeout(() => renderLCD(true), 1300); }
+    });
+  });
+  $('#toKeys').addEventListener('click', () => {
+    $('#keys').scrollIntoView({ behavior: reduce.matches ? 'auto' : 'smooth', block: 'center' });
+    const k = $('.key.on') || keyEls[0];
+    setTimeout(() => k.focus({ preventScroll: true }), reduce.matches ? 0 : 350);
+  });
+
+  const keyMap = {};
+  keyEls.forEach(k => { if (k.dataset.k) keyMap[k.dataset.k] = k; });
+  keyMap['/'] = keyMap['?'];
+
+  document.addEventListener('keydown', e => {
+    if (e.defaultPrevented || e.metaKey || e.ctrlKey || e.altKey) return;
+    const t = e.target;
+    if (t && t.closest && (t.closest('input, textarea, select, [contenteditable="true"]'))) return;
+    if (booting) { finishBoot(); }
+    const key = e.key;
+    if (key === 'Escape') { e.preventDefault(); const hk = keyMap['h']; pressVisual(hk); setView('home', { user: true }); flashKey(hk); return; }
+    if (key === 'ArrowLeft' || key === 'ArrowRight') {
+      if (t && t.closest && t.closest('[role="tablist"]')) { /* handled as items below too */ }
+      e.preventDefault();
+      const k = keyMap[key.toLowerCase()];
+      pressVisual(k); k.click();
+      return;
+    }
+    if (key === 'ArrowUp' || key === 'ArrowDown') {
+      if (stackMQ.matches) return;
+      if (t && t.closest && t.closest('#sheetBody')) return; // native scroll inside the sheet
+      e.preventDefault();
+      encB.turn(key === 'ArrowDown' ? 1 : -1);
+      return;
+    }
+    if (e.repeat) return;
+    if (key === 'v' || key === 'V') { if (themeSwitch) { e.preventDefault(); themeSwitch.click(); } return; }
+    const k = keyMap[key.toLowerCase()];
+    if (k) { e.preventDefault(); pressVisual(k); k.click(); }
+  });
+
+  /* ---------------- theme switch → visionOS page ---------------- */
+  const themeSwitch = $('#themeSwitch');
+  if (themeSwitch) {
+    themeSwitch.addEventListener('click', e => {
+      // let the browser handle new-tab / modified clicks and reduced motion untouched
+      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || reduce.matches) return;
+      e.preventDefault();
+      const href = themeSwitch.href;
+      lcdMode('VIS');
+      document.body.classList.add('leaving');
+      setTimeout(() => { location.href = href; }, 200);
+    });
+    // restore if the page comes back from the back/forward cache
+    window.addEventListener('pageshow', () => document.body.classList.remove('leaving'));
+  }
+
+  /* ---------------- copy ---------------- */
+  $$('[data-copy]').forEach(b => b.addEventListener('click', async () => {
+    const text = b.dataset.copy;
+    let ok = false;
+    try { await navigator.clipboard.writeText(text); ok = true; } catch (e) {
+      try {
+        const ta = document.createElement('textarea');
+        ta.value = text; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+        document.body.appendChild(ta); ta.select(); ok = document.execCommand('copy'); ta.remove();
+      } catch (_) { ok = false; }
+    }
+    const old = b.textContent;
+    b.textContent = ok ? 'Copied' : 'Press ⌘C';
+    setTimeout(() => { b.textContent = old; }, 1400);
+    lcdMode(ok ? 'CPY' : 'ERR', 1200);
+    lcdWrite(ok ? 'COPIED' : 'COPY FAILED', b.dataset.say || text.toUpperCase(), false);
+    setTimeout(() => renderLCD(true), 1500);
+    announce(ok ? 'Copied ' + text : 'Copy failed');
+  }));
+
+  /* ---------------- routing ---------------- */
+  const alias = { work: 'projects', testimonials: 'words', skills: 'toolkit', welcome: 'home' };
+  function route(fromLoad) {
+    let h = decodeURIComponent(location.hash.replace('#', '')).toLowerCase();
+    h = alias[h] || h;
+    if (!views[h]) h = 'home';
+    if (h !== cur) setView(h, {});
+    if (fromLoad && stackMQ.matches && h !== 'home') {
+      requestAnimationFrame(() => sheetWrap.scrollIntoView({ block: 'start' }));
+    }
+  }
+  window.addEventListener('hashchange', () => route(false));
+  stackMQ.addEventListener && stackMQ.addEventListener('change', onScroll);
+
+  /* ---------------- boot ---------------- */
+  function finishBoot() {
+    if (!booting) return;
+    booting = false;
+    clearTimeout(bootTimer);
+    root.classList.remove('booting');
+    lcdMode('RDY');
+    renderLCD(false);
+  }
+  // power-on readout (each line <= 16 chars, one per segment tick)
+  const BOOT = ['SK-01  REV 2026', 'POWER ....... OK', 'LOADING PROFILE', 'M.SC. AI · BTU', '2 UNITS · 6 PROJ', '91% · IEEE · SIH', 'STATUS: OPEN', 'READY.'];
+  function boot() {
+    booting = true;
+    root.classList.add('booting');
+    L.sec.textContent = 'SYS BOOT';
+    L.count.textContent = 'V26';
+    lcdMode('PWR');
+    fitTitle('SK-01');
+    L.title.textContent = 'SK-01';
+    L.sub.textContent = BOOT[0];
+    let n = 0;
+    const tickBoot = () => {
+      if (!booting) return;
+      lcdSegs(8, -1);
+      $$('i', L.segs).forEach((s, j) => s.classList.toggle('on', j <= n));
+      L.sub.textContent = BOOT[Math.min(n, BOOT.length - 1)];
+      n++;
+      if (n < 8) bootTimer = setTimeout(tickBoot, 120);
+      else bootTimer = setTimeout(finishBoot, 140);
+    };
+    tickBoot();
+  }
+
+  /* ---------------- init ---------------- */
+  applyTheme(root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light', false);
+  setSize(size, false);
+  if (!reduce.matches) boot();
+  route(true);
+  if (!booting) renderLCD(true);
+  syncScroll();
+})();
 </script>
-
 </body>
 </html>

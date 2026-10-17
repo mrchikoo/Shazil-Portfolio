@@ -1,0 +1,1285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Shazil Katchhi — AI & Machine Learning</title>
+<meta name="description" content="Shazil Katchhi — M.Sc. Artificial Intelligence student at BTU Cottbus-Senftenberg. Machine learning, computer vision, and applied AI." />
+<script>
+(function(){try{var t=localStorage.getItem('sk-theme');if(t==='light'||t==='dark'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #ebebeb;
+    --surface: #ffffff;
+    --surface-2: #f4f4f4;
+    --ink: #2b2b2b;
+    --ink-soft: #4a4a4a;
+    --muted: #6b6b6b;
+    --faint: #8f8f8f;
+    --line: #d6d6d6;
+    --line-soft: #e2e2e2;
+    --sel: #00b7d6;
+    --sel-2: #14d0e2;
+    --sel-glow: rgba(0, 190, 220, .45);
+    --joy-red: #d9574f;
+    --joy-blue: #2f8fd6;
+    --shadow: 0 1px 2px rgba(0,0,0,.06), 0 10px 26px -12px rgba(0,0,0,.22);
+    --shadow-lift: 0 2px 4px rgba(0,0,0,.06), 0 24px 48px -18px rgba(0,0,0,.32);
+    --tile: clamp(176px, 16.5vw, 248px);
+    --radius: 8px;
+    --ease: cubic-bezier(.22,.8,.22,1);
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #2d2d2d;
+      --surface: #383838;
+      --surface-2: #404040;
+      --ink: #f1f1f1;
+      --ink-soft: #d8d8d8;
+      --muted: #ababab;
+      --faint: #8a8a8a;
+      --line: #4e4e4e;
+      --line-soft: #454545;
+      --sel: #19c7e6;
+      --sel-2: #4fe0f2;
+      --sel-glow: rgba(25, 199, 230, .45);
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 12px 28px -12px rgba(0,0,0,.6);
+      --shadow-lift: 0 2px 4px rgba(0,0,0,.3), 0 26px 50px -18px rgba(0,0,0,.7);
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #2d2d2d;
+    --surface: #383838;
+    --surface-2: #404040;
+    --ink: #f1f1f1;
+    --ink-soft: #d8d8d8;
+    --muted: #ababab;
+    --faint: #8a8a8a;
+    --line: #4e4e4e;
+    --line-soft: #454545;
+    --sel: #19c7e6;
+    --sel-2: #4fe0f2;
+    --sel-glow: rgba(25, 199, 230, .45);
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 12px 28px -12px rgba(0,0,0,.6);
+    --shadow-lift: 0 2px 4px rgba(0,0,0,.3), 0 26px 50px -18px rgba(0,0,0,.7);
+    color-scheme: dark;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: 'DM Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    font-optical-sizing: auto;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow: hidden;
+    transition: background-color .35s var(--ease), color .35s var(--ease);
+  }
+  button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  a { color: inherit; }
+  svg { display: block; }
+  .ico { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+
+  :focus { outline: none; }
+  :focus-visible { outline: 3px solid var(--sel); outline-offset: 3px; border-radius: 6px; }
+  .tile:focus-visible, .dock-btn:focus-visible { outline: none; }
+
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  /* ------------------------------------------------------------------ */
+  /* HOME                                                                */
+  /* ------------------------------------------------------------------ */
+  #home {
+    position: fixed; inset: 0;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: 48px;
+  }
+  @media (hover: none) and (pointer: coarse) { #home { padding-bottom: 0; } }
+
+  .top {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 26px 40px 0;
+  }
+  .user { display: flex; align-items: center; gap: 14px; }
+  .avatar {
+    width: 48px; height: 48px; border-radius: 50%; overflow: hidden; flex: none;
+    box-shadow: 0 0 0 1px var(--line), var(--shadow);
+    background: var(--surface);
+  }
+  .avatar img { width: 100%; height: 100%; object-fit: cover; object-position: center 22%; display: block; }
+  .user .name { font-size: 1.05rem; font-weight: 600; letter-spacing: -.005em; line-height: 1.2; }
+  .user .status { font-size: .78rem; color: var(--muted); display: flex; align-items: center; gap: 7px; margin-top: 3px; }
+  .user .status i { width: 6px; height: 6px; border-radius: 50%; background: var(--sel); box-shadow: 0 0 0 3px var(--sel-glow); display: inline-block; }
+
+  .sys { display: flex; align-items: center; gap: 14px; color: var(--ink-soft); }
+  .sys .clock { font-size: 1.05rem; font-weight: 500; letter-spacing: .01em; font-variant-numeric: tabular-nums; }
+  .sys .ico { width: 20px; height: 20px; stroke-width: 1.5; }
+  .sys .glyphs { display: flex; align-items: center; gap: 8px; }
+
+  /* tile row */
+  .stage { display: grid; align-content: center; min-height: 0; }
+  .row {
+    position: relative;
+    display: flex; gap: 16px; align-items: center;
+    overflow-x: auto; overflow-y: hidden;
+    padding: 64px calc(66.66% - var(--tile) / 2) 70px calc(33.33% - var(--tile) / 2);
+    scrollbar-width: none;
+    overscroll-behavior-x: contain;
+    scroll-behavior: smooth;
+  }
+  .row::-webkit-scrollbar { display: none; }
+  .tile {
+    position: relative; flex: none;
+    width: var(--tile); height: var(--tile);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    transition: transform .28s var(--ease), box-shadow .28s var(--ease);
+    transform: translateZ(0);
+    text-align: left;
+  }
+  .tile .art {
+    position: absolute; inset: 0; border-radius: var(--radius); overflow: hidden;
+    background: var(--surface);
+  }
+  .tile .art::after { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 0 1px rgba(0,0,0,.06); pointer-events: none; }
+  .tile:hover { transform: translateY(-2px) scale(1.02); }
+  .tile.is-sel { transform: scale(1.06); box-shadow: var(--shadow-lift); z-index: 2; }
+  .tile.is-sel:hover { transform: scale(1.06); }
+  .tile .ring {
+    position: absolute; inset: -5px; border-radius: calc(var(--radius) + 5px);
+    border: 4px solid var(--sel);
+    box-shadow: 0 0 18px 1px var(--sel-glow), inset 0 0 0 1px rgba(255,255,255,.4);
+    opacity: 0; pointer-events: none;
+    transition: opacity .2s;
+  }
+  .tile.is-sel .ring { opacity: 1; animation: pulse 1.6s ease-in-out infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .55; } }
+  .tile .name {
+    position: absolute; left: 50%; top: calc(100% + 18px); transform: translateX(-50%) translateY(-4px);
+    white-space: nowrap; font-size: .9rem; font-weight: 500; color: var(--ink-soft); letter-spacing: .005em;
+    opacity: 0; transition: opacity .25s var(--ease), transform .25s var(--ease);
+  }
+  .tile.is-sel .name, .tile:hover .name { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .tile.is-sel .name { color: var(--ink); }
+
+  /* key art */
+  .tile .art-about img { width: 100%; height: 100%; object-fit: cover; object-position: center 18%; display: block; }
+  .tile .art-about::before { content: ""; position: absolute; inset: 0; z-index: 1; background: linear-gradient(180deg, rgba(0,0,0,0) 55%, rgba(20,24,30,.42)); }
+  .tile .art-about .mono { position: absolute; left: 14px; bottom: 11px; z-index: 2; color: #fff; font-weight: 500; font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; opacity: .92; }
+
+  .tile .art-exp { background: linear-gradient(160deg, #2b3647 0%, #1a2230 100%); }
+  .tile .art-exp svg { width: 100%; height: 100%; }
+
+  .tile .art-proj { background: linear-gradient(170deg, #ece6da, #dfd7c9); }
+  .tile .art-proj svg { width: 100%; height: 100%; }
+
+  .tile .art-tool { background: linear-gradient(160deg, #2e2f34, #202125); }
+  .tile .art-tool svg { width: 100%; height: 100%; }
+
+  .tile .art-words { background: linear-gradient(165deg, #e2e6df, #cfd6cc); }
+  .tile .art-words .q { position: absolute; left: 14px; top: -22px; font-size: 150px; line-height: 1; font-weight: 700; color: #55614f; letter-spacing: -.04em; }
+  .tile .art-words .w { position: absolute; right: 16px; bottom: 14px; font-size: .78rem; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: #55614f; opacity: .9; }
+
+  .tile .art-contact { background: linear-gradient(160deg, #56657a, #3a4553); }
+  .tile .art-contact .at { position: absolute; right: -8px; bottom: -34px; font-size: 180px; line-height: 1; font-weight: 300; color: rgba(255,255,255,.88); }
+  .tile .art-contact .w { position: absolute; left: 14px; top: 14px; font-size: .78rem; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: rgba(255,255,255,.85); }
+
+  /* dock */
+  .dock {
+    display: flex; justify-content: center; align-items: flex-end; gap: 22px;
+    padding: 6px 24px 22px;
+  }
+  .dock-btn {
+    position: relative;
+    width: 60px; height: 60px; border-radius: 50%;
+    display: grid; place-items: center;
+    background: var(--surface);
+    color: var(--ink-soft);
+    box-shadow: 0 0 0 1px var(--line), var(--shadow);
+    transition: transform .25s var(--ease), box-shadow .25s var(--ease), color .2s;
+  }
+  .dock-btn .ico { width: 24px; height: 24px; }
+  .dock-btn:hover { transform: translateY(-2px); color: var(--ink); }
+  .dock-btn .ring {
+    position: absolute; inset: -5px; border-radius: 50%;
+    border: 4px solid var(--sel); box-shadow: 0 0 16px 1px var(--sel-glow);
+    opacity: 0; pointer-events: none; transition: opacity .2s;
+  }
+  .dock-btn.is-sel { transform: scale(1.06); color: var(--ink); }
+  .dock-btn.is-sel .ring { opacity: 1; animation: pulse 1.6s ease-in-out infinite; }
+  .dock-btn .lbl {
+    position: absolute; bottom: calc(100% + 14px); left: 50%; transform: translateX(-50%) translateY(4px);
+    white-space: nowrap; font-size: .8rem; font-weight: 500; color: var(--ink);
+    background: var(--surface); padding: 5px 12px; border-radius: 999px;
+    box-shadow: 0 0 0 1px var(--line), var(--shadow);
+    opacity: 0; pointer-events: none; transition: opacity .2s var(--ease), transform .2s var(--ease);
+  }
+  .dock-btn.is-sel .lbl, .dock-btn:hover .lbl { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .dock-btn.accent-red { color: var(--joy-red); }
+  .dock-btn.accent-blue { color: var(--joy-blue); }
+
+  /* hint bar */
+  .hints {
+    display: flex; justify-content: flex-end; align-items: center; gap: 24px;
+    padding: 12px 40px calc(14px + env(safe-area-inset-bottom));
+    border-top: 1px solid var(--line);
+    font-size: .82rem; font-weight: 500; color: var(--ink-soft);
+    background: var(--bg);
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 45;
+    transition: background-color .35s var(--ease);
+  }
+  .hints .h { display: flex; align-items: center; gap: 8px; }
+  .hints .k {
+    width: 20px; height: 20px; border-radius: 50%; border: 1.5px solid currentColor;
+    display: grid; place-items: center; font-size: .66rem; font-weight: 600; line-height: 1;
+  }
+  .hints .k.pad { border-radius: 4px; width: 22px; height: 16px; }
+  @media (hover: none) and (pointer: coarse) { .hints { display: none; } }
+
+  /* ------------------------------------------------------------------ */
+  /* PAGES                                                               */
+  /* ------------------------------------------------------------------ */
+  .page {
+    position: fixed; inset: 0; z-index: 30;
+    background: var(--bg);
+    display: flex; flex-direction: column;
+    will-change: transform, opacity;
+    transform-origin: center center;
+  }
+  .page[hidden] { display: none; }
+  .page-bar {
+    flex: none; display: flex; align-items: center; gap: 16px;
+    height: 72px; padding: 0 32px;
+    border-bottom: 1px solid var(--line);
+  }
+  .back {
+    width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center;
+    background: var(--surface); color: var(--ink);
+    box-shadow: 0 0 0 1px var(--line), var(--shadow);
+    transition: transform .2s var(--ease);
+  }
+  .back:hover { transform: translateX(-2px); }
+  .back .ico { width: 20px; height: 20px; }
+  .page-bar h1 { font-size: 1.2rem; font-weight: 600; letter-spacing: -.01em; }
+  .page-bar .crumb { font-size: .82rem; color: var(--muted); margin-left: auto; font-weight: 500; }
+  .page-body { flex: 1; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
+  .page-inner { max-width: 1080px; margin: 0 auto; padding: 44px 32px 96px; }
+  @media (hover: none) and (pointer: coarse) { .page-inner { padding-bottom: 48px; } }
+
+  .eyebrow { font-size: .74rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+  .display { font-size: clamp(1.9rem, 3.6vw, 2.9rem); font-weight: 600; line-height: 1.08; letter-spacing: -.025em; }
+  .display em { font-style: normal; color: var(--muted); font-weight: 400; }
+  .lede { font-size: 1.08rem; color: var(--ink-soft); line-height: 1.7; max-width: 60ch; }
+  .prose p { color: var(--ink-soft); font-size: 1rem; line-height: 1.75; max-width: 64ch; }
+  .prose p + p { margin-top: 14px; }
+
+  .card {
+    background: var(--surface); border-radius: 10px;
+    box-shadow: 0 0 0 1px var(--line-soft), var(--shadow);
+  }
+  .btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 11px 20px; border-radius: 999px; font-size: .9rem; font-weight: 500; text-decoration: none;
+    background: var(--ink); color: var(--bg);
+    transition: transform .18s var(--ease), opacity .2s;
+  }
+  .btn:hover { transform: translateY(-1px); opacity: .92; }
+  .btn.ghost { background: var(--surface); color: var(--ink); box-shadow: 0 0 0 1px var(--line); }
+  .btn .ico { width: 16px; height: 16px; stroke-width: 1.8; }
+  .btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
+
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tags span { font-size: .74rem; font-weight: 500; letter-spacing: .02em; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 4px 11px; }
+
+  .live { display: inline-flex; align-items: center; gap: 9px; font-size: .86rem; font-weight: 500; color: var(--ink-soft); }
+  .live i { width: 7px; height: 7px; border-radius: 50%; background: var(--sel); box-shadow: 0 0 0 3px var(--sel-glow); }
+
+  /* About */
+  .about-grid { display: grid; grid-template-columns: 1.3fr .8fr; gap: 56px; align-items: start; }
+  .about-grid .display { margin: 12px 0 18px; }
+  .portrait { border-radius: 12px; overflow: hidden; aspect-ratio: 4 / 5; box-shadow: var(--shadow-lift); }
+  .portrait img { width: 100%; height: 100%; object-fit: cover; object-position: center 20%; display: block; }
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); margin-top: 40px; overflow: hidden; }
+  .stat { padding: 22px 22px; border-right: 1px solid var(--line-soft); }
+  .stat:last-child { border-right: none; }
+  .stat .k { font-size: .72rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+  .stat .v { font-size: 1.9rem; font-weight: 600; letter-spacing: -.03em; line-height: 1.1; margin: 8px 0 6px; }
+  .stat .v em { font-style: normal; color: var(--sel); }
+  .stat .d { font-size: .82rem; color: var(--muted); }
+
+  /* Experience */
+  .timeline { position: relative; display: grid; gap: 22px; padding-left: 34px; }
+  .timeline::before { content: ""; position: absolute; left: 7px; top: 14px; bottom: 14px; width: 1px; background: var(--line); }
+  .xp { position: relative; padding: 30px 34px; }
+  .xp::before { content: ""; position: absolute; left: -31px; top: 36px; width: 9px; height: 9px; border-radius: 50%; background: var(--bg); border: 2px solid var(--sel); }
+  .xp .dates { font-size: .76rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+  .xp h2 { font-size: 1.45rem; font-weight: 600; letter-spacing: -.015em; margin-top: 8px; line-height: 1.2; }
+  .xp h2 span { color: var(--muted); font-weight: 400; }
+  .xp .co { font-size: .92rem; color: var(--muted); margin: 4px 0 18px; }
+  .xp .desc { color: var(--ink-soft); line-height: 1.7; max-width: 70ch; }
+  .xp ul { list-style: none; margin: 20px 0 22px; border-top: 1px solid var(--line-soft); }
+  .xp li { position: relative; padding: 11px 0 11px 22px; border-bottom: 1px solid var(--line-soft); color: var(--ink-soft); font-size: .94rem; line-height: 1.6; }
+  .xp li::before { content: ""; position: absolute; left: 2px; top: 20px; width: 6px; height: 6px; border-radius: 50%; background: var(--line); }
+
+  /* Projects */
+  .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+  .pcard {
+    display: grid; grid-template-rows: auto 1fr; text-align: left; overflow: hidden;
+    transition: transform .25s var(--ease), box-shadow .25s var(--ease);
+  }
+  .pcard:hover { transform: translateY(-3px); box-shadow: 0 0 0 1px var(--line-soft), var(--shadow-lift); }
+  .pcard .thumb { height: 150px; position: relative; overflow: hidden; }
+  .pcard .thumb svg { width: 100%; height: 100%; }
+  .pcard .pb { padding: 20px 22px 22px; }
+  .pcard .meta { font-size: .74rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+  .pcard h3 { font-size: 1.2rem; font-weight: 600; letter-spacing: -.012em; margin: 6px 0 8px; line-height: 1.25; }
+  .pcard p { color: var(--ink-soft); font-size: .92rem; line-height: 1.6; }
+  .pcard .tags { margin-top: 14px; }
+  .pcard .go { display: flex; align-items: center; justify-content: space-between; margin-top: 16px; font-size: .84rem; font-weight: 500; color: var(--muted); }
+  .pcard .go .ico { width: 16px; height: 16px; }
+
+  /* Toolkit */
+  .kit { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .kgroup { padding: 26px 26px 28px; }
+  .kgroup .n { font-size: .74rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); display: flex; align-items: center; gap: 10px; }
+  .kgroup .n b { font-weight: 600; color: var(--ink); font-size: .74rem; width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid var(--line); display: grid; place-items: center; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+  .chips span { font-size: .9rem; font-weight: 500; padding: 9px 15px; border-radius: 10px; background: var(--surface-2); color: var(--ink); box-shadow: inset 0 0 0 1px var(--line-soft); }
+
+  /* Words */
+  .quotes { display: grid; gap: 22px; }
+  .quote { padding: 38px 42px; }
+  .quote p { font-size: clamp(1.15rem, 1.9vw, 1.5rem); font-weight: 400; line-height: 1.5; letter-spacing: -.012em; color: var(--ink); max-width: 46ch; }
+  .quote p::before { content: "“"; color: var(--sel); font-weight: 700; margin-right: 2px; }
+  .quote p::after { content: "”"; color: var(--sel); font-weight: 700; margin-left: 2px; }
+  .quote .who { display: flex; align-items: center; gap: 14px; margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--line-soft); }
+  .quote .who .mono { width: 38px; height: 38px; border-radius: 50%; background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--line-soft); display: grid; place-items: center; font-size: .78rem; font-weight: 600; color: var(--ink-soft); letter-spacing: .02em; }
+  .quote .who .nm { font-weight: 600; font-size: .95rem; line-height: 1.2; }
+  .quote .who .rl { font-size: .8rem; color: var(--muted); margin-top: 2px; }
+
+  /* Contact */
+  .contact-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: start; }
+  .rows { overflow: hidden; }
+  .crow { display: flex; align-items: center; gap: 18px; padding: 18px 24px; border-bottom: 1px solid var(--line-soft); text-decoration: none; transition: background .2s; }
+  .crow:last-child { border-bottom: none; }
+  a.crow:hover { background: var(--surface-2); }
+  .crow .ic { width: 38px; height: 38px; border-radius: 50%; background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--line-soft); display: grid; place-items: center; color: var(--ink-soft); flex: none; }
+  .crow .ic .ico { width: 18px; height: 18px; }
+  .crow .l { font-size: .72rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+  .crow .v { font-size: .98rem; font-weight: 500; line-height: 1.3; margin-top: 2px; word-break: break-word; }
+  .crow .arrow { margin-left: auto; color: var(--faint); }
+  .crow .arrow .ico { width: 18px; height: 18px; }
+
+  /* Now */
+  .now-grid { display: grid; grid-template-columns: 1.1fr .9fr; gap: 22px; align-items: start; }
+  .now-card { padding: 30px 34px; }
+  .now-card h2 { font-size: 1.3rem; font-weight: 600; letter-spacing: -.015em; margin: 10px 0 12px; }
+  .now-card p { color: var(--ink-soft); line-height: 1.7; }
+  .now-card p a { text-decoration-color: var(--line); text-underline-offset: 3px; }
+  .now-card ul { list-style: none; margin-top: 10px; }
+  .now-card li { padding: 10px 0 10px 22px; position: relative; border-bottom: 1px solid var(--line-soft); color: var(--ink-soft); font-size: .95rem; }
+  .now-card li:last-child { border-bottom: none; }
+  .now-card li::before { content: ""; position: absolute; left: 2px; top: 19px; width: 6px; height: 6px; border-radius: 50%; background: var(--sel); }
+
+  /* ------------------------------------------------------------------ */
+  /* SHEETS                                                              */
+  /* ------------------------------------------------------------------ */
+  .scrim {
+    position: fixed; inset: 0; z-index: 60;
+    background: rgba(20, 20, 22, .42);
+    display: flex; align-items: center; justify-content: center; padding: 24px;
+    opacity: 0; transition: opacity .25s var(--ease);
+  }
+  .scrim.on { opacity: 1; }
+  .scrim[hidden] { display: none; }
+  .sheet {
+    width: min(680px, 100%); max-height: min(86vh, 820px);
+    background: var(--surface); border-radius: 14px; overflow: hidden;
+    display: flex; flex-direction: column;
+    box-shadow: 0 0 0 1px var(--line-soft), 0 40px 80px -24px rgba(0,0,0,.5);
+    transform: translateY(18px) scale(.98); opacity: 0;
+    transition: transform .32s var(--ease), opacity .25s var(--ease);
+  }
+  .scrim.on .sheet { transform: none; opacity: 1; }
+  .sheet-bar { flex: none; display: flex; align-items: center; justify-content: space-between; padding: 14px 16px 14px 22px; border-bottom: 1px solid var(--line-soft); }
+  .sheet-bar .t { font-size: .78rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+  .x { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; color: var(--ink-soft); background: var(--surface-2); }
+  .x .ico { width: 16px; height: 16px; stroke-width: 1.8; }
+  .sheet-body { overflow-y: auto; padding: 30px 32px 36px; }
+  .sheet-body .dates { font-size: .74rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+  .sheet-body h2 { font-size: 1.6rem; font-weight: 600; letter-spacing: -.02em; line-height: 1.15; margin: 8px 0 16px; }
+  .sheet-body h2 span { color: var(--muted); font-weight: 400; }
+  .sheet-body .desc { color: var(--ink-soft); line-height: 1.75; margin: 18px 0; }
+  .hl { border-left: 3px solid var(--sel); background: var(--surface-2); border-radius: 0 10px 10px 0; padding: 14px 18px; margin: 4px 0 22px; }
+  .hl .l { font-size: .68rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+  .hl .t { font-size: 1rem; line-height: 1.5; }
+  .photo-sheet { width: min(460px, 100%); }
+  .photo-sheet .sheet-body { padding: 0; }
+  .photo-sheet img { width: 100%; height: auto; display: block; aspect-ratio: 572 / 600; object-fit: cover; }
+
+  /* ------------------------------------------------------------------ */
+  /* INTRO                                                               */
+  /* ------------------------------------------------------------------ */
+  .intro {
+    position: fixed; inset: 0; z-index: 100; background: var(--bg);
+    display: grid; place-items: center;
+    animation: introOut .9s var(--ease) forwards;
+  }
+  .intro span { font-size: clamp(1.4rem, 3vw, 2rem); font-weight: 500; letter-spacing: -.02em; color: var(--ink); animation: introIn .9s var(--ease) forwards; }
+  @keyframes introIn { 0% { opacity: 0; transform: translateY(6px); } 40% { opacity: 1; transform: none; } 75% { opacity: 1; } 100% { opacity: 0; } }
+  @keyframes introOut { 0%, 78% { opacity: 1; } 100% { opacity: 0; visibility: hidden; } }
+  .intro[hidden] { display: none; }
+
+  /* ------------------------------------------------------------------ */
+  /* RESPONSIVE                                                          */
+  /* ------------------------------------------------------------------ */
+  @media (max-width: 1024px) {
+    .about-grid { gap: 36px; }
+    .kit { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 760px) {
+    :root { --tile: min(66vw, 300px); }
+    .top { padding: 18px 20px 0; }
+    .avatar { width: 40px; height: 40px; }
+    .user .name { font-size: .98rem; }
+    .sys .clock { font-size: .95rem; }
+    .row {
+      gap: 14px;
+      padding: 44px calc(50% - var(--tile) / 2) 56px;
+      scroll-snap-type: x mandatory;
+    }
+    .tile { scroll-snap-align: center; }
+    .tile:hover { transform: none; }
+    .tile.is-sel, .tile.is-sel:hover { transform: scale(1.03); }
+    .dock { gap: 10px; padding: 4px 12px 16px; }
+    .dock-btn { width: 48px; height: 48px; box-shadow: 0 0 0 1px var(--line), 0 6px 16px -8px rgba(0,0,0,.2); }
+    .dock-btn .ico { width: 20px; height: 20px; }
+    .dock-btn .lbl { display: none; }
+    .dock-btn.is-sel { transform: none; }
+    .hints { display: none; }
+    #home { padding-bottom: 0; }
+    .page-bar { height: 60px; padding: 0 16px; }
+    .page-bar h1 { font-size: 1.05rem; }
+    .page-bar .crumb { display: none; }
+    .page-inner { padding: 28px 18px 56px; }
+    .about-grid, .contact-wrap, .now-grid { grid-template-columns: 1fr; gap: 28px; }
+    .portrait { max-width: 320px; aspect-ratio: 4 / 4.6; }
+    .stats { grid-template-columns: 1fr 1fr; }
+    .stat { padding: 18px; border-bottom: 1px solid var(--line-soft); }
+    .stat:nth-child(2n) { border-right: none; }
+    .stat:nth-child(n+3) { border-bottom: none; }
+    .timeline { padding-left: 22px; gap: 16px; }
+    .xp { padding: 22px 20px; }
+    .xp::before { left: -19px; }
+    .grid { grid-template-columns: 1fr; gap: 16px; }
+    .kit { grid-template-columns: 1fr; gap: 14px; }
+    .kgroup { padding: 20px; }
+    .quote { padding: 26px 22px; }
+    .crow { padding: 14px 16px; }
+    .now-card { padding: 22px 20px; }
+    .scrim { align-items: flex-end; padding: 0; }
+    .sheet { max-height: 92dvh; border-radius: 18px 18px 0 0; transform: translateY(40px); }
+    .sheet-body { padding: 22px 20px calc(30px + env(safe-area-inset-bottom)); }
+    .photo-sheet { width: 100%; }
+  }
+  @media (max-width: 400px) {
+    .sys .glyphs { display: none; }
+  }
+  @media (min-width: 1800px) {
+    :root { --tile: 280px; }
+    .page-inner { max-width: 1200px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+    .tile.is-sel .ring, .dock-btn.is-sel .ring { animation: none; opacity: 1; }
+    .row { scroll-behavior: auto; }
+    .intro { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="intro" id="intro" aria-hidden="true"><span>Shazil Katchhi</span></div>
+
+<!-- =============================== HOME =============================== -->
+<main id="home" aria-label="Home">
+  <header class="top">
+    <div class="user">
+      <div class="avatar"><img src="../assets/profile.jpg" alt="Shazil Katchhi" width="48" height="48" /></div>
+      <div>
+        <div class="name">Shazil</div>
+        <div class="status"><i aria-hidden="true"></i>Available 15–20 hrs/week</div>
+      </div>
+    </div>
+    <div class="sys" aria-hidden="true">
+      <span class="clock" id="clock">--:--</span>
+      <span class="glyphs">
+        <svg class="ico" viewBox="0 0 24 24"><path d="M2.5 9a15 15 0 0 1 19 0M5.5 12.3a10 10 0 0 1 13 0M8.6 15.6a5.2 5.2 0 0 1 6.8 0"/><circle cx="12" cy="19" r="1" fill="currentColor" stroke="none"/></svg>
+        <svg class="ico" viewBox="0 0 24 24"><rect x="2.5" y="7.5" width="17" height="9" rx="2"/><path d="M21.5 10.5v3"/><rect x="4.5" y="9.5" width="13" height="5" rx=".8" fill="currentColor" stroke="none"/></svg>
+      </span>
+    </div>
+  </header>
+
+  <section class="stage">
+    <div class="row" id="row" role="list" aria-label="Sections">
+      <button class="tile" role="listitem" data-page="about" aria-label="About">
+        <span class="art art-about"><img src="../assets/profile.jpg" alt="" /><span class="mono">About</span></span>
+        <span class="ring" aria-hidden="true"></span><span class="name" aria-hidden="true">About</span>
+      </button>
+
+      <button class="tile" role="listitem" data-page="experience" aria-label="Experience">
+        <span class="art art-exp" aria-hidden="true">
+          <svg viewBox="0 0 100 100" preserveAspectRatio="none">
+            <g stroke="rgba(255,255,255,.12)" stroke-width=".6" fill="none">
+              <line x1="0" y1="34" x2="100" y2="34"/><line x1="0" y1="52" x2="100" y2="52"/><line x1="0" y1="70" x2="100" y2="70"/>
+            </g>
+            <g stroke="rgba(255,255,255,.35)" stroke-width=".6" fill="none">
+              <line x1="28" y1="34" x2="62" y2="34"/><line x1="46" y1="52" x2="88" y2="52"/>
+            </g>
+            <circle cx="28" cy="34" r="2.4" fill="#d7dfea"/><circle cx="62" cy="34" r="2.4" fill="#d7dfea"/>
+            <circle cx="46" cy="52" r="2.4" fill="#8fb4d9"/><circle cx="88" cy="52" r="2.4" fill="#d7dfea"/>
+            <circle cx="20" cy="70" r="1.6" fill="rgba(255,255,255,.3)"/>
+          </svg>
+          <span style="position:absolute;left:14px;bottom:12px;font-size:.78rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.85)">Experience</span>
+          <span style="position:absolute;right:14px;top:12px;font-size:.78rem;font-weight:500;letter-spacing:.04em;color:rgba(255,255,255,.55);font-variant-numeric:tabular-nums">’24 — ’26</span>
+        </span>
+        <span class="ring" aria-hidden="true"></span><span class="name" aria-hidden="true">Experience</span>
+      </button>
+
+      <button class="tile" role="listitem" data-page="projects" aria-label="Projects">
+        <span class="art art-proj" aria-hidden="true">
+          <svg viewBox="0 0 100 100">
+            <rect x="16" y="16" width="30" height="30" rx="5" fill="#c3705d"/>
+            <rect x="54" y="16" width="30" height="30" rx="5" fill="#5f7390"/>
+            <rect x="16" y="54" width="30" height="30" rx="5" fill="#7f8e6c"/>
+            <rect x="54" y="54" width="30" height="30" rx="5" fill="#cfa35f"/>
+          </svg>
+          <span style="position:absolute;left:14px;bottom:12px;font-size:.78rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:#4a443b">Projects</span>
+          <span style="position:absolute;right:14px;top:12px;font-size:.78rem;font-weight:500;color:#6a6358">4</span>
+        </span>
+        <span class="ring" aria-hidden="true"></span><span class="name" aria-hidden="true">Projects</span>
+      </button>
+
+      <button class="tile" role="listitem" data-page="toolkit" aria-label="Toolkit">
+        <span class="art art-tool" aria-hidden="true">
+          <svg viewBox="0 0 100 100">
+            <defs><pattern id="dots" width="8" height="8" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r=".6" fill="rgba(255,255,255,.14)"/></pattern></defs>
+            <rect width="100" height="100" fill="url(#dots)"/>
+            <g fill="none" stroke="#9aa3ad" stroke-width="1">
+              <rect x="22" y="22" width="40" height="40" rx="7"/>
+              <rect x="31" y="31" width="40" height="40" rx="7" stroke="#c3cad2"/>
+              <rect x="40" y="40" width="40" height="40" rx="7" stroke="#eef1f4"/>
+            </g>
+            <circle cx="72" cy="28" r="3" fill="#19c7e6"/>
+          </svg>
+          <span style="position:absolute;left:14px;bottom:12px;font-size:.78rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.85)">Toolkit</span>
+        </span>
+        <span class="ring" aria-hidden="true"></span><span class="name" aria-hidden="true">Toolkit</span>
+      </button>
+
+      <button class="tile" role="listitem" data-page="words" aria-label="Words">
+        <span class="art art-words" aria-hidden="true"><span class="q">”</span><span class="w">Words</span></span>
+        <span class="ring" aria-hidden="true"></span><span class="name" aria-hidden="true">Words</span>
+      </button>
+
+      <button class="tile" role="listitem" data-page="contact" aria-label="Contact">
+        <span class="art art-contact" aria-hidden="true"><span class="w">Contact</span><span class="at">@</span></span>
+        <span class="ring" aria-hidden="true"></span><span class="name" aria-hidden="true">Contact</span>
+      </button>
+    </div>
+  </section>
+
+  <nav class="dock" id="dock" aria-label="Quick actions">
+    <button class="dock-btn" data-page="now" aria-label="Now — current status">
+      <svg class="ico" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M8 9.2h8M8 12.5h8M8 15.8h5"/></svg>
+      <span class="ring" aria-hidden="true"></span><span class="lbl" aria-hidden="true">Now</span>
+    </button>
+    <button class="dock-btn" data-page="contact" aria-label="Work with me">
+      <svg class="ico" viewBox="0 0 24 24"><rect x="3.5" y="7.5" width="17" height="12" rx="2"/><path d="M9 7.5V6a1.5 1.5 0 0 1 1.5-1.5h3A1.5 1.5 0 0 1 15 6v1.5M3.5 13h17"/></svg>
+      <span class="ring" aria-hidden="true"></span><span class="lbl" aria-hidden="true">Work with me</span>
+    </button>
+    <button class="dock-btn" data-sheet="photo" aria-label="Photo">
+      <svg class="ico" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="14" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="M20.5 15.5l-4.3-4.3a1 1 0 0 0-1.4 0L8 18"/></svg>
+      <span class="ring" aria-hidden="true"></span><span class="lbl" aria-hidden="true">Photo</span>
+    </button>
+    <button class="dock-btn" data-page="toolkit" aria-label="Toolkit">
+      <svg class="ico" viewBox="0 0 24 24"><path d="M7.5 7.5h9a4.5 4.5 0 0 1 4.5 4.5v1.2a3.3 3.3 0 0 1-5.9 2l-.9-1.2H9.8l-.9 1.2a3.3 3.3 0 0 1-5.9-2V12a4.5 4.5 0 0 1 4.5-4.5z"/><path d="M8 10.6v3M6.5 12.1h3"/><circle cx="15.6" cy="11.3" r=".5" fill="currentColor"/><circle cx="17.6" cy="13.3" r=".5" fill="currentColor"/></svg>
+      <span class="ring" aria-hidden="true"></span><span class="lbl" aria-hidden="true">Toolkit</span>
+    </button>
+    <button class="dock-btn" id="themeBtn" aria-label="Theme: switch to dark" aria-pressed="false">
+      <svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M12 3.5v2M12 18.5v2M3.5 12h2M18.5 12h2M6 6l1.4 1.4M16.6 16.6L18 18M6 18l1.4-1.4M16.6 7.4L18 6"/></svg>
+      <span class="ring" aria-hidden="true"></span><span class="lbl" aria-hidden="true">Theme</span>
+    </button>
+    <a class="dock-btn" href="../Shazil_Katchhi_CV.pdf" download aria-label="Download CV">
+      <svg class="ico" viewBox="0 0 24 24"><path d="M17.7 7.3a8 8 0 1 1-11.4 0M12 3v9"/></svg>
+      <span class="ring" aria-hidden="true"></span><span class="lbl" aria-hidden="true">Download CV</span>
+    </a>
+  </nav>
+
+</main>
+
+  <footer class="hints" id="hints" aria-hidden="true">
+    <span class="h"><span class="k pad">✛</span> Move</span>
+    <span class="h"><span class="k">A</span> OK</span>
+    <span class="h"><span class="k">B</span> Back</span>
+  </footer>
+
+<!-- =============================== PAGES =============================== -->
+<section class="page" id="page-about" role="dialog" aria-modal="true" aria-labelledby="t-about" hidden>
+  <div class="page-bar">
+    <button class="back" data-back aria-label="Back"><svg class="ico" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <h1 id="t-about">About</h1><span class="crumb">Shazil Katchhi</span>
+  </div>
+  <div class="page-body"><div class="page-inner">
+    <div class="about-grid">
+      <div>
+        <div class="live"><i aria-hidden="true"></i>Berlin, Germany — Available 15–20 hrs/week</div>
+        <h2 class="display">Building <em>intelligent</em> systems that see &amp; understand.</h2>
+        <p class="lede">M.Sc. Artificial Intelligence at BTU Cottbus-Senftenberg. I work at the intersection of deep learning, computer vision, and real-world deployment — turning research into things that work.</p>
+        <div class="prose" style="margin-top:28px;">
+          <p>I'm a Master's student in Artificial Intelligence at Brandenburg University of Technology, having completed my Bachelor's in Computer Science &amp; Engineering with a specialisation in AI &amp; ML at the University of Mumbai.</p>
+          <p>My work spans deep learning for computer vision and NLP, embedded ML on edge devices, and the unglamorous-but-essential work of building data pipelines that hold up under real conditions. I'm drawn to problems where ML meets physical systems — manufacturing, sensors, hardware-in-the-loop.</p>
+          <p>I'm currently looking for working-student opportunities in Germany where I can contribute to applied AI research and industrial machine learning.</p>
+        </div>
+        <div class="btn-row" style="margin-top:28px;">
+          <a class="btn" href="../Shazil_Katchhi_CV.pdf" download>Download CV <svg class="ico" viewBox="0 0 24 24"><path d="M12 4v12m0 0l-5-5m5 5l5-5M5 20h14"/></svg></a>
+          <button class="btn ghost" data-page="projects">View Work <svg class="ico" viewBox="0 0 24 24"><path d="M5 12h14m-6-6l6 6-6 6"/></svg></button>
+        </div>
+      </div>
+      <div class="portrait"><img src="../assets/profile.jpg" alt="Shazil Katchhi" /></div>
+    </div>
+    <div class="stats card">
+      <div class="stat"><div class="k">Publication</div><div class="v"><em>IEEE</em></div><div class="d">Co-author, Xplore ESCI 2025</div></div>
+      <div class="stat"><div class="k">Accuracy</div><div class="v">91<em>%</em></div><div class="d">Gesture recognition pipeline</div></div>
+      <div class="stat"><div class="k">Languages</div><div class="v">4</div><div class="d">EN · DE · HI · UR</div></div>
+      <div class="stat"><div class="k">Leadership</div><div class="v"><em>Chair</em></div><div class="d">IEEE MHSSCE Chapter</div></div>
+    </div>
+  </div></div>
+</section>
+
+<section class="page" id="page-experience" role="dialog" aria-modal="true" aria-labelledby="t-experience" hidden>
+  <div class="page-bar">
+    <button class="back" data-back aria-label="Back"><svg class="ico" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <h1 id="t-experience">Experience</h1><span class="crumb">2 roles</span>
+  </div>
+  <div class="page-body"><div class="page-inner">
+    <div class="eyebrow">Experience</div>
+    <h2 class="display" style="margin-bottom:36px;">Research instinct, <em>shipped.</em></h2>
+    <div class="timeline">
+      <article class="xp card">
+        <div class="dates">May – Aug 2026 · 3 months</div>
+        <h2>AI Engineering <span>— Intern</span></h2>
+        <div class="co">Echocene · Berlin, Germany</div>
+        <p class="desc">Contributed to development of the Echocene platform with hands-on work across data management, databases, backend processing, APIs, and AI-assisted engineering — building and shipping features across the full stack.</p>
+        <ul>
+          <li>Worked with SQLite/SQL databases for data storage, retrieval, structuring, and integration with application functionality.</li>
+          <li>Developed Python backend functionality to process and transform data and connect database, API, and application layers.</li>
+          <li>Supported data-processing workflows and API integrations across different components of the platform.</li>
+          <li>Developed and modified TypeScript frontend functionality for interacting with and presenting backend data.</li>
+          <li>Implemented, tested, and debugged features across the database, backend, API, and frontend layers.</li>
+          <li>Worked with application data flows from extraction and processing through storage and presentation — practical experience relevant to ETL and data integration workflows.</li>
+          <li>Used Claude, OpenAI Codex, and other AI-assisted development tools for technical research, debugging, implementation, and exploring data-processing solutions.</li>
+          <li>Contributed to technical documentation and participated in product discussions around platform architecture, workflows, and data management.</li>
+        </ul>
+        <div class="tags"><span>python</span><span>typescript</span><span>sql · sqlite</span><span>apis</span><span>data processing</span><span>ai/llm development</span><span>claude · codex</span></div>
+      </article>
+      <article class="xp card">
+        <div class="dates">Feb – May 2024 · 4 months</div>
+        <h2>IoT &amp; Database <span>— Intern</span></h2>
+        <div class="co">Skmotiv · Mumbai, India</div>
+        <p class="desc">Prototyped a Raspberry Pi-based IoT module for fuel tanker fleet management — capturing real-time telemetry from live vehicles and building the data layer to store and report on it. First hands-on experience owning a full hardware-to-database pipeline end-to-end.</p>
+        <ul>
+          <li>Designed and prototyped a Raspberry Pi-based IoT module capturing real-time GPS, fuel capacity, fuel type, and truck weight before and after fuelling.</li>
+          <li>Implemented a structured SQLite database schema to store, query and report fleet telemetry data.</li>
+          <li>Wrote Python scripts running on embedded Linux for data acquisition and logging.</li>
+          <li>Integrated hardware sensors via the Raspberry Pi GPIO interface; tested under real operating conditions and documented the full pipeline for handover.</li>
+        </ul>
+        <div class="tags"><span>raspberry pi</span><span>python</span><span>sqlite</span><span>embedded linux</span><span>gpio · sensors</span><span>iot</span></div>
+      </article>
+    </div>
+  </div></div>
+</section>
+
+<section class="page" id="page-projects" role="dialog" aria-modal="true" aria-labelledby="t-projects" hidden>
+  <div class="page-bar">
+    <button class="back" data-back aria-label="Back"><svg class="ico" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <h1 id="t-projects">Projects</h1><span class="crumb">Selected work</span>
+  </div>
+  <div class="page-body"><div class="page-inner">
+    <div class="eyebrow">Projects</div>
+    <h2 class="display" style="margin-bottom:36px;">Selected <em>work.</em></h2>
+    <div class="grid">
+      <button class="pcard card" data-sheet="p1">
+        <span class="thumb" style="background:linear-gradient(160deg,#cf8471,#b4624f)" aria-hidden="true">
+          <svg viewBox="0 0 200 100" preserveAspectRatio="none"><g fill="none" stroke="rgba(255,255,255,.55)" stroke-width="1.2"><path d="M20 70 C 50 20, 80 20, 110 60 S 160 90, 190 30"/></g><g fill="rgba(255,255,255,.9)"><circle cx="20" cy="70" r="2.6"/><circle cx="110" cy="60" r="2.6"/><circle cx="190" cy="30" r="2.6"/></g></svg>
+        </span>
+        <span class="pb">
+          <span class="meta">IEEE Publication · 2025</span>
+          <h3>Gesture-to-Speech</h3>
+          <p>End-to-end deep-learning pipeline for real-time Indian Sign Language recognition.</p>
+          <span class="tags"><span>transformer</span><span>cnn</span><span>lstm</span><span>tensorflow</span><span>mediapipe</span></span>
+          <span class="go">91% accuracy <svg class="ico" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
+        </span>
+      </button>
+      <button class="pcard card" data-sheet="p2">
+        <span class="thumb" style="background:linear-gradient(160deg,#6d829f,#4f6382)" aria-hidden="true">
+          <svg viewBox="0 0 200 100"><g fill="none" stroke="rgba(255,255,255,.6)" stroke-width="1.2"><rect x="70" y="22" width="60" height="56" rx="8"/><rect x="82" y="34" width="36" height="32" rx="4"/></g><g fill="rgba(255,255,255,.85)"><circle cx="78" cy="30" r="1.6"/><circle cx="122" cy="30" r="1.6"/><circle cx="78" cy="70" r="1.6"/><circle cx="122" cy="70" r="1.6"/></g></svg>
+        </span>
+        <span class="pb">
+          <span class="meta">National Hackathon · 2025</span>
+          <h3>Wearable Translation Device</h3>
+          <p>Embedded ML on Raspberry Pi — ViT, CNN and LSTM with low-latency inference.</p>
+          <span class="tags"><span>vision transformer</span><span>embedded ml</span><span>raspberry pi</span><span>edge inference</span></span>
+          <span class="go">Smart India Hackathon · Top 5 <svg class="ico" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
+        </span>
+      </button>
+      <button class="pcard card" data-sheet="p3">
+        <span class="thumb" style="background:linear-gradient(160deg,#8c9a78,#6f7f5e)" aria-hidden="true">
+          <svg viewBox="0 0 200 100"><defs><pattern id="pdots" width="10" height="10" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1" fill="rgba(255,255,255,.35)"/></pattern></defs><rect x="20" y="14" width="160" height="72" rx="6" fill="url(#pdots)"/><circle cx="140" cy="48" r="20" fill="rgba(255,255,255,.22)"/><circle cx="128" cy="56" r="12" fill="rgba(255,255,255,.5)"/></svg>
+        </span>
+        <span class="pb">
+          <span class="meta">Generative AI · 2025</span>
+          <h3>TEXTURA</h3>
+          <p>Prompt-based image generation with fine-tuned diffusion models and vision-language context.</p>
+          <span class="tags"><span>diffusion</span><span>generative ai</span><span>fine-tuning</span><span>vision-language</span></span>
+          <span class="go">GitHub <svg class="ico" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
+        </span>
+      </button>
+      <button class="pcard card" data-sheet="p4">
+        <span class="thumb" style="background:linear-gradient(160deg,#d6ad6a,#b8904f)" aria-hidden="true">
+          <svg viewBox="0 0 200 100"><g fill="none" stroke="rgba(255,255,255,.75)" stroke-width="1.2"><path d="M60 26h-10v10M140 26h10v10M60 74h-10v-10M140 74h10v-10"/><rect x="84" y="40" width="32" height="22" rx="2" stroke="rgba(255,255,255,.95)"/></g></svg>
+        </span>
+        <span class="pb">
+          <span class="meta">Computer Vision · 2024</span>
+          <h3>Real-time Object Detection</h3>
+          <p>High-accuracy real-time detection in Python with OpenCV and TensorFlow.</p>
+          <span class="tags"><span>opencv</span><span>tensorflow</span><span>computer vision</span><span>inference</span></span>
+          <span class="go">GitHub <svg class="ico" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
+        </span>
+      </button>
+    </div>
+  </div></div>
+</section>
+
+<section class="page" id="page-toolkit" role="dialog" aria-modal="true" aria-labelledby="t-toolkit" hidden>
+  <div class="page-bar">
+    <button class="back" data-back aria-label="Back"><svg class="ico" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <h1 id="t-toolkit">Toolkit</h1><span class="crumb">Languages · ML &amp; Data · Methods</span>
+  </div>
+  <div class="page-body"><div class="page-inner">
+    <div class="eyebrow">Toolkit</div>
+    <h2 class="display" style="margin-bottom:36px;">What I <em>build with.</em></h2>
+    <div class="kit">
+      <div class="kgroup card">
+        <div class="n"><b>A</b> Languages</div>
+        <div class="chips"><span>Python</span><span>C / C++</span><span>JavaScript</span><span>SQL · R</span></div>
+      </div>
+      <div class="kgroup card">
+        <div class="n"><b>B</b> ML &amp; Data</div>
+        <div class="chips"><span>TensorFlow · PyTorch</span><span>Scikit-learn · Keras</span><span>OpenCV · MediaPipe</span><span>Pandas · NumPy</span></div>
+      </div>
+      <div class="kgroup card">
+        <div class="n"><b>X</b> Methods &amp; Tools</div>
+        <div class="chips"><span>Computer Vision · NLP</span><span>Deep Learning · Transformers</span><span>Embedded ML · Raspberry Pi</span><span>Git · Jupyter · Node-RED</span></div>
+      </div>
+    </div>
+  </div></div>
+</section>
+
+<section class="page" id="page-words" role="dialog" aria-modal="true" aria-labelledby="t-words" hidden>
+  <div class="page-bar">
+    <button class="back" data-back aria-label="Back"><svg class="ico" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <h1 id="t-words">Words</h1><span class="crumb">What others have said</span>
+  </div>
+  <div class="page-body"><div class="page-inner">
+    <div class="eyebrow">Words</div>
+    <h2 class="display" style="margin-bottom:36px;">What others <em>have said.</em></h2>
+    <div class="quotes">
+      <blockquote class="quote card">
+        <p>Shazil's thirst for knowledge is evident in his proactive approach to learning. He has consistently demonstrated profound leadership and proved himself to be a true team player. His curious mind and good interpretation abilities will significantly facilitate research work.</p>
+        <footer class="who"><span class="mono" aria-hidden="true">AP</span><span><div class="nm">Prof. Amar Pawade</div><div class="rl">Asst. Professor, CSE · MHSSCE</div></span></footer>
+      </blockquote>
+      <blockquote class="quote card">
+        <p>He is not only gifted with excellent grasping powers and technical skills but is also adept at putting in the required hard work to transform his talent into tangible results. I give him my highest recommendation.</p>
+        <footer class="who"><span class="mono" aria-hidden="true">TS</span><span><div class="nm">Prof. Tarannum Shaikh</div><div class="rl">Asst. Professor, CSE · MHSSCE</div></span></footer>
+      </blockquote>
+      <blockquote class="quote card">
+        <p>Your selfless commitment, leadership, and passion have been truly invaluable in driving the success of our initiatives and fostering an environment of innovation, collaboration, and growth.</p>
+        <footer class="who"><span class="mono" aria-hidden="true">IE</span><span><div class="nm">IEEE Committee</div><div class="rl">MHSSCE Student Chapter</div></span></footer>
+      </blockquote>
+    </div>
+  </div></div>
+</section>
+
+<section class="page" id="page-contact" role="dialog" aria-modal="true" aria-labelledby="t-contact" hidden>
+  <div class="page-bar">
+    <button class="back" data-back aria-label="Back"><svg class="ico" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <h1 id="t-contact">Contact</h1><span class="crumb">Work with me</span>
+  </div>
+  <div class="page-body"><div class="page-inner">
+    <div class="contact-wrap">
+      <div>
+        <div class="eyebrow">Get in touch</div>
+        <h2 class="display">Let's build something <em>worth</em> building.</h2>
+        <p class="lede" style="margin-top:18px;">Open to working-student roles in Germany — 15–20 hrs/week.</p>
+        <div class="btn-row" style="margin-top:28px;">
+          <a class="btn" href="mailto:skkatchhi61@gmail.com">Send email <svg class="ico" viewBox="0 0 24 24"><path d="M7 17L17 7M9 7h8v8"/></svg></a>
+          <a class="btn ghost" href="../Shazil_Katchhi_CV.pdf" download>Download CV <svg class="ico" viewBox="0 0 24 24"><path d="M12 4v12m0 0l-5-5m5 5l5-5M5 20h14"/></svg></a>
+        </div>
+      </div>
+      <div class="rows card">
+        <a class="crow" href="mailto:skkatchhi61@gmail.com">
+          <span class="ic"><svg class="ico" viewBox="0 0 24 24"><rect x="3.5" y="5.5" width="17" height="13" rx="2"/><path d="M4 7.5l8 6 8-6"/></svg></span>
+          <span><div class="l">Email</div><div class="v">skkatchhi61@gmail.com</div></span>
+          <span class="arrow"><svg class="ico" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
+        </a>
+        <a class="crow" href="tel:+491631351465">
+          <span class="ic"><svg class="ico" viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg></span>
+          <span><div class="l">Phone</div><div class="v">+49 163 135 1465</div></span>
+          <span class="arrow"><svg class="ico" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
+        </a>
+        <div class="crow">
+          <span class="ic"><svg class="ico" viewBox="0 0 24 24"><path d="M12 21s-6-5.3-6-10a6 6 0 0 1 12 0c0 4.7-6 10-6 10z"/><circle cx="12" cy="11" r="2.2"/></svg></span>
+          <span><div class="l">Location</div><div class="v">Berlin, Germany</div></span>
+        </div>
+        <a class="crow" href="https://www.linkedin.com/in/shazil-katchhi-7336a6252/" target="_blank" rel="noopener">
+          <span class="ic"><svg class="ico" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 10.5v5M8 7.8h.01M12 15.5v-5m0 2.2c0-1.4 1-2.2 2.2-2.2S16 11.3 16 12.7v2.8"/></svg></span>
+          <span><div class="l">LinkedIn</div><div class="v">Shazil Katchhi</div></span>
+          <span class="arrow"><svg class="ico" viewBox="0 0 24 24"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
+        </a>
+        <a class="crow" href="https://github.com/mrchikoo" target="_blank" rel="noopener">
+          <span class="ic"><svg class="ico" viewBox="0 0 24 24"><path d="M9 19c-4 1.2-4-2-5.5-2.5M15 21v-3.4a3 3 0 0 0-.8-2.3c2.7-.3 5.5-1.3 5.5-6A4.6 4.6 0 0 0 18.4 6a4.3 4.3 0 0 0-.1-3.2s-1-.3-3.4 1.3a11.7 11.7 0 0 0-6 0C6.5 2.5 5.5 2.8 5.5 2.8A4.3 4.3 0 0 0 5.4 6a4.6 4.6 0 0 0-1.3 3.2c0 4.7 2.8 5.7 5.5 6a3 3 0 0 0-.8 2.3V21"/></svg></span>
+          <span><div class="l">GitHub</div><div class="v">github.com/mrchikoo</div></span>
+          <span class="arrow"><svg class="ico" viewBox="0 0 24 24"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
+        </a>
+        <a class="crow" href="../Shazil_Katchhi_CV.pdf" download>
+          <span class="ic"><svg class="ico" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg></span>
+          <span><div class="l">CV</div><div class="v">../Shazil_Katchhi_CV.pdf</div></span>
+          <span class="arrow"><svg class="ico" viewBox="0 0 24 24"><path d="M12 4v12m0 0l-5-5m5 5l5-5M5 20h14"/></svg></span>
+        </a>
+      </div>
+    </div>
+  </div></div>
+</section>
+
+<section class="page" id="page-now" role="dialog" aria-modal="true" aria-labelledby="t-now" hidden>
+  <div class="page-bar">
+    <button class="back" data-back aria-label="Back"><svg class="ico" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <h1 id="t-now">Now</h1><span class="crumb">Current status</span>
+  </div>
+  <div class="page-body"><div class="page-inner">
+    <div class="eyebrow">Now</div>
+    <h2 class="display" style="margin-bottom:36px;">Currently <em>in Berlin.</em></h2>
+    <div class="now-grid">
+      <div class="now-card card">
+        <div class="live"><i aria-hidden="true"></i>Berlin, Germany — Available 15–20 hrs/week</div>
+        <h2>Open to working-student roles in Germany — 15–20 hrs/week.</h2>
+        <p>I'm currently looking for working-student opportunities in Germany where I can contribute to applied AI research and industrial machine learning.</p>
+        <p style="margin-top:14px;">Previously AI engineering at <a href="#experience" data-page="experience">Echocene</a> in Berlin, and IoT &amp; databases at <a href="#experience" data-page="experience">Skmotiv</a> in Mumbai. B.Eng. in Computer Science &amp; Engineering (AI &amp; ML) from the University of Mumbai.</p>
+        <div class="btn-row" style="margin-top:24px;">
+          <button class="btn" data-page="contact">Work with me <svg class="ico" viewBox="0 0 24 24"><path d="M5 12h14m-6-6l6 6-6 6"/></svg></button>
+          <a class="btn ghost" href="../Shazil_Katchhi_CV.pdf" download>Download CV</a>
+        </div>
+      </div>
+      <div class="now-card card">
+        <div class="eyebrow" style="margin-bottom:6px;">Stuff on my mind</div>
+        <ul>
+          <li>Deep learning for computer vision and NLP.</li>
+          <li>Embedded ML on edge devices.</li>
+          <li>Data pipelines that hold up under real conditions.</li>
+          <li>Where ML meets physical systems — manufacturing, sensors, hardware-in-the-loop.</li>
+        </ul>
+      </div>
+    </div>
+  </div></div>
+</section>
+
+<!-- =============================== SHEETS =============================== -->
+<div class="scrim" id="scrim" hidden>
+  <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+    <div class="sheet-bar"><span class="t" id="sheetKicker">Project</span><button class="x" id="sheetClose" aria-label="Close"><svg class="ico" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    <div class="sheet-body" id="sheetBody"></div>
+  </div>
+</div>
+
+<template id="tpl-p1">
+  <div class="dates">Mar 2025 · IEEE Publication</div>
+  <h2>Deep Learning for <span>Gesture-to-Speech</span> Translation</h2>
+  <div class="tags"><span>transformer</span><span>cnn</span><span>lstm</span><span>tensorflow</span><span>mediapipe</span></div>
+  <p class="desc">Designed and trained an end-to-end deep-learning pipeline for real-time Indian Sign Language recognition. Combined Transformer, CNN (ResNet) and LSTM architectures, built the full data-processing pipeline with MediaPipe feature extraction, and integrated NLP with text-to-speech for multilingual output.</p>
+  <div class="hl"><div class="l">Outcome</div><div class="t">91% gesture-detection accuracy. Published on IEEE Xplore (ESCI 2025).</div></div>
+</template>
+<template id="tpl-p2">
+  <div class="dates">Dec 2024 – Mar 2025 · National Hackathon</div>
+  <h2>Wearable <span>Translation Device</span></h2>
+  <div class="tags"><span>vision transformer</span><span>embedded ml</span><span>raspberry pi</span><span>edge inference</span></div>
+  <p class="desc">An embedded ML system combining ViT, CNN and LSTM models with MediaPipe pose estimation, deployed on Raspberry Pi with low-latency inference. Coordinated a small interdisciplinary team across hardware integration, model deployment and user-facing output.</p>
+  <div class="hl"><div class="l">Recognition</div><div class="t">Top 5 nationally — Smart India Hackathon, Government of India.</div></div>
+  <div class="btn-row"><a class="btn" href="https://github.com/mrchikoo/Sign-Language-to-speech-TPP-FPP-" target="_blank" rel="noopener">View on GitHub <svg class="ico" viewBox="0 0 24 24"><path d="M7 17L17 7M9 7h8v8"/></svg></a></div>
+</template>
+<template id="tpl-p3">
+  <div class="dates">2025 · Generative AI</div>
+  <h2><span>TEXTURA</span> — Prompt-Based Image Generation</h2>
+  <div class="tags"><span>diffusion</span><span>generative ai</span><span>fine-tuning</span><span>vision-language</span></div>
+  <p class="desc">A text-to-image pipeline using diffusion models fine-tuned on a custom dataset, integrating advanced language–vision models for context-aware generation with enhanced realism and creativity. Built with a user-facing interface for real-time prompt-to-image workflows.</p>
+  <div class="btn-row"><a class="btn" href="https://github.com/mrchikoo/Gen_Ai" target="_blank" rel="noopener">View on GitHub <svg class="ico" viewBox="0 0 24 24"><path d="M7 17L17 7M9 7h8v8"/></svg></a></div>
+</template>
+<template id="tpl-p4">
+  <div class="dates">Mar 2024 · Computer Vision</div>
+  <h2>Real-time <span>Object Detection</span></h2>
+  <div class="tags"><span>opencv</span><span>tensorflow</span><span>computer vision</span><span>inference</span></div>
+  <p class="desc">A high-accuracy real-time object detection model built in Python using OpenCV and TensorFlow, with deep-learning-based recognition. Optimised for inference performance and deployable on standard hardware.</p>
+  <div class="btn-row"><a class="btn" href="https://github.com/mrchikoo/Object_detection" target="_blank" rel="noopener">View on GitHub <svg class="ico" viewBox="0 0 24 24"><path d="M7 17L17 7M9 7h8v8"/></svg></a></div>
+</template>
+<template id="tpl-photo">
+  <img src="../assets/profile.jpg" alt="Shazil Katchhi" />
+</template>
+
+<script>
+(() => {
+  'use strict';
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+  const mobileMQ = matchMedia('(max-width: 760px)');
+  const EASE = 'cubic-bezier(.22,.8,.22,1)';
+
+  /* ---------- intro ---------- */
+  const intro = $('#intro');
+  const killIntro = () => { if (intro && !intro.hidden) intro.hidden = true; };
+  if (reduced.matches) killIntro();
+  else {
+    intro.addEventListener('animationend', e => { if (e.animationName === 'introOut') killIntro(); });
+    setTimeout(killIntro, 1100);
+    const skip = () => { killIntro(); window.removeEventListener('keydown', skip); window.removeEventListener('pointerdown', skip); };
+    window.addEventListener('keydown', skip); window.addEventListener('pointerdown', skip);
+  }
+
+  /* ---------- clock ---------- */
+  const clock = $('#clock');
+  const fmt = new Intl.DateTimeFormat(undefined, { hour: 'numeric', minute: '2-digit' });
+  const tick = () => { clock.textContent = fmt.format(new Date()); };
+  tick(); setInterval(tick, 15000);
+
+  /* ---------- theme ---------- */
+  const root = document.documentElement;
+  const themeBtn = $('#themeBtn');
+  const sysDark = matchMedia('(prefers-color-scheme: dark)');
+  const isDark = () => {
+    const t = root.getAttribute('data-theme');
+    return t ? t === 'dark' : sysDark.matches;
+  };
+  const sun = '<circle cx="12" cy="12" r="3.2"/><path d="M12 3.5v2M12 18.5v2M3.5 12h2M18.5 12h2M6 6l1.4 1.4M16.6 16.6L18 18M6 18l1.4-1.4M16.6 7.4L18 6"/>';
+  const moon = '<path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/>';
+  const paintTheme = () => {
+    const d = isDark();
+    themeBtn.setAttribute('aria-label', d ? 'Theme: switch to light' : 'Theme: switch to dark');
+    themeBtn.setAttribute('aria-pressed', String(d));
+    themeBtn.querySelector('svg').innerHTML = d ? moon : sun;
+    themeBtn.querySelector('.lbl').textContent = d ? 'Basic Black' : 'Basic White';
+  };
+  themeBtn.addEventListener('click', () => {
+    const next = isDark() ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try { localStorage.setItem('sk-theme', next); } catch (e) {}
+    paintTheme();
+  });
+  sysDark.addEventListener('change', paintTheme);
+  paintTheme();
+
+  /* ---------- selection model ---------- */
+  const row = $('#row');
+  const tiles = $$('.tile', row);
+  const docks = $$('.dock-btn', $('#dock'));
+  let zone = 'tiles', ti = 0, di = 0;
+  let scrollingProgrammatically = false;
+
+  function paintSel(focus = true, scroll = true) {
+    tiles.forEach((t, i) => {
+      t.classList.toggle('is-sel', zone === 'tiles' && i === ti);
+      t.tabIndex = i === ti ? 0 : -1;
+    });
+    docks.forEach((d, i) => {
+      d.classList.toggle('is-sel', zone === 'dock' && i === di);
+      d.tabIndex = i === di ? 0 : -1;
+    });
+    const el = zone === 'tiles' ? tiles[ti] : docks[di];
+    if (focus && document.activeElement !== el) el.focus({ preventScroll: true });
+    if (zone === 'tiles' && scroll) scrollToTile(tiles[ti]);
+  }
+
+  function scrollToTile(tile, behavior) {
+    const pad = parseFloat(getComputedStyle(row).paddingLeft) || 0;
+    const left = Math.max(0, tile.offsetLeft - pad);
+    if (Math.abs(row.scrollLeft - left) < 1) return;
+    scrollingProgrammatically = true;
+    row.scrollTo({ left, behavior: behavior || (reduced.matches ? 'auto' : 'smooth') });
+    clearTimeout(scrollToTile._t);
+    scrollToTile._t = setTimeout(() => { scrollingProgrammatically = false; }, 600);
+  }
+
+  // Tile focus via pointer / Tab
+  tiles.forEach((t, i) => t.addEventListener('focus', () => { if (zone !== 'tiles' || ti !== i) { zone = 'tiles'; ti = i; paintSel(false, true); } }));
+  docks.forEach((d, i) => d.addEventListener('focus', () => { if (zone !== 'dock' || di !== i) { zone = 'dock'; di = i; paintSel(false, false); } }));
+
+  // Mobile swipe: nearest-to-centre tile becomes selected
+  let raf = 0;
+  row.addEventListener('scroll', () => {
+    if (!mobileMQ.matches || scrollingProgrammatically) return;
+    cancelAnimationFrame(raf);
+    raf = requestAnimationFrame(() => {
+      const c = row.scrollLeft + row.clientWidth / 2;
+      let best = 0, bd = Infinity;
+      tiles.forEach((t, i) => { const d = Math.abs(t.offsetLeft + t.offsetWidth / 2 - c); if (d < bd) { bd = d; best = i; } });
+      if (best !== ti || zone !== 'tiles') { zone = 'tiles'; ti = best; paintSel(false, false); }
+    });
+  }, { passive: true });
+
+  // Re-anchor after resize
+  let rt = 0;
+  addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { if (zone === 'tiles') scrollToTile(tiles[ti], 'auto'); }, 120); });
+
+  /* ---------- pages ---------- */
+  const home = $('#home');
+  const pages = Object.fromEntries($$('.page').map(p => [p.id.replace('page-', ''), p]));
+  let openId = null, openFrom = null, animating = false;
+
+  function setHomeInert(on) {
+    if ('inert' in home) home.inert = on;
+    home.setAttribute('aria-hidden', String(on));
+  }
+
+  function tileRect(el) {
+    if (!el || !el.isConnected) return null;
+    const r = el.getBoundingClientRect();
+    if (!r.width) return null;
+    return r;
+  }
+  function fromTransform(r) {
+    const vw = innerWidth, vh = innerHeight;
+    const sx = Math.max(.08, r.width / vw), sy = Math.max(.08, r.height / vh);
+    const tx = r.left + r.width / 2 - vw / 2, ty = r.top + r.height / 2 - vh / 2;
+    return `translate(${tx}px, ${ty}px) scale(${sx}, ${sy})`;
+  }
+
+  function openPage(id, fromEl, animate = true, setHash = true) {
+    const page = pages[id];
+    if (!page || animating) return;
+    if (openId === id) return;
+    if (openId) closePage(false, false); // swap without animation
+    openId = id; openFrom = fromEl || null;
+    page.hidden = false;
+    page.querySelector('.page-body').scrollTop = 0;
+    setHomeInert(true);
+    if (setHash) history.replaceState(null, '', '#' + id);
+    const r = animate && !reduced.matches ? tileRect(fromEl) : null;
+    const inner = page.querySelector('.page-inner');
+    if (r) {
+      animating = true;
+      page.animate([{ transform: fromTransform(r), opacity: .55 }, { transform: 'none', opacity: 1 }], { duration: 460, easing: EASE });
+      inner.animate([{ opacity: 0, transform: 'translateY(10px)' }, { opacity: 0, transform: 'translateY(10px)', offset: .35 }, { opacity: 1, transform: 'none' }], { duration: 620, easing: EASE })
+        .onfinish = () => { animating = false; };
+    } else {
+      page.animate([{ opacity: 0 }, { opacity: 1 }], { duration: reduced.matches ? 1 : 180, easing: EASE });
+    }
+    requestAnimationFrame(() => page.querySelector('[data-back]').focus({ preventScroll: true }));
+  }
+
+  function closePage(animate = true, restore = true) {
+    if (!openId || animating) return;
+    const page = pages[openId], from = openFrom;
+    const id = openId;
+    openId = null; openFrom = null;
+    closeSheet(false);
+    const r = animate && !reduced.matches ? tileRect(from) : null;
+    const done = () => {
+      page.hidden = true;
+      if (!openId) {
+        setHomeInert(false);
+        if (restore) { history.replaceState(null, '', location.pathname + location.search); paintSel(true, true); }
+      }
+    };
+    if (r) {
+      animating = true;
+      page.querySelector('.page-inner').animate([{ opacity: 1 }, { opacity: 0 }], { duration: 160, easing: 'ease-out', fill: 'forwards' });
+      const a = page.animate([{ transform: 'none', opacity: 1 }, { transform: fromTransform(r), opacity: 0 }], { duration: 380, easing: EASE, fill: 'forwards' });
+      a.onfinish = () => { a.cancel(); page.getAnimations().forEach(x => x.cancel()); page.querySelector('.page-inner').getAnimations().forEach(x => x.cancel()); animating = false; done(); };
+    } else {
+      if (animate && !reduced.matches) {
+        animating = true;
+        const a = page.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 160, easing: 'ease-out', fill: 'forwards' });
+        a.onfinish = () => { a.cancel(); animating = false; done(); };
+      } else done();
+    }
+    return id;
+  }
+
+  // Selected element for a page id (to restore / animate from)
+  const sourceFor = id => tiles.find(t => t.dataset.page === id) || docks.find(d => d.dataset.page === id) || null;
+
+  // Activation (click / Enter / Space via native button)
+  document.addEventListener('click', e => {
+    const back = e.target.closest('[data-back]');
+    if (back) { closePage(true, true); return; }
+    const pg = e.target.closest('[data-page]');
+    if (pg) {
+      e.preventDefault();
+      const id = pg.dataset.page;
+      const insidePage = !!pg.closest('.page');
+      const src = insidePage ? sourceFor(id) : pg;
+      if (!insidePage) {
+        if (pg.classList.contains('tile')) { zone = 'tiles'; ti = tiles.indexOf(pg); }
+        else if (pg.classList.contains('dock-btn')) { zone = 'dock'; di = docks.indexOf(pg); }
+        paintSel(false, true);
+      } else {
+        // keep the home selection in sync with where we are heading
+        const t = tiles.find(x => x.dataset.page === id);
+        if (t) { zone = 'tiles'; ti = tiles.indexOf(t); paintSel(false, true); }
+      }
+      openPage(id, src, true, true);
+      return;
+    }
+    const sh = e.target.closest('[data-sheet]');
+    if (sh) {
+      if (sh.classList.contains('dock-btn')) { zone = 'dock'; di = docks.indexOf(sh); paintSel(false, false); }
+      openSheet(sh.dataset.sheet, sh);
+      return;
+    }
+    if (e.target.closest('.dock-btn') && !e.target.closest('[data-page],[data-sheet]')) {
+      const b = e.target.closest('.dock-btn');
+      zone = 'dock'; di = docks.indexOf(b); paintSel(false, false);
+    }
+  });
+
+  /* ---------- sheets ---------- */
+  const scrim = $('#scrim'), sheet = $('#sheet'), sheetBody = $('#sheetBody'), sheetKicker = $('#sheetKicker'), sheetClose = $('#sheetClose');
+  let sheetFrom = null, sheetOpen = false;
+  const kickers = { p1: 'Project · 01', p2: 'Project · 02', p3: 'Project · 03', p4: 'Project · 04', photo: 'Photo' };
+
+  function openSheet(key, fromEl) {
+    const tpl = $('#tpl-' + key);
+    if (!tpl) return;
+    sheetFrom = fromEl || document.activeElement;
+    sheetBody.innerHTML = '';
+    sheetBody.appendChild(tpl.content.cloneNode(true));
+    sheetKicker.textContent = kickers[key] || '';
+    sheet.classList.toggle('photo-sheet', key === 'photo');
+    const h = sheetBody.querySelector('h2');
+    if (h) { h.id = 'sheetTitle'; sheet.setAttribute('aria-labelledby', 'sheetTitle'); sheet.removeAttribute('aria-label'); }
+    else { sheet.removeAttribute('aria-labelledby'); sheet.setAttribute('aria-label', key === 'photo' ? 'Profile photo' : 'Details'); }
+    scrim.hidden = false;
+    sheetOpen = true;
+    sheetBody.scrollTop = 0;
+    // inert everything behind
+    (openId ? pages[openId] : home).setAttribute('aria-hidden', 'true');
+    if (!openId) setHomeInert(true);
+    requestAnimationFrame(() => { scrim.classList.add('on'); sheetClose.focus({ preventScroll: true }); });
+  }
+  function closeSheet(restore = true) {
+    if (!sheetOpen) return;
+    sheetOpen = false;
+    scrim.classList.remove('on');
+    const behind = openId ? pages[openId] : home;
+    behind.removeAttribute('aria-hidden');
+    if (!openId) setHomeInert(false);
+    const finish = () => { scrim.hidden = true; sheetBody.innerHTML = ''; };
+    if (reduced.matches) finish(); else setTimeout(finish, 260);
+    if (restore && sheetFrom && sheetFrom.isConnected) sheetFrom.focus({ preventScroll: true });
+    sheetFrom = null;
+  }
+  sheetClose.addEventListener('click', () => closeSheet(true));
+  scrim.addEventListener('click', e => { if (e.target === scrim) closeSheet(true); });
+
+  /* ---------- keyboard ---------- */
+  function trap(e, container) {
+    const f = $$('a[href], button:not([disabled]), [tabindex="0"]', container).filter(x => x.offsetParent !== null);
+    if (!f.length) return;
+    const first = f[0], last = f[f.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    const k = e.key;
+    if (sheetOpen) {
+      if (k === 'Escape' || k === 'b' || k === 'B') { e.preventDefault(); closeSheet(true); }
+      else if (k === 'Tab') trap(e, sheet);
+      return;
+    }
+    if (openId) {
+      if (k === 'Escape' || k === 'b' || k === 'B') { e.preventDefault(); closePage(true, true); }
+      else if (k === 'Tab') trap(e, pages[openId]);
+      return;
+    }
+    // HOME
+    if (!intro.hidden) return;
+    switch (k) {
+      case 'ArrowRight':
+        e.preventDefault();
+        if (zone === 'tiles') ti = Math.min(tiles.length - 1, ti + 1); else di = Math.min(docks.length - 1, di + 1);
+        paintSel(true, true); break;
+      case 'ArrowLeft':
+        e.preventDefault();
+        if (zone === 'tiles') ti = Math.max(0, ti - 1); else di = Math.max(0, di - 1);
+        paintSel(true, true); break;
+      case 'ArrowDown':
+        if (zone === 'tiles') { e.preventDefault(); zone = 'dock'; paintSel(true, false); }
+        break;
+      case 'ArrowUp':
+        if (zone === 'dock') { e.preventDefault(); zone = 'tiles'; paintSel(true, true); }
+        break;
+      case 'Home':
+        e.preventDefault(); if (zone === 'tiles') ti = 0; else di = 0; paintSel(true, true); break;
+      case 'End':
+        e.preventDefault(); if (zone === 'tiles') ti = tiles.length - 1; else di = docks.length - 1; paintSel(true, true); break;
+      case 'a': case 'A': {
+        const el = zone === 'tiles' ? tiles[ti] : docks[di];
+        if (document.activeElement === el) { e.preventDefault(); el.click(); }
+        break;
+      }
+    }
+  });
+
+  /* ---------- routing ---------- */
+  function route(initial) {
+    const h = location.hash.replace('#', '');
+    if (pages[h]) {
+      if (openId !== h) {
+        closeSheet(false);
+        const src = sourceFor(h);
+        const t = tiles.find(x => x.dataset.page === h);
+        if (t) { zone = 'tiles'; ti = tiles.indexOf(t); }
+        paintSel(false, true);
+        openPage(h, src, !initial, false);
+      }
+    } else if (!h && openId) {
+      closePage(true, true);
+    }
+  }
+  addEventListener('hashchange', () => route(false));
+
+  // initial paint
+  paintSel(false, false);
+  requestAnimationFrame(() => {
+    scrollToTile(tiles[ti], 'auto');
+    route(true);
+    if (!openId && !mobileMQ.matches) tiles[ti].focus({ preventScroll: true });
+  });
+  addEventListener('load', () => scrollToTile(tiles[ti], 'auto'));
+})();
+</script>
+</body>
+</html>

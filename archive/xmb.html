@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Shazil Katchhi — AI & Machine Learning</title>
+<meta name="description" content="Shazil Katchhi — M.Sc. Artificial Intelligence student at BTU Cottbus-Senftenberg. Machine learning, computer vision, and applied AI." />
+<meta name="theme-color" content="#070912" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --h: 228;                       /* base hue, shifted by time of day */
+    --ink: #eef0f6;
+    --soft: rgba(238,240,246,.72);
+    --mute: rgba(238,240,246,.46);
+    --faint: rgba(238,240,246,.26);
+    --line: rgba(255,255,255,.10);
+    --glass: rgba(9,11,22,.58);
+    --sans: 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+    --cat-y: 31vh;                  /* vertical position of the category row */
+    --cat-gap: 150px;               /* horizontal pitch between categories */
+    --ax: clamp(120px, 22vw, 440px);/* anchor x: centre of the selected icon */
+    --icon: 64px;
+    --icon-sm: 42px;
+    --item-h: 60px;
+    --items-top: calc(var(--cat-y) + 124px);
+    --up-gap: 132px;                /* extra lift for items above the row */
+    --panel-w: min(540px, 46vw);
+    --ease: cubic-bezier(.22,.86,.28,1);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    font-family: var(--sans);
+    font-weight: 400;
+    color: var(--ink);
+    background: #070912;
+    background-image:
+      radial-gradient(120% 90% at 20% 10%, hsl(var(--h) 46% 15%) 0%, transparent 60%),
+      radial-gradient(90% 70% at 85% 95%, hsl(calc(var(--h) + 18) 40% 11%) 0%, transparent 60%),
+      linear-gradient(165deg, hsl(var(--h) 40% 10%) 0%, hsl(calc(var(--h) + 10) 38% 6%) 55%, #05060c 100%);
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    user-select: none;
+    -webkit-user-select: none;
+    overscroll-behavior: none;
+    touch-action: none;
+  }
+
+  button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+  a { color: inherit; }
+  svg { display: block; }
+  .ico { fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+
+  :focus { outline: none; }
+  :focus-visible { outline: 1px solid rgba(255,255,255,.75); outline-offset: 6px; border-radius: 6px; }
+
+  .sr { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
+
+  /* ---------- background ---------- */
+  #waves { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+  .vignette { position: fixed; inset: 0; z-index: 1; pointer-events: none;
+    background: radial-gradient(120% 100% at 50% 50%, transparent 55%, rgba(3,4,9,.55) 100%); }
+
+  /* ---------- chrome ---------- */
+  .top { position: fixed; top: 0; left: 0; right: 0; z-index: 5; display: flex; justify-content: space-between; align-items: flex-start;
+    padding: max(22px, env(safe-area-inset-top)) 32px 0; pointer-events: none; }
+  .brand { font-size: 12px; letter-spacing: .22em; text-transform: uppercase; color: var(--mute); font-weight: 500; }
+  .brand b { display: block; margin-top: 7px; font-family: var(--mono); font-weight: 400; font-size: 11px; letter-spacing: .14em; color: var(--faint); }
+  .clock { text-align: right; font-size: 13px; color: var(--soft); font-variant-numeric: tabular-nums; letter-spacing: .04em; }
+  .clock .t { font-size: 18px; font-weight: 300; color: var(--ink); letter-spacing: .02em; }
+  .clock .d { display: block; margin-top: 4px; font-size: 11px; color: var(--mute); letter-spacing: .12em; text-transform: uppercase; }
+  .clock .t i { font-style: normal; animation: tick 1s steps(1) infinite; }
+  @keyframes tick { 50% { opacity: .3; } }
+
+  /* ---------- stage ---------- */
+  .stage { position: fixed; inset: 0; z-index: 3; transition: transform .6s var(--ease), opacity .6s var(--ease); }
+  .stage.dim { transform: translateX(-40px); opacity: .42; }
+
+  .cats { position: absolute; top: var(--cat-y); left: 0; height: 120px; display: flex; align-items: flex-start; will-change: transform;
+    transition: transform .62s var(--ease); }
+  .cat { position: relative; flex: none; width: var(--cat-gap); display: flex; flex-direction: column; align-items: center; height: 120px; color: var(--ink); }
+  .cat .glyph { width: var(--icon); height: var(--icon); display: grid; place-items: center; transform: scale(calc(var(--icon-sm) / var(--icon))); opacity: .38;
+    transition: transform .55s var(--ease), opacity .55s var(--ease), filter .55s var(--ease); transform-origin: 50% 50%; }
+  .cat .glyph svg { width: 100%; height: 100%; }
+  .cat .glyph .avatar { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; object-position: 50% 22%;
+    filter: saturate(.78) contrast(1.03); box-shadow: 0 0 0 1px rgba(255,255,255,.28), 0 10px 30px -10px rgba(0,0,0,.8); }
+  .cat .lbl { margin-top: 12px; font-size: 13px; letter-spacing: .20em; text-transform: uppercase; font-weight: 500; color: var(--soft); opacity: 0;
+    transform: translateY(-4px); transition: opacity .45s var(--ease), transform .45s var(--ease); white-space: nowrap; }
+  .cat.on .glyph { transform: scale(1); opacity: 1; filter: drop-shadow(0 0 18px rgba(255,255,255,.22)); }
+  .cat.on .lbl { opacity: 1; transform: none; }
+  .cat:not(.on):hover .glyph { opacity: .62; }
+
+  .lists { position: absolute; inset: 0; pointer-events: none; }
+  .list { position: absolute; top: var(--items-top); left: calc(var(--ax) - var(--cat-gap) / 2); width: min(560px, calc(100vw - var(--ax) + var(--cat-gap) / 2 - 40px));
+    list-style: none; will-change: transform; transition: transform .55s var(--ease), opacity .45s var(--ease); opacity: 0; pointer-events: none; }
+  .list.on { opacity: 1; pointer-events: auto; }
+  .item { height: var(--item-h); }
+  .item > * { display: flex; align-items: center; width: 100%; height: 100%; text-align: left; color: var(--ink); text-decoration: none;
+    transform-origin: calc(var(--cat-gap) / 2) 50%;
+    transition: transform .5s var(--ease), opacity .5s var(--ease); }
+  .item .ii { flex: none; width: var(--cat-gap); display: grid; place-items: center; color: var(--soft); }
+  .item .ii svg { width: 26px; height: 26px; }
+  .item .tx { min-width: 0; padding-right: 20px; }
+  .item .t1, .item .t2 { display: block; }
+  .item .t1 { font-size: 17px; font-weight: 500; letter-spacing: -.005em; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .item .t2 { margin-top: 3px; font-size: 12px; color: var(--mute); letter-spacing: .03em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .item .ext { flex: none; margin-left: auto; margin-right: 10px; color: var(--faint); opacity: 0; transition: opacity .3s; }
+  .item .ext svg { width: 14px; height: 14px; }
+  .item.on .ext { opacity: 1; }
+  .item.on .ii { color: var(--ink); }
+  .item.on .t2 { color: var(--soft); }
+  .item > *:hover { opacity: 1 !important; }
+
+  /* ---------- detail panel ---------- */
+  .panel { position: fixed; top: 0; right: 0; bottom: 0; width: var(--panel-w); z-index: 8; display: flex; flex-direction: column;
+    background: var(--glass); backdrop-filter: blur(28px) saturate(1.2); -webkit-backdrop-filter: blur(28px) saturate(1.2);
+    border-left: 1px solid var(--line); box-shadow: -40px 0 80px -40px rgba(0,0,0,.6);
+    transform: translateX(24px); opacity: 0; visibility: hidden;
+    transition: transform .55s var(--ease), opacity .45s var(--ease), visibility 0s linear .55s; }
+  .panel.open { transform: none; opacity: 1; visibility: visible; transition: transform .55s var(--ease), opacity .4s var(--ease), visibility 0s; }
+  .panel::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 1px; background: linear-gradient(180deg, transparent, rgba(255,255,255,.22) 40%, rgba(255,255,255,.22) 60%, transparent); }
+  .p-bar { flex: none; display: flex; align-items: center; justify-content: space-between; padding: 26px 32px 0; }
+  .p-crumb { font-family: var(--mono); font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--mute); }
+  .p-close { display: inline-flex; align-items: center; gap: 10px; color: var(--mute); font-size: 12px; letter-spacing: .08em; padding: 6px 8px; border-radius: 6px; transition: color .2s; }
+  .p-close:hover { color: var(--ink); }
+  .p-close svg { width: 14px; height: 14px; }
+  .p-body { flex: 1; overflow-y: auto; padding: 36px 32px 48px; scrollbar-width: thin; scrollbar-color: rgba(255,255,255,.14) transparent; }
+  .p-body::-webkit-scrollbar { width: 6px; }
+  .p-body::-webkit-scrollbar-thumb { background: rgba(255,255,255,.14); border-radius: 6px; }
+  .p-in { animation: pin .5s var(--ease) both; }
+  @keyframes pin { from { opacity: 0; transform: translateY(10px); } }
+
+  .eyebrow { font-family: var(--mono); font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--mute); margin-bottom: 14px; }
+  .p-title { font-size: clamp(24px, 2.2vw, 30px); font-weight: 500; letter-spacing: -.015em; line-height: 1.12; color: var(--ink); }
+  .p-title em { font-style: normal; font-weight: 300; color: var(--soft); }
+  .p-sub { margin-top: 10px; font-size: 13.5px; color: var(--soft); letter-spacing: .02em; }
+  .p-rule { height: 1px; background: var(--line); margin: 26px 0; }
+  .p-desc { font-size: 15px; line-height: 1.75; color: rgba(238,240,246,.84); font-weight: 400; }
+  .p-desc + .p-desc { margin-top: 16px; }
+  .p-desc a { text-decoration: underline; text-decoration-color: var(--faint); text-underline-offset: 4px; }
+  .p-desc a:hover { text-decoration-color: var(--ink); }
+  .p-list { list-style: none; margin-top: 22px; }
+  .p-list li { position: relative; padding: 11px 0 11px 22px; font-size: 14.5px; line-height: 1.65; color: rgba(238,240,246,.82); border-top: 1px solid var(--line); }
+  .p-list li:last-child { border-bottom: 1px solid var(--line); }
+  .p-list li::before { content: ""; position: absolute; left: 2px; top: 21px; width: 6px; height: 1px; background: var(--soft); }
+  .p-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
+  .p-tags span { font-family: var(--mono); font-size: 11px; letter-spacing: .06em; color: var(--soft); border: 1px solid var(--line); border-radius: 999px; padding: 5px 11px; }
+  .p-hl { margin-top: 24px; padding: 16px 18px; border: 1px solid var(--line); border-radius: 10px; background: rgba(255,255,255,.03); }
+  .p-hl b { display: block; font-family: var(--mono); font-weight: 400; font-size: 10.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--mute); margin-bottom: 6px; }
+  .p-hl span { font-size: 15px; line-height: 1.5; color: var(--ink); }
+  .p-quote { font-size: 17.5px; line-height: 1.7; font-weight: 300; color: var(--ink); letter-spacing: -.005em; }
+  .p-quote::before { content: "“"; display: block; font-size: 72px; line-height: .55; height: 34px; color: var(--faint); font-weight: 300; }
+  .p-cite { margin-top: 22px; font-size: 13px; color: var(--mute); letter-spacing: .04em; }
+  .p-cite b { display: block; font-weight: 500; color: var(--soft); margin-bottom: 2px; }
+  .p-btns { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; }
+  .btn { display: inline-flex; align-items: center; gap: 10px; padding: 11px 18px; border-radius: 999px; font-size: 13.5px; font-weight: 500; letter-spacing: .02em;
+    text-decoration: none; border: 1px solid rgba(255,255,255,.22); color: var(--ink); transition: background .25s, border-color .25s, transform .25s; }
+  .btn svg { width: 14px; height: 14px; }
+  .btn:hover { background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.4); }
+  .btn.solid { background: var(--ink); color: #0b0d18; border-color: transparent; }
+  .btn.solid:hover { background: #fff; }
+  .p-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; margin-top: 6px; }
+  .stat { background: rgba(7,9,18,.5); padding: 20px 20px 18px; }
+  .stat .k { font-family: var(--mono); font-size: 10.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--mute); }
+  .stat .v { margin-top: 10px; font-size: 30px; font-weight: 300; letter-spacing: -.02em; line-height: 1; color: var(--ink); }
+  .stat .d { margin-top: 8px; font-size: 12.5px; color: var(--soft); }
+  .p-rows { margin-top: 6px; }
+  .p-rows .r { display: flex; gap: 20px; padding: 14px 0; border-top: 1px solid var(--line); font-size: 14.5px; align-items: baseline; }
+  .p-rows .r:last-child { border-bottom: 1px solid var(--line); }
+  .p-rows .r .k { flex: none; width: 92px; font-family: var(--mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--mute); }
+  .p-rows .r a { text-decoration: none; border-bottom: 1px solid var(--faint); transition: border-color .2s; }
+  .p-rows .r a:hover { border-color: var(--ink); }
+  .portrait { position: relative; width: 148px; height: 148px; border-radius: 50%; overflow: hidden; margin: 30px 0 0; box-shadow: 0 0 0 1px rgba(255,255,255,.22), 0 0 0 7px rgba(255,255,255,.04); }
+  .portrait img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 22%; filter: saturate(.8) contrast(1.02); }
+  .avail { display: inline-flex; align-items: center; gap: 10px; font-size: 12.5px; letter-spacing: .04em; color: var(--soft); margin-bottom: 22px; }
+  .avail i { width: 6px; height: 6px; border-radius: 50%; background: #9fd3b4; box-shadow: 0 0 0 3px rgba(159,211,180,.18); }
+  .tk { list-style: none; margin-top: 6px; }
+  .tk li { display: flex; justify-content: space-between; align-items: baseline; padding: 14px 0; border-top: 1px solid var(--line); font-size: 16px; font-weight: 400; }
+  .tk li:last-child { border-bottom: 1px solid var(--line); }
+  .tk li span { font-family: var(--mono); font-size: 10.5px; letter-spacing: .14em; color: var(--faint); }
+
+  /* ---------- hint bar ---------- */
+  .hints { position: fixed; left: 0; right: 0; bottom: max(22px, env(safe-area-inset-bottom)); z-index: 5; display: flex; justify-content: center; gap: 28px;
+    font-size: 11.5px; letter-spacing: .08em; color: var(--mute); pointer-events: none; transition: opacity .4s; }
+  .hints span { display: inline-flex; align-items: center; gap: 8px; }
+  .hints kbd { font-family: var(--mono); font-size: 10px; line-height: 1; padding: 5px 6px; min-width: 22px; text-align: center; border-radius: 5px;
+    border: 1px solid rgba(255,255,255,.16); border-bottom-color: rgba(255,255,255,.28); color: var(--soft); background: rgba(255,255,255,.04); }
+  @media (hover: none) and (pointer: coarse), (max-width: 640px) { .hints { display: none; } }
+  .top, .hints { transition: right .55s var(--ease); }
+  @media (min-width: 821px) { body.panel-open .top, body.panel-open .hints { right: var(--panel-w); } }
+
+  /* ---------- boot ---------- */
+  .boot { position: fixed; inset: 0; z-index: 20; display: grid; place-items: center; background: #05060c; }
+  .boot span { font-size: 15px; font-weight: 300; letter-spacing: .42em; text-transform: uppercase; color: var(--soft); padding-left: .42em;
+    animation: bootin 1.15s var(--ease) both; }
+  .boot.out { animation: bootout .5s var(--ease) both; pointer-events: none; }
+  @keyframes bootin { 0% { opacity: 0; letter-spacing: .6em; filter: blur(6px); } 45% { opacity: 1; filter: blur(0); } 100% { opacity: 1; letter-spacing: .42em; } }
+  @keyframes bootout { to { opacity: 0; } }
+
+  /* ---------- responsive ---------- */
+  @media (max-width: 1100px) { :root { --panel-w: min(520px, 54vw); } }
+  @media (max-width: 820px) {
+    :root { --ax: 50vw; --cat-gap: 92px; --icon: 50px; --icon-sm: 32px; --cat-y: 15vh; --item-h: 62px; --items-top: calc(var(--cat-y) + 108px); --up-gap: 118px; }
+    .top { padding: max(18px, env(safe-area-inset-top)) 20px 0; }
+    .clock .t { font-size: 16px; }
+    .cat .lbl { font-size: 11px; }
+    .list { left: 20px; width: calc(100vw - 40px); }
+    .item > * { transform-origin: 24px 50%; }
+    .item .ii { width: 48px; }
+    .item .ii svg { width: 22px; height: 22px; }
+    .item .t1 { font-size: 16px; white-space: normal; }
+    .stage.dim { transform: translateY(-16px) scale(.98); }
+    .panel { top: auto; left: 0; right: 0; bottom: 0; width: auto; height: 86vh; height: 86dvh; border-left: 0; border-top: 1px solid var(--line);
+      border-radius: 18px 18px 0 0; transform: translateY(40px); box-shadow: 0 -40px 80px -40px rgba(0,0,0,.7); }
+    .panel::before { left: 50%; top: 10px; bottom: auto; width: 36px; height: 4px; border-radius: 4px; transform: translateX(-50%); background: rgba(255,255,255,.22); }
+    .p-bar { padding: 26px 22px 0; }
+    .p-body { padding: 26px 22px calc(40px + env(safe-area-inset-bottom)); }
+    .p-grid { grid-template-columns: 1fr 1fr; }
+    .stat .v { font-size: 26px; }
+  }
+  @media (max-width: 400px) { .p-grid { grid-template-columns: 1fr; } :root { --cat-gap: 84px; } }
+  @media (max-height: 560px) and (min-width: 821px) { :root { --cat-y: 20vh; } }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+    .boot { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="waves" aria-hidden="true"></canvas>
+<div class="vignette" aria-hidden="true"></div>
+
+<div class="boot" id="boot" aria-hidden="true"><span>Shazil Katchhi</span></div>
+
+<header class="top">
+  <div class="brand">Shazil Katchhi <b id="crumb">About</b></div>
+  <div class="clock" aria-live="off"><span class="t" id="clock"></span><span class="d" id="date"></span></div>
+</header>
+
+<main class="stage" id="stage">
+  <nav class="cats" id="cats" aria-label="Categories"></nav>
+  <div class="lists" id="lists"></div>
+</main>
+
+<aside class="panel" id="panel" role="dialog" aria-modal="false" aria-labelledby="pTitle" aria-hidden="true">
+  <div class="p-bar">
+    <div class="p-crumb" id="pCrumb"></div>
+    <button class="p-close" id="pClose" aria-label="Close"><span>Back</span><svg viewBox="0 0 24 24" class="ico" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  </div>
+  <div class="p-body" id="pBody" tabindex="-1"></div>
+</aside>
+
+<div class="sr" aria-live="polite" id="live"></div>
+
+<footer class="hints" aria-hidden="true">
+  <span><kbd>←</kbd><kbd>→</kbd> Browse</span>
+  <span><kbd>↑</kbd><kbd>↓</kbd> Select</span>
+  <span><kbd>Enter</kbd> Open</span>
+  <span><kbd>Esc</kbd> Back</span>
+</footer>
+
+<script>
+(() => {
+  'use strict';
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ===================== icons (1.5px line) ===================== */
+  const I = {
+    user:     '<path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="8" r="4"/>',
+    brief:    '<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 12h18"/>',
+    layers:   '<path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 13l9 5 9-5"/><path d="M3 17l9 5 9-5"/>',
+    tool:     '<path d="M14.5 6.5a4 4 0 0 0 5 5L9 22l-3-3L16.5 8.5"/><path d="M14.5 6.5L17 4l3 3-2.5 2.5"/>',
+    quote:    '<path d="M4 15a4 4 0 0 0 4-4V7H4v4"/><path d="M14 15a4 4 0 0 0 4-4V7h-4v4"/>',
+    mail:     '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>',
+    phone:    '<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/>',
+    pin:      '<path d="M12 21s-6-5.5-6-11a6 6 0 0 1 12 0c0 5.5-6 11-6 11z"/><circle cx="12" cy="10" r="2"/>',
+    link:     '<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',
+    branch:   '<circle cx="6" cy="5" r="2"/><circle cx="6" cy="19" r="2"/><circle cx="18" cy="8" r="2"/><path d="M6 7v10M18 10a6 6 0 0 1-6 6H6"/>',
+    doc:      '<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/>',
+    down:     '<path d="M12 4v12M7 11l5 5 5-5M5 20h14"/>',
+    chart:    '<path d="M4 20h16M7 16v-5M12 16V7M17 16v-9"/>',
+    text:     '<path d="M5 7h14M5 12h10M5 17h7"/>',
+    hand:     '<path d="M8 12V5.5a1.5 1.5 0 0 1 3 0V11"/><path d="M11 10V4.5a1.5 1.5 0 0 1 3 0V11"/><path d="M14 10.5V6.5a1.5 1.5 0 0 1 3 0V13"/><path d="M8 12v-1.5a1.5 1.5 0 0 0-3 0V15a7 7 0 0 0 7 7h1a6 6 0 0 0 6-6v-3"/>',
+    watch:    '<rect x="7" y="7" width="10" height="10" rx="3"/><path d="M9 7V3h6v4M9 17v4h6v-4"/>',
+    image:    '<rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="1.5"/><path d="M21 16l-5-5-8 8"/>',
+    scan:     '<path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3"/><circle cx="12" cy="12" r="3"/>',
+    db:       '<ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v12c0 1.7 3.1 3 7 3s7-1.3 7-3V6M5 12c0 1.7 3.1 3 7 3s7-1.3 7-3"/>',
+    cpu:      '<rect x="6" y="6" width="12" height="12" rx="2"/><rect x="10" y="10" width="4" height="4"/><path d="M9 3v3M15 3v3M9 18v3M15 18v3M3 9h3M3 15h3M18 9h3M18 15h3"/>',
+    code:     '<path d="M8 7l-5 5 5 5M16 7l5 5-5 5M14 4l-4 16"/>',
+    brain:    '<path d="M9 4a3 3 0 0 0-3 3 3 3 0 0 0-2 5 3 3 0 0 0 1 5 3 3 0 0 0 4 3h3V4H9z"/><path d="M15 4a3 3 0 0 1 3 3 3 3 0 0 1 2 5 3 3 0 0 1-1 5 3 3 0 0 1-4 3h-3V4h3z"/>',
+    ext:      '<path d="M7 17L17 7M9 7h8v8"/>',
+    spark:    '<path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5L18 18M6 18l2.5-2.5M15.5 8.5L18 6"/>',
+    star:     '<path d="M12 3l2.6 5.6 6.1.7-4.5 4.2 1.2 6-5.4-3-5.4 3 1.2-6L3.3 9.3l6.1-.7L12 3z"/>'
+  };
+  const svg = (n, cls = 'ico') => `<svg viewBox="0 0 24 24" class="${cls}" aria-hidden="true">${I[n]}</svg>`;
+
+  /* ===================== content ===================== */
+  const tags = a => `<div class="p-tags">${a.map(t => `<span>${t}</span>`).join('')}</div>`;
+  const list = a => `<ul class="p-list">${a.map(t => `<li>${t}</li>`).join('')}</ul>`;
+  const hl = (l, t) => `<div class="p-hl"><b>${l}</b><span>${t}</span></div>`;
+  const gh = u => `<div class="p-btns"><a class="btn" href="${u}" target="_blank" rel="noopener">View on GitHub ${svg('ext')}</a></div>`;
+  const cv = (cls = '') => `<a class="btn ${cls}" href="../Shazil_Katchhi_CV.pdf" download>Download CV ${svg('down')}</a>`;
+
+  const CATS = [
+    { id: 'about', label: 'About', avatar: true, items: [
+      { id: 'profile', icon: 'user', title: 'Shazil Katchhi', sub: 'AI & Machine Learning · Berlin, Germany',
+        eyebrow: 'Profile', heading: 'Building <em>intelligent</em> systems that see &amp; understand.',
+        body: `<div class="avail" style="margin-top:22px"><i></i>Berlin, Germany — Available 15–20 hrs/week</div>
+               <p class="p-desc">M.Sc. Artificial Intelligence at BTU Cottbus-Senftenberg. I work at the intersection of deep learning, computer vision, and real-world deployment — turning research into things that work.</p>
+               <div class="portrait"><img src="../assets/profile.jpg" alt="Portrait of Shazil Katchhi" /></div>
+               <div class="p-btns">${cv('solid')}<a class="btn" href="mailto:skkatchhi61@gmail.com">Email ${svg('ext')}</a></div>` },
+      { id: 'story', icon: 'text', title: 'About me', sub: 'A practitioner with a research instinct',
+        eyebrow: 'About', heading: 'A practitioner with a <em>research</em> instinct.',
+        body: `<div class="p-rule"></div>
+               <p class="p-desc">I'm a Master's student in Artificial Intelligence at Brandenburg University of Technology, having completed my Bachelor's in Computer Science &amp; Engineering with a specialisation in AI &amp; ML at the University of Mumbai.</p>
+               <p class="p-desc">My work spans deep learning for computer vision and NLP, embedded ML on edge devices, and the unglamorous-but-essential work of building data pipelines that hold up under real conditions. I'm drawn to problems where ML meets physical systems — manufacturing, sensors, hardware-in-the-loop.</p>
+               <p class="p-desc">I'm currently looking for working-student opportunities in Germany where I can contribute to applied AI research and industrial machine learning.</p>` },
+      { id: 'numbers', icon: 'chart', title: 'By the numbers', sub: 'Publication · Accuracy · Languages · Leadership',
+        eyebrow: 'About', heading: 'By the <em>numbers</em>.',
+        body: `<div class="p-rule"></div><div class="p-grid">
+               <div class="stat"><div class="k">Publication</div><div class="v">IEEE</div><div class="d">Co-author, Xplore ESCI 2025</div></div>
+               <div class="stat"><div class="k">Accuracy</div><div class="v">91%</div><div class="d">Gesture recognition pipeline</div></div>
+               <div class="stat"><div class="k">Languages</div><div class="v">4</div><div class="d">EN · DE · HI · UR</div></div>
+               <div class="stat"><div class="k">Leadership</div><div class="v">Chair</div><div class="d">IEEE MHSSCE Chapter</div></div></div>` },
+      { id: 'cv', icon: 'doc', title: 'Curriculum vitae', sub: 'PDF · Download', href: '../Shazil_Katchhi_CV.pdf', download: true }
+    ]},
+    { id: 'experience', label: 'Experience', icon: 'brief', items: [
+      { id: 'echocene', icon: 'db', title: 'AI Engineering — Intern', sub: 'Echocene · Berlin · May–Aug 2026',
+        eyebrow: 'May – Aug 2026 · 3 months', heading: 'AI Engineering <em>— Intern</em>', subline: 'Echocene · Berlin, Germany',
+        body: `<div class="p-rule"></div>
+               <p class="p-desc">Contributed to development of the Echocene platform with hands-on work across data management, databases, backend processing, APIs, and AI-assisted engineering — building and shipping features across the full stack.</p>` +
+               list([
+                 'Worked with SQLite/SQL databases for data storage, retrieval, structuring, and integration with application functionality.',
+                 'Developed Python backend functionality to process and transform data and connect database, API, and application layers.',
+                 'Supported data-processing workflows and API integrations across different components of the platform.',
+                 'Developed and modified TypeScript frontend functionality for interacting with and presenting backend data.',
+                 'Implemented, tested, and debugged features across the database, backend, API, and frontend layers.',
+                 'Worked with application data flows from extraction and processing through storage and presentation — practical experience relevant to ETL and data integration workflows.',
+                 'Used Claude, OpenAI Codex, and other AI-assisted development tools for technical research, debugging, implementation, and exploring data-processing solutions.',
+                 'Contributed to technical documentation and participated in product discussions around platform architecture, workflows, and data management.'
+               ]) + tags(['python','typescript','sql · sqlite','apis','data processing','ai/llm development','claude · codex']) },
+      { id: 'skmotiv', icon: 'cpu', title: 'IoT & Database — Intern', sub: 'Skmotiv · Mumbai · Feb–May 2024',
+        eyebrow: 'Feb – May 2024 · 4 months', heading: 'IoT &amp; Database <em>— Intern</em>', subline: 'Skmotiv · Mumbai, India',
+        body: `<div class="p-rule"></div>
+               <p class="p-desc">Prototyped a Raspberry Pi-based IoT module for fuel tanker fleet management — capturing real-time telemetry from live vehicles and building the data layer to store and report on it. First hands-on experience owning a full hardware-to-database pipeline end-to-end.</p>` +
+               list([
+                 'Designed and prototyped a Raspberry Pi-based IoT module capturing real-time GPS, fuel capacity, fuel type, and truck weight before and after fuelling.',
+                 'Implemented a structured SQLite database schema to store, query and report fleet telemetry data.',
+                 'Wrote Python scripts running on embedded Linux for data acquisition and logging.',
+                 'Integrated hardware sensors via the Raspberry Pi GPIO interface; tested under real operating conditions and documented the full pipeline for handover.'
+               ]) + tags(['raspberry pi','python','sqlite','embedded linux','gpio · sensors','iot']) }
+    ]},
+    { id: 'projects', label: 'Projects', icon: 'layers', items: [
+      { id: 'gesture', icon: 'hand', title: 'Gesture-to-Speech', sub: 'IEEE Publication · 2025',
+        eyebrow: 'Mar 2025 · IEEE Publication', heading: 'Deep Learning for <em>Gesture-to-Speech</em> Translation',
+        body: tags(['transformer','cnn','lstm','tensorflow','mediapipe']) +
+              `<p class="p-desc" style="margin-top:24px">Designed and trained an end-to-end deep-learning pipeline for real-time Indian Sign Language recognition. Combined Transformer, CNN (ResNet) and LSTM architectures, built the full data-processing pipeline with MediaPipe feature extraction, and integrated NLP with text-to-speech for multilingual output.</p>` +
+              hl('Outcome', '91% gesture-detection accuracy. Published on IEEE Xplore (ESCI 2025).') },
+      { id: 'wearable', icon: 'watch', title: 'Wearable Translation Device', sub: 'National Hackathon · 2025',
+        eyebrow: 'Dec 2024 – Mar 2025 · National Hackathon', heading: 'Wearable <em>Translation Device</em>',
+        body: tags(['vision transformer','embedded ml','raspberry pi','edge inference']) +
+              `<p class="p-desc" style="margin-top:24px">An embedded ML system combining ViT, CNN and LSTM models with MediaPipe pose estimation, deployed on Raspberry Pi with low-latency inference. Coordinated a small interdisciplinary team across hardware integration, model deployment and user-facing output.</p>` +
+              hl('Recognition', 'Top 5 nationally — Smart India Hackathon, Government of India.') +
+              gh('https://github.com/mrchikoo/Sign-Language-to-speech-TPP-FPP-') },
+      { id: 'textura', icon: 'image', title: 'TEXTURA', sub: 'Generative AI · 2025',
+        eyebrow: '2025 · Generative AI', heading: '<em>TEXTURA</em> — Prompt-Based Image Generation',
+        body: tags(['diffusion','generative ai','fine-tuning','vision-language']) +
+              `<p class="p-desc" style="margin-top:24px">A text-to-image pipeline using diffusion models fine-tuned on a custom dataset, integrating advanced language–vision models for context-aware generation with enhanced realism and creativity. Built with a user-facing interface for real-time prompt-to-image workflows.</p>` +
+              gh('https://github.com/mrchikoo/Gen_Ai') },
+      { id: 'detection', icon: 'scan', title: 'Real-time Object Detection', sub: 'Computer Vision · 2024',
+        eyebrow: 'Mar 2024 · Computer Vision', heading: 'Real-time <em>Object Detection</em>',
+        body: tags(['opencv','tensorflow','computer vision','inference']) +
+              `<p class="p-desc" style="margin-top:24px">A high-accuracy real-time object detection model built in Python using OpenCV and TensorFlow, with deep-learning-based recognition. Optimised for inference performance and deployable on standard hardware.</p>` +
+              gh('https://github.com/mrchikoo/Object_detection') }
+    ]},
+    { id: 'toolkit', label: 'Toolkit', icon: 'tool', items: [
+      { id: 'languages', icon: 'code', title: 'Languages', sub: 'Python · C/C++ · JavaScript · SQL · R',
+        eyebrow: 'Toolkit', heading: 'Languages',
+        body: `<div class="p-rule"></div><ul class="tk">${['Python','C / C++','JavaScript','SQL · R'].map((t,i)=>`<li>${t}<span>0${i+1}</span></li>`).join('')}</ul>` },
+      { id: 'ml', icon: 'brain', title: 'ML & Data', sub: 'TensorFlow · PyTorch · OpenCV · Pandas',
+        eyebrow: 'Toolkit', heading: 'ML &amp; Data',
+        body: `<div class="p-rule"></div><ul class="tk">${['TensorFlow · PyTorch','Scikit-learn · Keras','OpenCV · MediaPipe','Pandas · NumPy'].map((t,i)=>`<li>${t}<span>0${i+1}</span></li>`).join('')}</ul>` },
+      { id: 'methods', icon: 'spark', title: 'Methods & Tools', sub: 'Vision · NLP · Embedded ML · Git',
+        eyebrow: 'Toolkit', heading: 'Methods &amp; Tools',
+        body: `<div class="p-rule"></div><ul class="tk">${['Computer Vision · NLP','Deep Learning · Transformers','Embedded ML · Raspberry Pi','Git · Jupyter · Node-RED'].map((t,i)=>`<li>${t}<span>0${i+1}</span></li>`).join('')}</ul>` }
+    ]},
+    { id: 'words', label: 'Words', icon: 'quote', items: [
+      { id: 'pawade', icon: 'quote', title: 'Prof. Amar Pawade', sub: 'Asst. Professor, CSE · MHSSCE',
+        eyebrow: 'What others have said', quote: 'Shazil\'s thirst for knowledge is evident in his proactive approach to learning. He has consistently demonstrated profound leadership and proved himself to be a true team player. His curious mind and good interpretation abilities will significantly facilitate research work.',
+        who: 'Prof. Amar Pawade', role: 'Asst. Professor, CSE · MHSSCE' },
+      { id: 'shaikh', icon: 'quote', title: 'Prof. Tarannum Shaikh', sub: 'Asst. Professor, CSE · MHSSCE',
+        eyebrow: 'What others have said', quote: 'He is not only gifted with excellent grasping powers and technical skills but is also adept at putting in the required hard work to transform his talent into tangible results. I give him my highest recommendation.',
+        who: 'Prof. Tarannum Shaikh', role: 'Asst. Professor, CSE · MHSSCE' },
+      { id: 'ieee', icon: 'star', title: 'IEEE Committee', sub: 'MHSSCE Student Chapter',
+        eyebrow: 'What others have said', quote: 'Your selfless commitment, leadership, and passion have been truly invaluable in driving the success of our initiatives and fostering an environment of innovation, collaboration, and growth.',
+        who: 'IEEE Committee', role: 'MHSSCE Student Chapter' }
+    ]},
+    { id: 'contact', label: 'Contact', icon: 'mail', items: [
+      { id: 'hello', icon: 'pin', title: 'Get in touch', sub: 'Berlin, Germany',
+        eyebrow: 'Contact', heading: 'Let\'s build something <em>worth</em> building.',
+        body: `<div class="p-rule"></div><div class="p-rows">
+               <div class="r"><span class="k">Email</span><a href="mailto:skkatchhi61@gmail.com">skkatchhi61@gmail.com</a></div>
+               <div class="r"><span class="k">Phone</span><a href="tel:+491631351465">+49 163 135 1465</a></div>
+               <div class="r"><span class="k">Location</span><span>Berlin, Germany</span></div>
+               <div class="r"><span class="k">Elsewhere</span><span><a href="https://www.linkedin.com/in/shazil-katchhi-7336a6252/" target="_blank" rel="noopener">LinkedIn</a> &nbsp;·&nbsp; <a href="https://github.com/mrchikoo" target="_blank" rel="noopener">GitHub</a></span></div></div>
+               <div class="p-btns"><a class="btn solid" href="mailto:skkatchhi61@gmail.com">Send email ${svg('ext')}</a>${cv()}</div>` },
+      { id: 'email', icon: 'mail', title: 'Email', sub: 'skkatchhi61@gmail.com', href: 'mailto:skkatchhi61@gmail.com' },
+      { id: 'phone', icon: 'phone', title: 'Phone', sub: '+49 163 135 1465', href: 'tel:+491631351465' },
+      { id: 'linkedin', icon: 'link', title: 'LinkedIn', sub: 'linkedin.com/in/shazil-katchhi-7336a6252', href: 'https://www.linkedin.com/in/shazil-katchhi-7336a6252/', ext: true },
+      { id: 'github', icon: 'branch', title: 'GitHub', sub: 'github.com/mrchikoo', href: 'https://github.com/mrchikoo', ext: true },
+      { id: 'cv2', icon: 'doc', title: 'Download CV', sub: 'PDF', href: '../Shazil_Katchhi_CV.pdf', download: true }
+    ]}
+  ];
+
+  /* ===================== DOM build ===================== */
+  const $ = s => document.querySelector(s);
+  const catsEl = $('#cats'), listsEl = $('#lists'), stage = $('#stage'), panel = $('#panel'), pBody = $('#pBody'), pCrumb = $('#pCrumb'), pClose = $('#pClose');
+  const live = $('#live'), crumb = $('#crumb');
+
+  CATS.forEach((c, ci) => {
+    const b = document.createElement('button');
+    b.className = 'cat'; b.type = 'button'; b.dataset.ci = ci;
+    b.setAttribute('aria-label', c.label);
+    b.innerHTML = `<span class="glyph">${c.avatar ? '<img class="avatar" src="../assets/profile.jpg" alt="" />' : svg(c.icon)}</span><span class="lbl" aria-hidden="true">${c.label}</span>`;
+    b.addEventListener('click', () => { if (ci === state.c) { openItem(); } else { setCat(ci); } });
+    catsEl.appendChild(b);
+    c.el = b;
+
+    const ul = document.createElement('ul');
+    ul.className = 'list'; ul.setAttribute('aria-label', c.label);
+    c.items.forEach((it, ii) => {
+      const li = document.createElement('li'); li.className = 'item';
+      const inner = it.href ? document.createElement('a') : document.createElement('button');
+      if (it.href) { inner.href = it.href; if (it.ext) { inner.target = '_blank'; inner.rel = 'noopener'; } if (it.download) inner.setAttribute('download', ''); }
+      else inner.type = 'button';
+      inner.innerHTML = `<span class="ii">${svg(it.icon)}</span><span class="tx"><span class="t1">${it.title}</span><span class="t2">${it.sub}</span></span>` +
+        (it.href ? `<span class="ext">${svg(it.download ? 'down' : 'ext')}</span>` : '');
+      inner.addEventListener('click', e => {
+        if (!it.href) { e.preventDefault(); setItem(ci, ii); openItem(); }
+        else { state.i[ci] = ii; layout(); }
+      });
+      inner.addEventListener('focus', () => { if (state.c !== ci) setCat(ci, false); if (state.i[ci] !== ii) { state.i[ci] = ii; layout(); } });
+      li.appendChild(inner); ul.appendChild(li); it.el = li; it.btn = inner;
+    });
+    listsEl.appendChild(ul); c.ul = ul;
+  });
+
+  /* ===================== state & layout ===================== */
+  const state = { c: 0, i: CATS.map(() => 0), open: false };
+  let itemH = 60, upGap = 132;
+  function readVars() {
+    const cs = getComputedStyle(document.documentElement);
+    itemH = parseFloat(cs.getPropertyValue('--item-h')) || 60;
+    upGap = parseFloat(cs.getPropertyValue('--up-gap')) || 132;
+  }
+
+  function layout() {
+    const gap = CATS[0].el.getBoundingClientRect().width || 150;
+    const anchor = catsAnchor();
+    catsEl.style.transform = `translateX(${anchor - gap / 2 - state.c * gap}px)`;
+    CATS.forEach((c, ci) => {
+      const on = ci === state.c;
+      c.el.classList.toggle('on', on);
+      c.el.setAttribute('aria-current', on ? 'true' : 'false');
+      c.el.tabIndex = on ? 0 : -1;
+      c.ul.classList.toggle('on', on);
+      c.ul.inert = !on; c.ul.setAttribute('aria-hidden', on ? 'false' : 'true');
+      const f = state.i[ci];
+      c.ul.style.transform = `translateY(${-f * itemH}px)`;
+      c.items.forEach((it, ii) => {
+        const d = ii - f, ad = Math.abs(d);
+        const focus = d === 0;
+        it.el.classList.toggle('on', focus);
+        let op = Math.max(.3, 1 - ad * .2); if (d < 0) op *= .7;
+        const s = focus ? 1 : .9;
+        it.btn.style.opacity = op;
+        it.btn.style.transform = `translateY(${d < 0 ? -upGap : 0}px) scale(${s})`;
+        it.btn.tabIndex = on ? 0 : -1;
+      });
+    });
+    crumb.textContent = CATS[state.c].label;
+  }
+  function catsAnchor() {
+    const raw = getComputedStyle(document.documentElement).getPropertyValue('--ax').trim();
+    // resolve clamp()/vw values by measuring a probe element
+    probe.style.width = raw; return probe.getBoundingClientRect().width;
+  }
+  const probe = document.createElement('div'); probe.style.cssText = 'position:absolute;visibility:hidden;height:0;pointer-events:none'; document.body.appendChild(probe);
+
+  function announce(t) { live.textContent = ''; requestAnimationFrame(() => { live.textContent = t; }); }
+  function setCat(ci, focus = true) {
+    ci = (ci + CATS.length) % CATS.length;
+    if (ci === state.c) return;
+    state.c = ci; layout();
+    history.replaceState(null, '', '#' + CATS[ci].id);
+    if (focus && !state.open) CATS[ci].items[state.i[ci]].btn.focus({ preventScroll: true });
+    const it = CATS[ci].items[state.i[ci]];
+    announce(`${CATS[ci].label}. ${it.title}, ${state.i[ci] + 1} of ${CATS[ci].items.length}`);
+    if (state.open) renderPanel();
+  }
+  function setItem(ci, ii, focus = true) {
+    const n = CATS[ci].items.length;
+    ii = Math.max(0, Math.min(n - 1, ii));
+    if (state.i[ci] === ii && ci === state.c) return;
+    state.i[ci] = ii; layout();
+    const it = CATS[ci].items[ii];
+    announce(`${it.title}, ${ii + 1} of ${n}`);
+    if (focus && !state.open) it.btn.focus({ preventScroll: true });
+    if (state.open) renderPanel();
+  }
+
+  /* ===================== panel ===================== */
+  let lastFocus = null;
+  function renderPanel() {
+    const c = CATS[state.c], it = c.items[state.i[state.c]];
+    if (it.href) { closePanel(); return; }
+    pCrumb.textContent = `${c.label} · ${String(state.i[state.c] + 1).padStart(2, '0')} / ${String(c.items.length).padStart(2, '0')}`;
+    let html;
+    if (it.quote) {
+      html = `<div class="eyebrow">${it.eyebrow}</div><p class="p-quote" id="pTitle">${it.quote}</p><div class="p-cite"><b>${it.who}</b>${it.role}</div>`;
+    } else {
+      html = `<div class="eyebrow">${it.eyebrow}</div><h2 class="p-title" id="pTitle">${it.heading}</h2>${it.subline ? `<div class="p-sub">${it.subline}</div>` : ''}${it.body}`;
+    }
+    pBody.innerHTML = `<div class="p-in">${html}</div>`;
+    pBody.scrollTop = 0;
+    history.replaceState(null, '', `#${c.id}/${state.i[state.c] + 1}`);
+  }
+  function openItem() {
+    const it = CATS[state.c].items[state.i[state.c]];
+    if (it.href) { it.btn.click(); return; }
+    if (!state.open) lastFocus = document.activeElement;
+    state.open = true;
+    renderPanel();
+    panel.classList.add('open'); panel.setAttribute('aria-hidden', 'false'); stage.classList.add('dim');
+    document.body.classList.add('panel-open');
+    stage.inert = true;
+    announce(`Opened ${it.title}`);
+    setTimeout(() => pClose.focus({ preventScroll: true }), reduce ? 0 : 80);
+  }
+  function closePanel() {
+    if (!state.open) return;
+    state.open = false;
+    panel.classList.remove('open'); panel.setAttribute('aria-hidden', 'true'); stage.classList.remove('dim');
+    document.body.classList.remove('panel-open');
+    stage.inert = false;
+    history.replaceState(null, '', '#' + CATS[state.c].id);
+    const it = CATS[state.c].items[state.i[state.c]];
+    (it.btn || lastFocus || document.body).focus({ preventScroll: true });
+  }
+  pClose.addEventListener('click', closePanel);
+  // focus trap
+  panel.addEventListener('keydown', e => {
+    if (e.key !== 'Tab') return;
+    const f = [...panel.querySelectorAll('a[href], button, [tabindex="-1"].p-body')].filter(el => el.offsetParent !== null);
+    const first = f[0], last = f[f.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  });
+
+  /* ===================== input ===================== */
+  document.addEventListener('keydown', e => {
+    if (e.altKey || e.metaKey || e.ctrlKey) return;
+    const k = e.key;
+    if (k === 'Escape' || (k === 'Backspace' && !/^(INPUT|TEXTAREA)$/.test(document.activeElement.tagName))) { if (state.open) { e.preventDefault(); closePanel(); } return; }
+    if (state.open) {
+      if (k === 'ArrowUp' || k === 'ArrowDown') { e.preventDefault(); setItem(state.c, state.i[state.c] + (k === 'ArrowDown' ? 1 : -1), false); }
+      return;
+    }
+    if (k === 'ArrowLeft') { e.preventDefault(); setCat(state.c - 1); }
+    else if (k === 'ArrowRight') { e.preventDefault(); setCat(state.c + 1); }
+    else if (k === 'ArrowUp') { e.preventDefault(); setItem(state.c, state.i[state.c] - 1); }
+    else if (k === 'ArrowDown') { e.preventDefault(); setItem(state.c, state.i[state.c] + 1); }
+    else if (k === 'Home') { e.preventDefault(); setItem(state.c, 0); }
+    else if (k === 'End') { e.preventDefault(); setItem(state.c, 99); }
+    else if (k === 'Enter' || k === ' ') {
+      const a = document.activeElement;
+      if (a && a.closest && a.closest('.cat')) { e.preventDefault(); openItem(); }
+      else if (!(a && a.closest && a.closest('.item'))) { e.preventDefault(); openItem(); }
+      // otherwise let the focused item's native click fire
+    }
+  });
+
+  // wheel: vertical -> items, horizontal -> categories (throttled)
+  let wheelLock = 0, wheelAcc = 0;
+  document.addEventListener('wheel', e => {
+    if (e.target.closest && e.target.closest('.panel')) return;
+    e.preventDefault();
+    const now = performance.now();
+    if (now < wheelLock) return;
+    const dx = e.deltaX, dy = e.deltaY;
+    if (Math.abs(dx) > Math.abs(dy) * 1.4) {
+      if (Math.abs(dx) < 12) return;
+      wheelLock = now + 420; setCat(state.c + (dx > 0 ? 1 : -1));
+    } else {
+      wheelAcc += dy;
+      if (Math.abs(wheelAcc) < 40) return;
+      wheelLock = now + 260; const dir = wheelAcc > 0 ? 1 : -1; wheelAcc = 0;
+      if (state.open) setItem(state.c, state.i[state.c] + dir, false); else setItem(state.c, state.i[state.c] + dir);
+    }
+  }, { passive: false });
+
+  // touch swipe
+  let tx = 0, ty = 0, tt = 0, tracking = false;
+  stage.addEventListener('pointerdown', e => { if (e.pointerType === 'mouse') return; tx = e.clientX; ty = e.clientY; tt = performance.now(); tracking = true; });
+  stage.addEventListener('pointerup', e => {
+    if (!tracking) return; tracking = false;
+    const dx = e.clientX - tx, dy = e.clientY - ty;
+    if (Math.max(Math.abs(dx), Math.abs(dy)) < 36 || performance.now() - tt > 700) return;
+    if (Math.abs(dx) > Math.abs(dy)) setCat(state.c + (dx < 0 ? 1 : -1), false);
+    else setItem(state.c, state.i[state.c] + (dy < 0 ? 1 : -1), false);
+  });
+  stage.addEventListener('pointercancel', () => { tracking = false; });
+  // swipe down on the bottom sheet closes it (touch only)
+  let py0 = 0;
+  panel.addEventListener('pointerdown', e => { if (e.pointerType !== 'mouse') py0 = e.clientY; });
+  panel.addEventListener('pointerup', e => { if (e.pointerType !== 'mouse' && pBody.scrollTop <= 0 && e.clientY - py0 > 90 && innerWidth <= 820) closePanel(); });
+
+  /* ===================== routing ===================== */
+  function route(initial) {
+    const h = decodeURIComponent(location.hash.replace('#', '')).toLowerCase();
+    if (!h) return;
+    const [cid, n] = h.split('/');
+    const ci = CATS.findIndex(c => c.id === cid);
+    if (ci < 0) return;
+    state.c = ci;
+    if (n && /^\d+$/.test(n)) { state.i[ci] = Math.max(0, Math.min(CATS[ci].items.length - 1, +n - 1)); }
+    layout();
+    if (n && !CATS[ci].items[state.i[ci]].href) { openItem(); }
+    else if (!initial) CATS[ci].items[state.i[ci]].btn.focus({ preventScroll: true });
+  }
+  window.addEventListener('hashchange', () => route(false));
+
+  /* ===================== clock & hue ===================== */
+  const clockEl = $('#clock'), dateEl = $('#date');
+  function clock() {
+    const d = new Date();
+    const hh = String(d.getHours()).padStart(2, '0'), mm = String(d.getMinutes()).padStart(2, '0');
+    clockEl.innerHTML = `${hh}<i>:</i>${mm}`;
+    dateEl.textContent = d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
+    // time-of-day hue (indigo night -> teal dawn -> blue day -> violet dusk)
+    const t = d.getHours() + d.getMinutes() / 60;
+    const keys = [[0, 236], [5, 236], [8, 198], [12, 214], [17, 226], [20, 258], [23, 240], [24, 236]];
+    let hue = 228;
+    for (let k = 0; k < keys.length - 1; k++) {
+      const [a, ha] = keys[k], [b, hb] = keys[k + 1];
+      if (t >= a && t <= b) { const u = (t - a) / (b - a); hue = ha + (hb - ha) * (u * u * (3 - 2 * u)); break; }
+    }
+    document.documentElement.style.setProperty('--h', hue.toFixed(1));
+    HUE = hue;
+  }
+  let HUE = 228;
+  clock(); setInterval(clock, 15000);
+
+  /* ===================== ribbon waves ===================== */
+  const cnv = $('#waves'), ctx = cnv.getContext('2d', { alpha: true });
+  let W = 0, H = 0, S = 1; // S = internal scale
+  const RIBBONS = [
+    { y: .50, amp: .085, f: 1.05, sp: .055, ph: 0.0, th: .060, a: .075, hoff: -6 },
+    { y: .56, amp: .110, f: 0.80, sp: .038, ph: 2.1, th: .090, a: .050, hoff: 10 },
+    { y: .62, amp: .070, f: 1.35, sp: .070, ph: 4.0, th: .040, a: .090, hoff: 0 },
+    { y: .54, amp: .140, f: 0.62, sp: .030, ph: 1.3, th: .130, a: .030, hoff: 22 },
+    { y: .68, amp: .060, f: 1.70, sp: .090, ph: 5.2, th: .028, a: .080, hoff: -14 }
+  ];
+  const SPARKS = Array.from({ length: 34 }, (_, i) => ({ x: Math.random(), y: Math.random(), r: .6 + Math.random() * 1.3, v: .010 + Math.random() * .02, a: .15 + Math.random() * .35, ph: Math.random() * 6.28 }));
+
+  function resize() {
+    const dpr = Math.min(2, devicePixelRatio || 1);
+    S = Math.min(1, dpr) * .6; // render at reduced resolution: the blur hides it and it keeps CPU low
+    W = Math.floor(innerWidth * S); H = Math.floor(innerHeight * S);
+    cnv.width = W; cnv.height = H;
+    readVars(); layout();
+    if (reduce || document.hidden) draw(performance.now());
+  }
+  function ribbonPath(r, t, outer) {
+    const base = r.y * H, amp = r.amp * H, th = r.th * H * outer;
+    const steps = 40;
+    ctx.beginPath();
+    for (let s = 0; s <= steps; s++) {
+      const u = s / steps, x = (u * 1.1 - .05) * W;
+      const y = base + Math.sin(u * r.f * 6.283 + t * r.sp + r.ph) * amp + Math.sin(u * r.f * 2.7 - t * r.sp * .7 + r.ph * 1.7) * amp * .55;
+      const half = th * (.55 + .45 * Math.sin(u * 4.1 + t * r.sp * 1.3 + r.ph));
+      if (s === 0) ctx.moveTo(x, y - half); else ctx.lineTo(x, y - half);
+      if (s === steps) {
+        for (let q = steps; q >= 0; q--) {
+          const uu = q / steps, xx = (uu * 1.1 - .05) * W;
+          const yy = base + Math.sin(uu * r.f * 6.283 + t * r.sp + r.ph) * amp + Math.sin(uu * r.f * 2.7 - t * r.sp * .7 + r.ph * 1.7) * amp * .55;
+          const hh = th * (.55 + .45 * Math.sin(uu * 4.1 + t * r.sp * 1.3 + r.ph));
+          ctx.lineTo(xx, yy + hh);
+        }
+      }
+    }
+    ctx.closePath();
+  }
+  function draw(now) {
+    const t = now / 1000;
+    ctx.clearRect(0, 0, W, H);
+    ctx.globalCompositeOperation = 'lighter';
+    for (const r of RIBBONS) {
+      const hue = HUE + r.hoff;
+      // three passes: wide soft halo, mid, crisp core
+      ribbonPath(r, t, 2.2); ctx.fillStyle = `hsla(${hue},70%,78%,${r.a * .22})`; ctx.fill();
+      ribbonPath(r, t, 1.3); ctx.fillStyle = `hsla(${hue},72%,80%,${r.a * .45})`; ctx.fill();
+      ribbonPath(r, t, 0.6); ctx.fillStyle = `hsla(${hue},78%,88%,${r.a})`; ctx.fill();
+    }
+    for (const p of SPARKS) {
+      const y = ((p.y - t * p.v * .02) % 1 + 1) % 1;
+      const tw = .5 + .5 * Math.sin(t * .9 + p.ph);
+      ctx.beginPath(); ctx.arc(p.x * W, y * H, p.r * S, 0, 6.283);
+      ctx.fillStyle = `hsla(${HUE + 10},60%,92%,${p.a * tw * .5})`; ctx.fill();
+    }
+    ctx.globalCompositeOperation = 'source-over';
+  }
+  let raf = 0, lastFrame = 0;
+  function loop(now) {
+    raf = requestAnimationFrame(loop);
+    if (now - lastFrame < 1000 / 40) return; // 40fps is plenty for slow ribbons
+    lastFrame = now; draw(now);
+  }
+  function startLoop() { if (!raf && !reduce) raf = requestAnimationFrame(loop); }
+  function stopLoop() { cancelAnimationFrame(raf); raf = 0; }
+  document.addEventListener('visibilitychange', () => { document.hidden ? stopLoop() : startLoop(); });
+  cnv.style.filter = 'blur(7px)';
+  addEventListener('resize', resize, { passive: true });
+
+  /* ===================== boot ===================== */
+  const boot = $('#boot');
+  function endBoot() {
+    if (!boot || boot.dataset.done) return; boot.dataset.done = 1;
+    boot.classList.add('out'); setTimeout(() => boot.remove(), reduce ? 0 : 520);
+  }
+  if (reduce) { boot.remove(); } else {
+    setTimeout(endBoot, 1150);
+    boot.addEventListener('pointerdown', endBoot);
+    document.addEventListener('keydown', endBoot, { once: true });
+  }
+
+  /* ===================== init ===================== */
+  resize();
+  route(true);
+  layout();
+  if (!reduce) startLoop(); else draw(0);
+  document.fonts && document.fonts.ready.then(layout);
+})();
+</script>
+</body>
+</html>

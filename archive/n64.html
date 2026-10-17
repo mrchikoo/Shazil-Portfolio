@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Shazil Katchhi — AI & Machine Learning</title>
+<meta name="description" content="Shazil Katchhi — M.Sc. Artificial Intelligence student at BTU Cottbus-Senftenberg. Machine learning, computer vision, and applied AI." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #09090b;
+    --ink: #ececef;
+    --soft: #b5b5bd;
+    --muted: #7c7c86;
+    --line: #232328;
+    --n-red: #e5322d;
+    --n-green: #1fb64a;
+    --n-blue: #2d6bff;
+    --n-yellow: #f6c21b;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+
+  /* faint four-colour N64 glow in the corners + grain */
+  body::before {
+    content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    background:
+      radial-gradient(40% 35% at 0% 0%, rgba(229,50,45,.10), transparent 70%),
+      radial-gradient(40% 35% at 100% 0%, rgba(31,182,74,.08), transparent 70%),
+      radial-gradient(40% 35% at 0% 100%, rgba(45,107,255,.10), transparent 70%),
+      radial-gradient(40% 35% at 100% 100%, rgba(246,194,27,.08), transparent 70%);
+  }
+  body::after {
+    content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 0; opacity: .5;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
+  a { color: inherit; }
+  :focus-visible { outline: 2px solid var(--n-yellow); outline-offset: 4px; border-radius: 6px; }
+
+  .page { position: relative; z-index: 1; max-width: 700px; margin: 0 auto; padding: 56px 24px 90px; }
+
+  /* --- HEADER --- */
+  .head { display: flex; align-items: center; gap: 18px; margin-bottom: 34px; }
+  .avatar {
+    width: 62px; height: 62px; border-radius: 50%; flex: none;
+    background: url('../assets/profile.jpg') center 20% / cover;
+    box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--n-blue), 0 0 0 6px var(--bg), 0 0 0 8px var(--n-red);
+  }
+  .logo { font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: clamp(2rem, 6vw, 2.7rem); line-height: 1; letter-spacing: -.01em; }
+  .logo .a { color: var(--n-red); } .logo .b { color: var(--n-green); } .logo .c { color: var(--n-blue); } .logo .d { color: var(--n-yellow); }
+  .logo small { display: block; font-family: 'Inter', sans-serif; font-weight: 400; font-size: .85rem; color: var(--muted); letter-spacing: 0; margin-top: 8px; }
+
+  .intro p { font-size: 1.02rem; color: var(--ink); margin-bottom: 18px; }
+  .intro p.dim { color: var(--soft); }
+  .intro a { text-decoration-color: var(--muted); text-underline-offset: 3px; }
+  .intro a:hover { text-decoration-color: var(--ink); }
+  .live { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--n-green); margin-right: 8px; box-shadow: 0 0 0 3px rgba(31,182,74,.2); animation: pulse 2s infinite; vertical-align: 1px; }
+  @keyframes pulse { 50% { box-shadow: 0 0 0 6px rgba(31,182,74,0); } }
+
+  hr { border: none; border-top: 1px solid var(--line); margin: 26px 0; }
+
+  /* tree list like the reference */
+  .tree-h { font-size: 1rem; margin-bottom: 14px; }
+  .tree { list-style: none; margin-left: 4px; border-left: 1px solid #3a3a42; padding: 2px 0 4px; }
+  .tree li { position: relative; padding: 5px 0 5px 40px; color: var(--soft); font-size: .98rem; }
+  .tree li::before { content: ""; position: absolute; left: 0; top: 50%; width: 28px; height: 1px; background: #3a3a42; }
+  .tree li a { color: var(--ink); text-decoration-color: var(--muted); text-underline-offset: 3px; }
+  .tree li a:hover { text-decoration-color: var(--ink); }
+  .tree li .k { color: var(--muted); font-family: 'JetBrains Mono', monospace; font-size: .74rem; text-transform: uppercase; letter-spacing: .1em; margin-right: 10px; }
+
+  /* --- SECTIONS / ROWS --- */
+  .sec { margin-top: 52px; }
+  .sec-h { display: flex; align-items: center; gap: 14px; font-size: .86rem; letter-spacing: .12em; color: var(--muted); padding-bottom: 10px; border-bottom: 1px solid var(--line); }
+  .sec-h .hint { margin-left: auto; font-family: 'JetBrains Mono', monospace; font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; opacity: .7; }
+
+  .row {
+    display: flex; gap: 12px; overflow-x: auto; padding: 34px 6px 18px; margin: 0 -6px;
+    scroll-snap-type: x proximity; scrollbar-width: none;
+    -webkit-mask-image: linear-gradient(90deg, #000 88%, transparent);
+            mask-image: linear-gradient(90deg, #000 88%, transparent);
+  }
+  .row::-webkit-scrollbar { display: none; }
+  .item { flex: none; width: 150px; text-align: center; scroll-snap-align: start; padding: 6px 0 4px; }
+  .item .name { display: block; margin-top: 18px; font-size: .92rem; color: var(--soft); transition: color .2s; }
+  .item:hover .name, .item:focus-visible .name { color: var(--ink); }
+  .item .stage { height: 98px; display: grid; place-items: end center; }
+
+  /* --- N64 CARTRIDGE --- */
+  .cart { --c: var(--n-red); position: relative; width: 106px; height: 94px; transition: transform .3s cubic-bezier(.2,.9,.3,1.4); filter: drop-shadow(0 12px 10px rgba(0,0,0,.65)); }
+  .cart .shell {
+    position: absolute; inset: 0 0 12px 0; border-radius: 8px 8px 4px 4px;
+    background: linear-gradient(160deg, #d3d4da 0%, #9a9ba3 40%, #70717a 68%, #a4a5ad 100%);
+    box-shadow: inset 0 2px 2px rgba(255,255,255,.7), inset 0 -3px 5px rgba(0,0,0,.4), 0 0 0 1px rgba(0,0,0,.55);
+  }
+  .cart .grip { position: absolute; top: 7px; left: 13px; right: 13px; height: 11px; border-radius: 2px;
+    background: repeating-linear-gradient(90deg, rgba(0,0,0,.38) 0 2px, rgba(255,255,255,.18) 2px 3px, transparent 3px 7px); }
+  .cart .label {
+    position: absolute; left: 12px; right: 12px; top: 25px; bottom: 20px; border-radius: 3px; padding: 3px;
+    background: linear-gradient(180deg, rgba(255,255,255,.4), rgba(255,255,255,0) 45%), var(--c);
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,.35), inset 0 -8px 12px rgba(0,0,0,.28);
+    display: grid; place-items: center; text-align: center;
+    font: 700 8.5px/1.2 'JetBrains Mono', monospace; letter-spacing: .05em; color: #fff; text-shadow: 0 1px 1px rgba(0,0,0,.55); text-transform: uppercase;
+  }
+  .cart .foot { position: absolute; left: 20px; right: 20px; bottom: 0; height: 16px; border-radius: 0 0 3px 3px;
+    background: linear-gradient(#64656d, #2f2f35); box-shadow: 0 0 0 1px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.25); }
+  .cart .foot::after { content: ""; position: absolute; left: 6px; right: 6px; bottom: 3px; height: 4px;
+    background: repeating-linear-gradient(90deg, #d8b04a 0 2px, transparent 2px 4px); opacity: .85; }
+
+  /* --- MEMORY PAK --- */
+  .pak { --c: var(--n-red); position: relative; width: 90px; height: 76px; transition: transform .3s cubic-bezier(.2,.9,.3,1.4); filter: drop-shadow(0 12px 10px rgba(0,0,0,.65)); }
+  .pak .shell {
+    position: absolute; inset: 0 0 10px 0; border-radius: 10px 10px 5px 5px;
+    background: linear-gradient(155deg, color-mix(in srgb, var(--c) 55%, #fff) 0%, var(--c) 45%, color-mix(in srgb, var(--c) 55%, #000) 100%);
+    box-shadow: inset 0 2px 2px rgba(255,255,255,.55), inset 0 -4px 6px rgba(0,0,0,.35), 0 0 0 1px rgba(0,0,0,.5);
+    display: grid; place-items: center; text-align: center; padding: 6px 8px 10px;
+    font: 700 11px/1.15 'Fredoka', sans-serif; color: #fff; letter-spacing: .02em; text-shadow: 0 1px 2px rgba(0,0,0,.45);
+  }
+  .pak .shell::before { content: ""; position: absolute; top: 8px; left: 50%; transform: translateX(-50%); width: 30px; height: 5px; border-radius: 3px; background: rgba(0,0,0,.28); box-shadow: inset 0 1px 1px rgba(0,0,0,.4); }
+  .pak .foot { position: absolute; left: 18px; right: 18px; bottom: 0; height: 13px; border-radius: 0 0 3px 3px; background: linear-gradient(#64656d, #2f2f35); box-shadow: 0 0 0 1px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.25); }
+  .pak.gray { --c: #8c8d96; }
+
+  /* --- CONTROLLER BUTTONS --- */
+  .nbtn {
+    --c: var(--n-blue); width: 72px; height: 72px; border-radius: 50%; display: grid; place-items: center;
+    background: radial-gradient(circle at 32% 26%, color-mix(in srgb, var(--c) 45%, #fff) 0, var(--c) 42%, color-mix(in srgb, var(--c) 55%, #000) 100%);
+    box-shadow: inset 0 -5px 9px rgba(0,0,0,.4), inset 0 2px 3px rgba(255,255,255,.5), 0 10px 14px -4px rgba(0,0,0,.75), 0 0 0 4px #17171b, 0 0 0 5px #2c2c33;
+    font: 700 30px 'Fredoka', sans-serif; color: rgba(255,255,255,.95); text-shadow: 0 2px 2px rgba(0,0,0,.4);
+    transition: transform .2s cubic-bezier(.2,.9,.3,1.4), box-shadow .2s;
+  }
+  .nbtn.cbtn { font-size: 26px; color: #4b3a00; text-shadow: 0 1px 0 rgba(255,255,255,.45); }
+
+  .item:hover .cart, .item:focus-visible .cart { transform: translateY(-9px) rotate(-3deg) scale(1.06); }
+  .item:hover .pak, .item:focus-visible .pak { transform: translateY(-9px) rotate(2.5deg) scale(1.06); }
+  .item:hover .nbtn, .item:focus-visible .nbtn { transform: translateY(2px) scale(.94);
+    box-shadow: inset 0 -2px 5px rgba(0,0,0,.4), inset 0 2px 3px rgba(255,255,255,.4), 0 3px 6px -2px rgba(0,0,0,.75), 0 0 0 4px #17171b, 0 0 0 5px #2c2c33; }
+
+  footer { margin-top: 64px; padding-top: 22px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+    font-family: 'JetBrains Mono', monospace; font-size: .7rem; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; }
+
+  /* --- MODAL: "now playing" --- */
+  .modal { position: fixed; inset: 0; z-index: 50; display: none; align-items: center; justify-content: center; padding: 20px;
+    background: rgba(4,4,6,.78); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+  .modal.open { display: flex; animation: fade .2s ease; }
+  @keyframes fade { from { opacity: 0; } }
+  .sheet {
+    width: min(600px, 100%); max-height: min(86vh, 760px); display: flex; flex-direction: column; overflow: hidden;
+    background: #111115; border: 1px solid #2d2d34; border-radius: 18px;
+    box-shadow: 0 40px 80px -20px rgba(0,0,0,.8), 0 0 0 1px rgba(255,255,255,.03) inset;
+    animation: rise .34s cubic-bezier(.2,.9,.3,1.15);
+  }
+  @keyframes rise { from { opacity: 0; transform: translateY(26px) scale(.95); } }
+  .sheet-bar { flex: none; display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid #222228; }
+  .dots { display: flex; gap: 6px; }
+  .dots i { width: 9px; height: 9px; border-radius: 50%; display: block; }
+  .dots i:nth-child(1) { background: var(--n-red); } .dots i:nth-child(2) { background: var(--n-green); } .dots i:nth-child(3) { background: var(--n-blue); } .dots i:nth-child(4) { background: var(--n-yellow); }
+  .now { font-family: 'JetBrains Mono', monospace; font-size: .68rem; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+  .now::after { content: "_"; animation: blink 1s steps(1) infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+  .x { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; color: var(--soft); font-size: 18px; line-height: 1; }
+  .x:hover { background: #26262c; color: #fff; }
+  .sheet-body { overflow: auto; padding: 26px 28px 32px; }
+  .sheet-body::-webkit-scrollbar { width: 8px; }
+  .sheet-body::-webkit-scrollbar-thumb { background: #34343c; border-radius: 8px; }
+
+  .m-meta { font-family: 'JetBrains Mono', monospace; font-size: .7rem; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+  .m-title { font-family: 'Fredoka', sans-serif; font-weight: 600; font-size: 1.75rem; line-height: 1.15; letter-spacing: -.005em; margin-bottom: 4px; }
+  .m-sub { font-family: 'JetBrains Mono', monospace; font-size: .76rem; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 20px; }
+  .m-desc { color: var(--soft); font-size: .98rem; line-height: 1.8; margin-bottom: 20px; }
+  .m-list { list-style: none; margin-bottom: 22px; }
+  .m-list li { color: var(--soft); font-size: .93rem; line-height: 1.7; padding: 10px 0 10px 24px; border-bottom: 1px solid #202026; position: relative; }
+  .m-list li:last-child { border-bottom: none; }
+  .m-list li::before { content: "▸"; position: absolute; left: 2px; color: var(--c, var(--n-yellow)); }
+  .m-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; }
+  .m-tags span { font-family: 'JetBrains Mono', monospace; font-size: .7rem; color: var(--soft); border: 1px solid #2d2d34; border-radius: 999px; padding: 3px 11px; background: #17171c; }
+  .m-hl { border-left: 3px solid var(--c, var(--n-yellow)); background: #17171c; border-radius: 0 12px 12px 0; padding: 14px 18px; margin: 4px 0 20px; }
+  .m-hl b { display: block; font-family: 'JetBrains Mono', monospace; font-weight: 500; font-size: .66rem; letter-spacing: .14em; text-transform: uppercase; color: var(--c, var(--n-yellow)); margin-bottom: 4px; }
+  .m-hl span { font-size: 1.02rem; color: var(--ink); line-height: 1.5; }
+  .m-quote { font-size: 1.08rem; line-height: 1.85; color: var(--ink); margin-bottom: 18px; }
+  .m-btns { display: flex; gap: 10px; flex-wrap: wrap; }
+  .btn { display: inline-flex; align-items: center; gap: 8px; padding: 9px 18px; border-radius: 999px; font-size: .86rem; font-weight: 500; text-decoration: none; background: var(--c, var(--n-blue)); color: #fff; transition: transform .15s, filter .2s; }
+  .btn:hover { filter: brightness(1.12); transform: translateY(-1px); }
+
+  @media (max-width: 520px) {
+    .page { padding: 40px 20px 70px; }
+    .item { width: 132px; }
+    .sheet-body { padding: 22px 20px 28px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    html { scroll-behavior: auto; }
+  }
+</style>
+</head>
+<body>
+
+<main class="page">
+
+  <header class="head">
+    <div class="avatar" role="img" aria-label="Shazil Katchhi"></div>
+    <h1 class="logo"><span class="a">S</span><span class="b">h</span><span class="c">a</span><span class="d">z</span><span class="a">i</span><span class="b">l</span> Katchhi
+      <small>AI &amp; Machine Learning · Berlin, Germany</small>
+    </h1>
+  </header>
+
+  <section class="intro">
+    <p>I build intelligent systems that see &amp; understand.</p>
+    <p class="dim">M.Sc. Artificial Intelligence at BTU Cottbus-Senftenberg. I work at the intersection of deep learning, computer vision, and real-world deployment — turning research into things that work.</p>
+    <p class="dim">Previously AI engineering at <a href="#experience">Echocene</a> in Berlin, and IoT &amp; databases at <a href="#experience">Skmotiv</a> in Mumbai. B.Eng. in Computer Science &amp; Engineering (AI &amp; ML) from the University of Mumbai.</p>
+    <p class="dim"><span class="live"></span>Open to working-student roles in Germany — 15–20 hrs/week.</p>
+  </section>
+
+  <hr>
+
+  <p class="tree-h">Stuff on my mind:</p>
+  <ul class="tree">
+    <li>Deep learning for computer vision and NLP.</li>
+    <li>Embedded ML on edge devices.</li>
+    <li>Data pipelines that hold up under real conditions.</li>
+    <li>Where ML meets physical systems — manufacturing, sensors, hardware-in-the-loop.</li>
+  </ul>
+
+  <!-- PROJECTS -->
+  <section class="sec" id="projects">
+    <div class="sec-h">Projects <span class="hint">pick a cartridge →</span></div>
+    <div class="row">
+      <button class="item" data-id="p1"><span class="stage"><span class="cart" style="--c:#e5322d"><span class="shell"></span><span class="grip"></span><span class="label">Sign→<br>Speech</span><span class="foot"></span></span></span><span class="name">Gesture-to-Speech</span></button>
+      <button class="item" data-id="p2"><span class="stage"><span class="cart" style="--c:#2d6bff"><span class="shell"></span><span class="grip"></span><span class="label">Wearable<br>ViT · Pi</span><span class="foot"></span></span></span><span class="name">Wearable Translator</span></button>
+      <button class="item" data-id="p3"><span class="stage"><span class="cart" style="--c:#1fb64a"><span class="shell"></span><span class="grip"></span><span class="label">Textura<br>Diffusion</span><span class="foot"></span></span></span><span class="name">TEXTURA</span></button>
+      <button class="item" data-id="p4"><span class="stage"><span class="cart" style="--c:#f6c21b"><span class="shell"></span><span class="grip"></span><span class="label" style="color:#3b2e00;text-shadow:0 1px 0 rgba(255,255,255,.4)">Object<br>Detect</span><span class="foot"></span></span></span><span class="name">Object Detection</span></button>
+    </div>
+  </section>
+
+  <!-- EXPERIENCE -->
+  <section class="sec" id="experience">
+    <div class="sec-h">Experience <span class="hint">memory paks</span></div>
+    <div class="row">
+      <button class="item" data-id="e1"><span class="stage"><span class="pak" style="--c:#e5322d"><span class="shell">Echo-<br>cene</span><span class="foot"></span></span></span><span class="name">AI Engineering Intern</span></button>
+      <button class="item" data-id="e2"><span class="stage"><span class="pak" style="--c:#2d6bff"><span class="shell">Sk-<br>motiv</span><span class="foot"></span></span></span><span class="name">IoT &amp; Database Intern</span></button>
+    </div>
+  </section>
+
+  <!-- TOOLKIT -->
+  <section class="sec" id="toolkit">
+    <div class="sec-h">Toolkit <span class="hint">press a button</span></div>
+    <div class="row">
+      <button class="item" data-id="t1"><span class="stage"><span class="nbtn" style="--c:#2d6bff">A</span></span><span class="name">Languages</span></button>
+      <button class="item" data-id="t2"><span class="stage"><span class="nbtn" style="--c:#1fb64a">B</span></span><span class="name">ML &amp; Data</span></button>
+      <button class="item" data-id="t3"><span class="stage"><span class="nbtn cbtn" style="--c:#f6c21b">▲</span></span><span class="name">Methods &amp; Tools</span></button>
+    </div>
+  </section>
+
+  <!-- WORDS -->
+  <section class="sec" id="words">
+    <div class="sec-h">Words <span class="hint">what others have said</span></div>
+    <div class="row">
+      <button class="item" data-id="w1"><span class="stage"><span class="pak gray"><span class="shell">“ ”</span><span class="foot"></span></span></span><span class="name">Prof. Amar Pawade</span></button>
+      <button class="item" data-id="w2"><span class="stage"><span class="pak gray"><span class="shell">“ ”</span><span class="foot"></span></span></span><span class="name">Prof. Tarannum Shaikh</span></button>
+      <button class="item" data-id="w3"><span class="stage"><span class="pak gray"><span class="shell">“ ”</span><span class="foot"></span></span></span><span class="name">IEEE Committee</span></button>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="sec" id="contact">
+    <div class="sec-h">Get in touch</div>
+    <p style="margin:26px 0 14px;">Let's build something worth building.</p>
+    <ul class="tree">
+      <li><span class="k">email</span><a href="mailto:skkatchhi61@gmail.com">skkatchhi61@gmail.com</a></li>
+      <li><span class="k">phone</span><a href="tel:+491631351465">+49 163 135 1465</a></li>
+      <li><span class="k">cv</span><a href="../Shazil_Katchhi_CV.pdf" download>Download CV ↓</a></li>
+      <li><span class="k">github</span><a href="https://github.com/mrchikoo" target="_blank" rel="noopener">github.com/mrchikoo ↗</a></li>
+      <li><span class="k">linkedin</span><a href="https://www.linkedin.com/in/shazil-katchhi-7336a6252/" target="_blank" rel="noopener">Shazil Katchhi ↗</a></li>
+    </ul>
+  </section>
+
+  <footer>
+    <span>© 2026 Shazil Katchhi</span>
+    <span>Berlin → Worldwide</span>
+  </footer>
+</main>
+
+<!-- NOW PLAYING MODAL -->
+<div class="modal" id="modal" aria-hidden="true">
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="mTitle">
+    <div class="sheet-bar">
+      <div class="dots" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+      <div class="now">Now playing</div>
+      <button class="x" id="mClose" aria-label="Close">×</button>
+    </div>
+    <div class="sheet-body" id="mBody"></div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const gh = (u, c) => `<div class="m-btns"><a class="btn" style="--c:${c}" href="${u}" target="_blank" rel="noopener">View on GitHub ↗</a></div>`;
+  const tags = a => `<div class="m-tags">${a.map(t => `<span>${t}</span>`).join('')}</div>`;
+  const list = a => `<ul class="m-list">${a.map(t => `<li>${t}</li>`).join('')}</ul>`;
+  const hl = (l, t) => `<div class="m-hl"><b>${l}</b><span>${t}</span></div>`;
+  const head = (meta, title, sub) => `<div class="m-meta">${meta}</div><h2 class="m-title" id="mTitle">${title}</h2>${sub ? `<div class="m-sub">${sub}</div>` : '<div style="height:16px"></div>'}`;
+
+  const DATA = {
+    p1: { c: '#e5322d', html: head('Mar 2025 · IEEE Publication', 'Deep Learning for Gesture-to-Speech Translation') +
+      tags(['transformer','cnn','lstm','tensorflow','mediapipe']) +
+      '<p class="m-desc">Designed and trained an end-to-end deep-learning pipeline for real-time Indian Sign Language recognition. Combined Transformer, CNN (ResNet) and LSTM architectures, built the full data-processing pipeline with MediaPipe feature extraction, and integrated NLP with text-to-speech for multilingual output.</p>' +
+      hl('Outcome', '91% gesture-detection accuracy. Published on IEEE Xplore (ESCI 2025).') },
+    p2: { c: '#2d6bff', html: head('Dec 2024 – Mar 2025 · National Hackathon', 'Wearable Translation Device') +
+      tags(['vision transformer','embedded ml','raspberry pi','edge inference']) +
+      '<p class="m-desc">An embedded ML system combining ViT, CNN and LSTM models with MediaPipe pose estimation, deployed on Raspberry Pi with low-latency inference. Coordinated a small interdisciplinary team across hardware integration, model deployment and user-facing output.</p>' +
+      hl('Recognition', 'Top 5 nationally — Smart India Hackathon, Government of India.') +
+      gh('https://github.com/mrchikoo/Sign-Language-to-speech-TPP-FPP-', '#2d6bff') },
+    p3: { c: '#1fb64a', html: head('2025 · Generative AI', 'TEXTURA — Prompt-Based Image Generation') +
+      tags(['diffusion','generative ai','fine-tuning','vision-language']) +
+      '<p class="m-desc">A text-to-image pipeline using diffusion models fine-tuned on a custom dataset, integrating advanced language–vision models for context-aware generation with enhanced realism and creativity. Built with a user-facing interface for real-time prompt-to-image workflows.</p>' +
+      gh('https://github.com/mrchikoo/Gen_Ai', '#1fb64a') },
+    p4: { c: '#f6c21b', html: head('Mar 2024 · Computer Vision', 'Real-time Object Detection') +
+      tags(['opencv','tensorflow','computer vision','inference']) +
+      '<p class="m-desc">A high-accuracy real-time object detection model built in Python using OpenCV and TensorFlow, with deep-learning-based recognition. Optimised for inference performance and deployable on standard hardware.</p>' +
+      gh('https://github.com/mrchikoo/Object_detection', '#b88c00') },
+    e1: { c: '#e5322d', html: head('May – Aug 2026 · 3 months', 'AI Engineering — Intern', 'Echocene · Berlin, Germany') +
+      '<p class="m-desc">Contributed to development of the Echocene platform with hands-on work across data management, databases, backend processing, APIs, and AI-assisted engineering — building and shipping features across the full stack.</p>' +
+      list([
+        'Worked with SQLite/SQL databases for data storage, retrieval, structuring, and integration with application functionality.',
+        'Developed Python backend functionality to process and transform data and connect database, API, and application layers.',
+        'Supported data-processing workflows and API integrations across different components of the platform.',
+        'Developed and modified TypeScript frontend functionality for interacting with and presenting backend data.',
+        'Implemented, tested, and debugged features across the database, backend, API, and frontend layers.',
+        'Worked with application data flows from extraction and processing through storage and presentation — practical experience relevant to ETL and data integration workflows.',
+        'Used Claude, OpenAI Codex, and other AI-assisted development tools for technical research, debugging, implementation, and exploring data-processing solutions.',
+        'Contributed to technical documentation and participated in product discussions around platform architecture, workflows, and data management.'
+      ]) + tags(['python','typescript','sql · sqlite','apis','data processing','ai/llm development','claude · codex']) },
+    e2: { c: '#2d6bff', html: head('Feb – May 2024 · 4 months', 'IoT & Database — Intern', 'Skmotiv · Mumbai, India') +
+      '<p class="m-desc">Prototyped a Raspberry Pi-based IoT module for fuel tanker fleet management — capturing real-time telemetry from live vehicles and building the data layer to store and report on it. First hands-on experience owning a full hardware-to-database pipeline end-to-end.</p>' +
+      list([
+        'Designed and prototyped a Raspberry Pi-based IoT module capturing real-time GPS, fuel capacity, fuel type, and truck weight before and after fuelling.',
+        'Implemented a structured SQLite database schema to store, query and report fleet telemetry data.',
+        'Wrote Python scripts running on embedded Linux for data acquisition and logging.',
+        'Integrated hardware sensors via the Raspberry Pi GPIO interface; tested under real operating conditions and documented the full pipeline for handover.'
+      ]) + tags(['raspberry pi','python','sqlite','embedded linux','gpio · sensors','iot']) },
+    t1: { c: '#2d6bff', html: head('Toolkit · Button A', 'Languages') + list(['Python','C / C++','JavaScript','SQL · R']) },
+    t2: { c: '#1fb64a', html: head('Toolkit · Button B', 'ML & Data') + list(['TensorFlow · PyTorch','Scikit-learn · Keras','OpenCV · MediaPipe','Pandas · NumPy']) },
+    t3: { c: '#f6c21b', html: head('Toolkit · Button C', 'Methods & Tools') + list(['Computer Vision · NLP','Deep Learning · Transformers','Embedded ML · Raspberry Pi','Git · Jupyter · Node-RED']) },
+    w1: { c: '#8c8d96', html: head('Asst. Professor, CSE · MHSSCE', 'Prof. Amar Pawade') +
+      '<p class="m-quote">“Shazil\'s thirst for knowledge is evident in his proactive approach to learning. He has consistently demonstrated profound leadership and proved himself to be a true team player. His curious mind and good interpretation abilities will significantly facilitate research work.”</p>' },
+    w2: { c: '#8c8d96', html: head('Asst. Professor, CSE · MHSSCE', 'Prof. Tarannum Shaikh') +
+      '<p class="m-quote">“He is not only gifted with excellent grasping powers and technical skills but is also adept at putting in the required hard work to transform his talent into tangible results. I give him my highest recommendation.”</p>' },
+    w3: { c: '#8c8d96', html: head('MHSSCE Student Chapter', 'IEEE Committee') +
+      '<p class="m-quote">“Your selfless commitment, leadership, and passion have been truly invaluable in driving the success of our initiatives and fostering an environment of innovation, collaboration, and growth.”</p>' }
+  };
+
+  const modal = document.getElementById('modal');
+  const body = document.getElementById('mBody');
+  let lastFocus = null;
+
+  function openItem(id, push = true) {
+    const d = DATA[id]; if (!d) return;
+    lastFocus = document.activeElement;
+    body.innerHTML = '<div style="--c:' + d.c + '">' + d.html + '</div>';
+    body.scrollTop = 0;
+    modal.classList.add('open'); modal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    document.getElementById('mClose').focus();
+    if (push) history.replaceState(null, '', '#' + id);
+  }
+  function closeItem() {
+    modal.classList.remove('open'); modal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    history.replaceState(null, '', location.pathname);
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+
+  document.querySelectorAll('.item[data-id]').forEach(b => b.addEventListener('click', () => openItem(b.dataset.id)));
+  document.getElementById('mClose').addEventListener('click', closeItem);
+  modal.addEventListener('click', e => { if (e.target === modal) closeItem(); });
+  document.addEventListener('keydown', e => {
+    if (!modal.classList.contains('open')) return;
+    if (e.key === 'Escape') closeItem();
+    if (e.key === 'Tab') { // keep focus inside the dialog
+      const f = [...modal.querySelectorAll('a[href], button')];
+      const first = f[0], last = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    }
+  });
+
+  // deep links: #p1 opens a project; #work / #testimonials map to sections
+  const sectionAlias = { work: 'projects', testimonials: 'words' };
+  function route() {
+    const h = location.hash.replace('#', '');
+    if (DATA[h]) openItem(h, false);
+    else if (sectionAlias[h]) document.getElementById(sectionAlias[h]).scrollIntoView();
+  }
+  window.addEventListener('hashchange', route);
+  route();
+})();
+</script>
+</body>
+</html>
